@@ -263,4 +263,25 @@ const copyTargetText = async () => {
   transform: scale(1.1);
   transition: transform 0.2s ease;
 }
+
+@media (max-width: 620px) {
+  .translator {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 90%;
+  }
+
+  .translator > .col {
+    justify-content: center;
+    width: 100%;
+    height: 230px;
+  }
+
+  .translator > .col:nth-of-type(2) {
+    width: 100%;
+    height: fit-content;
+  }
+}
 </style>
