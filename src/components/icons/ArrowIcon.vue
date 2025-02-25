@@ -1,0 +1,59 @@
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    :width="iconSize"
+    :height="iconSize"
+    x="0"
+    y="0"
+    viewBox="0 0 128 128"
+    style="enable-background: new 0 0 512 512"
+    xml:space="preserve"
+    :class="'arrow-' + iconDirection"
+  >
+    <g>
+      <path
+        d="M44 108a3.988 3.988 0 0 1-2.828-1.172 3.997 3.997 0 0 1 0-5.656L78.344 64 41.172 26.828c-1.563-1.563-1.563-4.094 0-5.656s4.094-1.563 5.656 0l40 40a3.997 3.997 0 0 1 0 5.656l-40 40A3.988 3.988 0 0 1 44 108z"
+        :fill="iconColor"
+        opacity="1"
+        data-original="#000000"
+      ></path>
+    </g>
+  </svg>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { type IconProps } from "../../composables/interfaces/Props";
+
+interface SelfProps extends IconProps {
+  direction: string;
+}
+
+type ArrowDirection = "up" | "down" | "left" | "right";
+
+const props = defineProps<SelfProps>();
+
+const iconSize = ref<number>(props.size);
+const iconColor = ref<string>(props.color);
+const iconDirection = ref<ArrowDirection>(props.direction as ArrowDirection);
+</script>
+
+<style scoped>
+.arrow-up {
+  transform: rotate(270deg);
+}
+
+.arrow-down {
+  transform: rotate(90deg);
+}
+
+.arrow-left {
+  transform: rotate(180deg);
+}
+
+.arrow-right {
+  transform: rotate(0deg);
+}
+</style>

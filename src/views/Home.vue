@@ -1,7 +1,8 @@
 <template>
-  <Hero />
+  <NavigationBar />
+  <RouterView />
 </template>
 
 <script setup lang="ts">
-import Hero from "./partials/Hero.vue";
+import NavigationBar from "../components/NavigationBar.vue";
 </script>

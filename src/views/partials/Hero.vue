@@ -1,5 +1,5 @@
 <template>
-  <div class="hero section-bg">
+  <section class="hero section-bg">
     <div class="hero-title">
       <h1 class="fs-heading-1 text-light">Chabacano Translator</h1>
     </div>
@@ -15,9 +15,10 @@
         class="btn-primary"
         :btnText="'Translate Now'"
         :path="'translator'"
+        size="lg"
       />
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -33,14 +34,19 @@ import Button from "../../components/Button.vue";
   z-index: 2;
 }
 
-/* .hero > .hero-title {
-  width: 50%;
-  text-align: center;
-}
- */
 .hero > .hero-tagline {
   width: 20%;
   text-align: center;
   margin-block: 2em;
+}
+
+@media (max-width: 925px) {
+  .hero > .hero-title {
+    text-align: center;
+  }
+
+  .hero > .hero-tagline {
+    width: 50%;
+  }
 }
 </style>
