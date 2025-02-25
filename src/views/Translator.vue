@@ -108,7 +108,7 @@ const translateText = async () => {
         return;
       }
 
-      translatedText.value = response.translated_text;
+      translatedText.value = response.translation;
     } catch (error) {
       console.log(error);
     }
