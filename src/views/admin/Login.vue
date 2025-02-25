@@ -26,7 +26,7 @@
           </div>
 
           <div class="btn">
-            <Button btnType="btn-secondary" btnText="Login" />
+            <Button btnType="btn-secondary" btnText="Login" size="lg" />
           </div>
         </div>
       </div>
