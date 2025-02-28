@@ -1,12 +1,11 @@
 <template>
   <section class="hero section-bg">
     <div class="hero-title">
-      <h1 class="fs-heading-1 text-light">Chabacano Translator</h1>
+      <h1 class="fs-heading-1 text-light">{{ title }}</h1>
     </div>
     <div class="hero-tagline">
       <p class="fs-body-text text-light">
-        Si quiere, mucho que di podé hacé. Si no quiere, mucho razon que di
-        dale.
+        {{ tagline }}
       </p>
     </div>
 
@@ -22,7 +21,20 @@
 </template>
 
 <script setup lang="ts">
+import { toRefs, watch } from "vue";
 import Button from "../../components/Button.vue";
+
+const props = defineProps({
+  title: String,
+  tagline: String,
+});
+
+let { title, tagline } = toRefs(props);
+
+watch([title, tagline], ([newTitle, newTagline]) => {
+  title = newTitle;
+  tagline = newTagline;
+});
 </script>
 
 <style scoped>

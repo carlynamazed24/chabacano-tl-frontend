@@ -28,16 +28,40 @@
     </div>
 
     <div class="btn">
-      <router-link
-        :to="{ name: 'login' }"
-        class="nav-item fs-body-text"
-        active-class="active"
-      >
-        <span class="text-light">Logout</span>
-      </router-link>
+      <Button
+        class="fs-body-text"
+        btnType="btn-primary"
+        size="sm"
+        btnText="Logout"
+        @click="logout"
+      />
     </div>
   </aside>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from "vue-router";
+import { RequestToLogout } from "../composables/API/Auth";
+import Button from "./Button.vue";
+import { displayErrorNotification } from "../composables/services/notifications";
+
+const router = useRouter();
+
+const logout = async () => {
+  try {
+    const response = await RequestToLogout();
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    router.push({ name: "login" });
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  }
+};
+</script>
 
 <style scoped>
 @import "../styles/variables.css";

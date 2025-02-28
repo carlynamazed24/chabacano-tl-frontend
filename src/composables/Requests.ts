@@ -1,6 +1,7 @@
 // import { API } from "../config/axios.ts";
 
 import axios from "axios";
+import { displayErrorNotification } from "./services/notifications";
 
 const RequestToTranslateText = async (payload: Object) => {
   try {
@@ -15,6 +16,7 @@ const RequestToTranslateText = async (payload: Object) => {
     );
     return response.data;
   } catch (error) {
+    displayErrorNotification("Something went wrong");
     console.error(error);
   }
 };

@@ -2,42 +2,30 @@
   <section class="about-us">
     <div class="about">
       <div class="col">
-        <h1 class="fs-heading-3">About Us</h1>
+        <h1 class="fs-heading-3">{{ aboutUsTitle }}</h1>
         <p class="fs-body-text">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Molestiae,
-          iure at a distinctio, explicabo officia repellendus architecto nobis,
-          nulla natus odit quaerat blanditiis fuga ducimus corporis repellat
-          ipsum praesentium deserunt.
+          {{ aboutUsContent }}
         </p>
       </div>
 
       <div class="col">
-        <h2 class="fs-heading-6">Our Mission</h2>
+        <h2 class="fs-heading-6">{{ ourMissionTitle }}</h2>
         <p class="fs-small-text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit,
+          {{ ourMissionContent }}
         </p>
       </div>
 
       <div class="col">
-        <h2 class="fs-heading-6">Our Vission</h2>
+        <h2 class="fs-heading-6">{{ ourVisionTitle }}</h2>
         <p class="fs-small-text">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt hic
-          vero similique reprehenderit repellendus. Porro, nam qui, pariatur ea
-          aspernatur blanditiis adipisci natus voluptates neque est error nihil
-          accusantium exercitationem.
+          {{ ourVisionContent }}
         </p>
       </div>
 
       <div class="col">
-        <h2 class="fs-heading-6">Why Chabacano?</h2>
+        <h2 class="fs-heading-6">{{ whyChabacanoTitle }}</h2>
         <p class="fs-small-text">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt hic
-          vero similique reprehenderit repellendus. Porro, nam qui, pariatur ea
-          aspernatur blanditiis adipisci natus voluptates neque est error nihil
-          accusantium exercitationem.
+          {{ whyChabacanoContent }}
         </p>
       </div>
     </div>
@@ -50,6 +38,64 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { toRefs, watch } from "vue";
+
+const props = defineProps({
+  aboutUsTitle: String,
+  aboutUsContent: String,
+  ourMissionTitle: String,
+  ourMissionContent: String,
+  ourVisionTitle: String,
+  ourVisionContent: String,
+  whyChabacanoTitle: String,
+  whyChabacanoContent: String,
+});
+
+let {
+  aboutUsTitle,
+  aboutUsContent,
+  ourMissionTitle,
+  ourMissionContent,
+  ourVisionTitle,
+  ourVisionContent,
+  whyChabacanoTitle,
+  whyChabacanoContent,
+} = toRefs(props);
+
+watch(
+  [
+    aboutUsTitle,
+    aboutUsContent,
+    ourMissionTitle,
+    ourMissionContent,
+    ourVisionTitle,
+    ourVisionContent,
+    whyChabacanoTitle,
+    whyChabacanoContent,
+  ],
+  ([
+    newAboutUs,
+    newAboutUsContent,
+    newOurMissionTitle,
+    newOurMissionContent,
+    newOurVisionTitle,
+    newOurVisionContent,
+    newWhyChabacanoTitle,
+    newWhyChabacanoContent,
+  ]) => {
+    aboutUsTitle = newAboutUs;
+    aboutUsContent = newAboutUsContent;
+    ourMissionTitle = newOurMissionTitle;
+    ourMissionContent = newOurMissionContent;
+    ourVisionTitle = newOurVisionTitle;
+    ourVisionContent = newOurVisionContent;
+    whyChabacanoTitle = newWhyChabacanoTitle;
+    whyChabacanoContent = newWhyChabacanoContent;
+  }
+);
+</script>
 
 <style scoped>
 @import "../../styles/variables.css";

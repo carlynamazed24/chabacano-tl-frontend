@@ -74,6 +74,7 @@ import SwitchIcon from "../components/icons/SwitchIcon.vue";
 import MicIcon from "../components/icons/MicIcon.vue";
 import SpeakerIcon from "../components/icons/SpeakerIcon.vue";
 import CopyIcon from "../components/icons/CopyIcon.vue";
+import { displayErrorNotification } from "../composables/services/notifications";
 
 const languages = ["Chabacano", "Tagalog", "English"];
 const selectedSrcLang = ref("Chabacano");
@@ -110,7 +111,8 @@ const translateText = async () => {
 
       translatedText.value = response.translation;
     } catch (error) {
-      console.log(error);
+      displayErrorNotification("Something went wrong");
+      console.error(error);
     }
   }, 1000);
 };

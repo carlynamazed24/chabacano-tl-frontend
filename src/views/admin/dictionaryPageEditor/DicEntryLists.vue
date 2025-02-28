@@ -13,16 +13,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(entry, index) in entries" :key="index">
-            <td class="fs-body-text">{{ entry.chabacano }}</td>
-            <td class="fs-body-text">{{ entry.tagalog }}</td>
-            <td class="fs-body-text">{{ entry.english }}</td>
+          <tr v-for="(entry, index) in dictionaryEntries" :key="index">
+            <td class="fs-body-text">{{ entry.chabacanoLang }}</td>
+            <td class="fs-body-text">{{ entry.tagalogLang }}</td>
+            <td class="fs-body-text">{{ entry.englishLang }}</td>
             <td class="fs-body-text">{{ entry.definition }}</td>
             <td class="actions">
-              <Button size="sm" :withIcon="true" class="edit-btn">
+              <Button
+                size="sm"
+                :withIcon="true"
+                class="edit-btn"
+                @click="editEntry(entry.id)"
+              >
                 <EditIcon :size="20" color="#000" />
               </Button>
-              <Button size="sm" :withIcon="true" class="delete-btn">
+              <Button
+                size="sm"
+                :withIcon="true"
+                class="delete-btn"
+                @click="confirmDeleteEntry(entry.id)"
+              >
                 <DeleteIcon :size="20" color="#000" />
               </Button>
             </td>
@@ -34,42 +44,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import {
+  RequestToGetDictionaryEntries,
+  RequestToDeleteDictionaryEntry,
+} from "../../../composables/API/Dictionary";
+import { type Dictionary } from "../../../composables/interfaces/Component";
+import {
+  displayErrorNotification,
+  displaySuccessNotification,
+} from "../../../composables/services/notifications";
+import { displayConfirmDialog } from "../../../composables/services/notifications";
+
 import Button from "../../../components/Button.vue";
 import EditIcon from "../../../components/icons/EditIcon.vue";
 import DeleteIcon from "../../../components/icons/DeleteIcon.vue";
-const entries = ref([
-  {
-    chabacano: "Buenas dias",
-    tagalog: "Magandang Umaga",
-    english: "Good Morning",
-    definition: "A morning greeting",
-  },
-  {
-    chabacano: "Buenas dias",
-    tagalog: "Magandang Umaga",
-    english: "Good Morning",
-    definition: "A morning greeting",
-  },
-  {
-    chabacano: "Buenas dias",
-    tagalog: "Magandang Umaga",
-    english: "Good Morning",
-    definition: "A morning greeting",
-  },
-  {
-    chabacano: "Buenas dias",
-    tagalog: "Magandang Umaga",
-    english: "Good Morning",
-    definition: "A morning greeting",
-  },
-  {
-    chabacano: "Buenas dias",
-    tagalog: "Magandang Umaga",
-    english: "Good Morning",
-    definition: "A morning greeting",
-  },
-]);
+
+const router = useRouter();
+
+const dictionaryEntries = ref<Dictionary[]>([]);
+
+const getDictionaryEntries = async () => {
+  try {
+    const response = await RequestToGetDictionaryEntries();
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    dictionaryEntries.value = response.data;
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  }
+};
+
+const confirmDeleteEntry = (id: number) => {
+  displayConfirmDialog("Are you sure you want to delete this entry?", () => {
+    deleteEntry(id);
+  });
+};
+
+const editEntry = async (id: number) => {
+  if (id) {
+    router.push({ name: "add-dic-entry", params: { id } });
+  }
+};
+
+const deleteEntry = async (id: number) => {
+  try {
+    const response = await RequestToDeleteDictionaryEntry(id);
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    displaySuccessNotification("Entry deleted successfully");
+    getDictionaryEntries();
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  await getDictionaryEntries();
+});
 </script>
 
 <style scoped>

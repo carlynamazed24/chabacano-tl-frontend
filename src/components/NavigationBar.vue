@@ -21,7 +21,7 @@
         <li class="nav-item">
           <router-link
             class="nav-link fs-body-text-semibold text-light"
-            :to="{ name: 'home' }"
+            :to="{ name: 'story' }"
           >
             Story
           </router-link>
@@ -29,7 +29,7 @@
         <li class="nav-item">
           <router-link
             class="nav-link fs-body-text-semibold text-light"
-            :to="{ name: 'home' }"
+            :to="{ name: 'dictionary' }"
           >
             Dictionary
           </router-link>

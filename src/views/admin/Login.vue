@@ -15,18 +15,23 @@
 
           <div class="input-container">
             <div class="input">
-              <label for="email" class="fs-body-text">Username</label>
-              <input type="email" />
+              <label for="username" class="fs-body-text">Username</label>
+              <input type="username" v-model="username" />
             </div>
 
             <div class="input">
               <label for="password" class="fs-body-text">Password</label>
-              <input type="password" />
+              <input type="password" v-model="password" />
             </div>
           </div>
 
           <div class="btn">
-            <Button btnType="btn-secondary" btnText="Login" size="lg" />
+            <Button
+              btnType="btn-secondary"
+              btnText="Login"
+              size="lg"
+              @click="login"
+            />
           </div>
         </div>
       </div>
@@ -35,7 +40,36 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { RequestToLogin } from "../../composables/API/Auth";
 import Button from "../../components/Button.vue";
+import { displayErrorNotification } from "../../composables/services/notifications";
+
+const router = useRouter();
+
+const username = ref<string>("");
+const password = ref<string>("");
+
+const login = async () => {
+  try {
+    const payload = {
+      username: username.value,
+      password: password.value,
+    };
+
+    const response = await RequestToLogin(payload);
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    router.push({ name: "cpanel" });
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped>

@@ -1,40 +1,42 @@
 <template>
-  <h2 class="fs-heading-6">Add New Section</h2>
+  <h2 class="fs-heading-6">
+    {{ route.params.id ? "Edit" : "Add New" }} Section
+  </h2>
   <div class="container">
     <div class="header-content content">
       <div class="input-container">
         <input
           type="text"
           placeholder="New Section Header"
-          v-model="sectionContent.headerTitle"
+          v-model="sectionContent.headingTitle"
         />
       </div>
 
       <div class="input-container">
         <textarea
           placeholder="New Section description"
-          v-model="sectionContent.headerDescription"
+          v-model="sectionContent.headingContent"
         ></textarea>
       </div>
     </div>
 
     <div
       v-for="subHeader in sectionContent.subHeaders"
-      :key="subHeader.subHeaderTitle"
+      :key="subHeader.subHeadingTitle"
       class="subheader-content content"
     >
       <div class="input-container">
         <input
           type="text"
           placeholder="New Section Subheader(Optional)"
-          v-model="subHeader.subHeaderTitle"
+          v-model="subHeader.subHeadingTitle"
         />
       </div>
 
       <div class="input-container">
         <textarea
           placeholder="New Section description (Optional) "
-          v-model="subHeader.subHeaderDescription"
+          v-model="subHeader.subHeadingContent"
         ></textarea>
       </div>
     </div>
@@ -50,7 +52,7 @@
     <Button
       btnType="btn-secondary"
       btnText="Submit"
-      @click="addNewSection"
+      @click="route.params.id ? updateStorySection() : addNewStorySection()"
       :disabled="isHeaderEmpty"
       size="md"
     />
@@ -58,46 +60,124 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import {
+  RequestToAddNewStory,
+  RequestToGetStorySectionContent,
+  RequestToUpdateStory,
+} from "../../../composables/API/Storypage";
+import { type StorypageContent } from "../../../composables/interfaces/Component";
 import Button from "../../../components/Button.vue";
+import {
+  displayErrorNotification,
+  displaySuccessNotification,
+} from "../../../composables/services/notifications";
 
-interface SubHeader {
-  subHeaderTitle: string;
-  subHeaderDescription: string;
-}
+const router = useRouter();
+const route = useRoute();
 
-interface Sections {
-  headerTitle: string;
-  headerDescription: string;
-  subHeaders?: SubHeader[];
-}
-
-const sectionContent = ref<Sections>({
-  headerTitle: "",
-  headerDescription: "",
+const sectionContent = ref<StorypageContent>({
+  id: 0,
+  headingTitle: "",
+  headingContent: "",
   subHeaders: [
     {
-      subHeaderTitle: "",
-      subHeaderDescription: "",
+      subHeadingTitle: "",
+      subHeadingContent: "",
     },
   ],
 });
 
 const isHeaderEmpty = computed(() => {
   return (
-    sectionContent.value.headerTitle === "" ||
-    sectionContent.value.headerDescription === ""
+    sectionContent.value.headingTitle === "" ||
+    sectionContent.value.headingContent === ""
   );
 });
 
 const addNewSubHeader = () => {
   sectionContent.value.subHeaders?.push({
-    subHeaderTitle: "",
-    subHeaderDescription: "",
+    subHeadingTitle: "",
+    subHeadingContent: "",
   });
 };
 
-const addNewSection = () => {};
+const addNewStorySection = async () => {
+  try {
+    const payload = {
+      id: 0, // This is a dummy value
+      headingTitle: sectionContent.value.headingTitle,
+      headingContent: sectionContent.value.headingContent,
+      subHeaders: sectionContent.value.subHeaders || [],
+    };
+
+    const response = await RequestToAddNewStory(payload);
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    displaySuccessNotification(response.message);
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  } finally {
+    resetForm();
+  }
+};
+
+const updateStorySection = async () => {
+  try {
+    const payload = {
+      id: 0, // This is a dummy value
+      headingTitle: sectionContent.value.headingTitle,
+      headingContent: sectionContent.value.headingContent,
+      subHeaders: sectionContent.value.subHeaders || [],
+    };
+
+    const response = await RequestToUpdateStory(route.params.id, payload);
+
+    if (response.status === "failed") {
+      return displayErrorNotification(response.message);
+    }
+
+    displaySuccessNotification(response.message);
+  } catch (error) {
+    displayErrorNotification("Something went wrong");
+    console.error(error);
+  } finally {
+    router.push({ name: "section-lists" });
+    resetForm();
+  }
+};
+
+const resetForm = () => {
+  sectionContent.value = {
+    id: 0,
+    headingTitle: "",
+    headingContent: "",
+    subHeaders: [
+      {
+        subHeadingTitle: "",
+        subHeadingContent: "",
+      },
+    ],
+  };
+};
+
+onMounted(async () => {
+  if (route.params.id) {
+    const response = await RequestToGetStorySectionContent(route.params.id);
+
+    if (response.status === "failed") {
+      resetForm();
+      return displayErrorNotification(response.message);
+    }
+
+    sectionContent.value = response.data;
+  }
+});
 </script>
 
 <style scoped>
