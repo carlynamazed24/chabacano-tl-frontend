@@ -136,7 +136,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   if (to.meta.requiresAuth) {
     const response = await RequestToCheckAuth();
 
