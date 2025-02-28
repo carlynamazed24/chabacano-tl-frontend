@@ -40,7 +40,7 @@
       <Button
         class="btn-primary"
         :btnText="'Translator'"
-        :path="'cb-admin'"
+        :path="'translator'"
         size="lg"
       />
     </div>
