@@ -8,7 +8,9 @@ interface LoginPayload {
 
 const RequestToLogin = async (payload: LoginPayload) => {
   try {
-    const response = await API.post("/auth/login", payload);
+    const response = await API.post("/auth/login", payload, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -26,7 +28,9 @@ const RequestToLogin = async (payload: LoginPayload) => {
 
 const RequestToCheckAuth = async () => {
   try {
-    const response = await API.get("/auth/check");
+    const response = await API.get("/auth/check", {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
