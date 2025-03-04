@@ -13,6 +13,7 @@ interface ButtonProps {
   btnText?: string;
   path?: string;
   withIcon?: boolean;
+  loadingState?: boolean;
   size: "sm" | "md" | "lg";
 }
 

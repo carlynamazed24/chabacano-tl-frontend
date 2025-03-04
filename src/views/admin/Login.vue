@@ -27,6 +27,7 @@
 
           <div class="btn">
             <Button
+              :loadingState="btnLoadingState"
               btnType="btn-secondary"
               btnText="Login"
               size="lg"
@@ -50,9 +51,11 @@ const router = useRouter();
 
 const username = ref<string>("");
 const password = ref<string>("");
+const btnLoadingState = ref<boolean>(false);
 
 const login = async () => {
   try {
+    btnLoadingState.value = true;
     const payload = {
       username: username.value,
       password: password.value,
@@ -68,6 +71,8 @@ const login = async () => {
   } catch (error) {
     displayErrorNotification("Something went wrong");
     console.error(error);
+  } finally {
+    btnLoadingState.value = false;
   }
 };
 </script>

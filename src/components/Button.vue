@@ -1,14 +1,22 @@
 <template>
-  <button class="btn" :class="[buttonType, buttonSize]" @click="routeTo(path)">
-    <span v-if="buttonText" class="btn-text">{{ buttonText }}</span>
-    <span class="slot" v-else>
-      <slot></slot>
-    </span>
+  <button
+    class="btn"
+    :class="[buttonType, buttonSize]"
+    @click="routeTo(path)"
+    :disabled="loadingState"
+  >
+    <span v-if="loadingState" class="loading-animation"></span>
+    <template v-else>
+      <span v-if="buttonText" class="btn-text">{{ buttonText }}</span>
+      <span class="slot" v-else>
+        <slot></slot>
+      </span>
+    </template>
   </button>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter, type Router } from "vue-router";
 import { type ButtonProps } from "../composables/interfaces/Props";
 
@@ -19,7 +27,15 @@ const router: Router = useRouter();
 const buttonType = ref(props.btnType || "btn-primary");
 const buttonText = ref(props.btnText);
 const buttonSize = ref(props.size);
+const loadingState = ref(props.loadingState);
 const path = ref(props.path);
+
+watch(
+  () => props.loadingState,
+  (newVal) => {
+    loadingState.value = newVal;
+  }
+);
 
 const routeTo = (path: string | undefined) => {
   router.push({ name: path });
@@ -109,5 +125,21 @@ const routeTo = (path: string | undefined) => {
 
 .btn.btn-secondary:hover > .btn-text {
   color: var(--primary-color);
+}
+
+.loading-animation {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
