@@ -16,8 +16,11 @@
           </ul>
         </nav>
         <div class="input-container">
-          <textarea rows="3" v-model="textInput" @input="translateText">
-          </textarea>
+          <textarea
+            rows="3"
+            v-model="textInput"
+            @input="translateText"
+          ></textarea>
           <div class="actions">
             <button
               class="btn btn-primary"
@@ -29,11 +32,11 @@
                 :color="isRecording ? '#FF6B6B' : '#EFE8DC'"
               />
             </button>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" @click="speakSourceText">
               <SpeakerIcon :size="30" :color="'#EFE8DC'" />
             </button>
-            <button class="btn btn-primary">
-              <CopyIcon :size="30" :color="'#EFE8DC'" @click="copySourceText" />
+            <button class="btn btn-primary" @click="copySourceText">
+              <CopyIcon :size="30" :color="'#EFE8DC'" />
             </button>
           </div>
         </div>
@@ -60,11 +63,11 @@
         <div class="input-container disabled">
           <textarea rows="3" disabled v-model="translatedText"></textarea>
           <div class="actions">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" @click="speakTranslatedText">
               <SpeakerIcon :size="30" :color="'#EFE8DC'" />
             </button>
-            <button class="btn btn-primary">
-              <CopyIcon :size="30" :color="'#EFE8DC'" @click="copyTargetText" />
+            <button class="btn btn-primary" @click="copyTargetText">
+              <CopyIcon :size="30" :color="'#EFE8DC'" />
             </button>
           </div>
         </div>
@@ -75,129 +78,207 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from "vue";
-import { RequestToTranslateText } from "../composables/Requests";
-
+import { RequestToTranslateText } from "../composables/API/Translation";
+import { displayErrorNotification } from "../composables/services/notifications";
 import SwitchIcon from "../components/icons/SwitchIcon.vue";
 import MicIcon from "../components/icons/MicIcon.vue";
 import SpeakerIcon from "../components/icons/SpeakerIcon.vue";
 import CopyIcon from "../components/icons/CopyIcon.vue";
-import { displayErrorNotification } from "../composables/services/notifications";
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+interface SpeechRecognitionResult {
+  readonly isFinal: boolean;
+  readonly length: number;
+  [index: number]: { transcript: string; confidence: number };
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number;
+  readonly results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
+    webkitSpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
+  }
+}
 
 // Array of supported languages
 const languages = ["Chabacano", "Tagalog", "English"];
 
-// Reactive references for selected languages, text inputs, and UI state
+// Reactive references
 const selectedSrcLang = ref("Chabacano");
 const selectedTargetLang = ref("Tagalog");
 const textInput = ref("");
 const translatedText = ref("");
 const isRecording = ref(false);
-
-// Explicitly type audioStream as a MediaStream or null
-const audioStream = ref<MediaStream | null>(null);
-// Type timeouts as number or null (browser setTimeout returns number)
-const microphoneTimeout = ref<number | null>(null);
 const debounceTimeout = ref<number | null>(null);
 
-// Example phrases for each language - shown after microphone recording
-const examplePhrases: Record<string, string> = {
-  Chabacano: "Buenas días, cómo está?",
-  Tagalog: "Magandang araw, kumusta ka?",
-  English: "Good day, how are you?",
+let recognition: SpeechRecognition;
+
+try {
+  const SpeechRecognitionConstructor =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognitionConstructor) {
+    throw new Error("Speech Recognition API not supported");
+  }
+
+  recognition = new SpeechRecognitionConstructor();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  // Handle speech recognition result
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const transcript = event.results[0][0].transcript;
+    textInput.value = transcript;
+    translateText();
+  };
+
+  recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    console.error("Speech recognition error:", event.error);
+    displayErrorNotification("Failed to recognize speech");
+    isRecording.value = false;
+  };
+
+  recognition.onend = () => {
+    isRecording.value = false;
+  };
+} catch (error) {
+  console.error("Speech recognition not supported:", error);
+  recognition = {
+    continuous: false,
+    interimResults: false,
+    lang: "en-US",
+    onerror: null,
+    onresult: null,
+    onend: null,
+    start: () =>
+      displayErrorNotification(
+        "Speech recognition not supported in this browser"
+      ),
+    stop: () => {},
+    addEventListener: () => {},
+    dispatchEvent: () => true,
+    removeEventListener: () => {},
+  } as SpeechRecognition;
+}
+
+// Toggle microphone
+const toggleMicrophone = () => {
+  if (isRecording.value) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
 };
 
+// Start recording
+const startRecording = () => {
+  // Check if the Speech Recognition API is supported
+  if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
+    alert("Speech recognition is not supported in this browser.");
+    return;
+  }
+  try {
+    // Set recognition language based on selected source language
+    recognition.lang = selectedSrcLang.value === "Tagalog" ? "fil-PH" : "en-US";
+    recognition.start();
+    isRecording.value = true;
+  } catch (error) {
+    console.error("Error starting speech recognition:", error);
+    displayErrorNotification("Could not start speech recognition");
+    isRecording.value = false;
+  }
+};
+
+// Stop recording
+const stopRecording = () => {
+  try {
+    recognition.stop();
+  } catch (error) {
+    console.error("Error stopping speech recognition:", error);
+  }
+  isRecording.value = false;
+};
+
+// Speak functions (using browser's SpeechSynthesis API)
+const speakText = (text: string, lang: string) => {
+  if (!text) return;
+
+  if (!window.speechSynthesis) {
+    alert("Text-to-speech is not supported in this browser.");
+    return;
+  }
+
+  try {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang === "Tagalog" ? "fil-PH" : "en-US";
+    window.speechSynthesis.speak(utterance);
+  } catch (error) {
+    console.error("Speech synthesis error:", error);
+    displayErrorNotification("Text-to-speech failed");
+  }
+};
+
+const speakSourceText = () => {
+  speakText(textInput.value, selectedSrcLang.value);
+};
+
+const speakTranslatedText = () => {
+  speakText(translatedText.value, selectedTargetLang.value);
+};
+
+// Translation function
 const translateText = async () => {
   if (debounceTimeout.value !== null) {
     clearTimeout(debounceTimeout.value);
   }
 
   debounceTimeout.value = window.setTimeout(async () => {
-    try {
-      if (!textInput.value.trim()) {
-        translatedText.value = "";
-        return;
-      }
-
-      translatedText.value = "Translating text...";
-      const payload = {
-        text: textInput.value,
-        model:
-          `${selectedSrcLang.value}-to-${selectedTargetLang.value}`.toLowerCase(),
-      };
-      const response = await RequestToTranslateText(payload);
-
-      if (response.status === "failed") {
-        translatedText.value = "Error translating text";
-        return;
-      }
-
-      translatedText.value = response.translation;
-    } catch (error) {
-      displayErrorNotification("Something went wrong");
-      console.error(error);
+    if (!textInput.value.trim()) {
+      translatedText.value = "";
+      return;
     }
+    translatedText.value = "Translating text...";
+    const payload = {
+      text: textInput.value,
+      model:
+        `${selectedSrcLang.value}-to-${selectedTargetLang.value}`.toLowerCase(),
+    };
+    const response = await RequestToTranslateText(payload);
+    if (response.err !== null) {
+      translatedText.value = "Error translating text";
+      return;
+    }
+    translatedText.value = response?.translation ?? response.result;
   }, 1000);
 };
-
-const toggleMicrophone = async () => {
-  if (isRecording.value) {
-    stopRecording();
-  } else {
-    await startRecording();
-  }
-};
-
-const startRecording = async () => {
-  try {
-    // Request microphone access
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioStream.value = stream;
-    isRecording.value = true;
-
-    // Append "Listening..." to the existing text
-    const originalText = textInput.value;
-    textInput.value += (textInput.value ? " " : "") + "Listening...";
-
-    // After a few seconds, simulate speech-to-text
-    microphoneTimeout.value = window.setTimeout(() => {
-      // Replace "Listening..." with an example phrase based on the source language
-      textInput.value =
-        originalText +
-        (originalText ? " " : "") +
-        examplePhrases[selectedSrcLang.value];
-      translateText();
-
-      // Stop recording after simulating speech input
-      stopRecording();
-    }, 3000);
-  } catch (error) {
-    console.error("Error accessing microphone:", error);
-    displayErrorNotification("Could not access microphone");
-  }
-};
-
-const stopRecording = () => {
-  if (audioStream.value) {
-    // Stop all audio tracks
-    audioStream.value
-      .getTracks()
-      .forEach((track: MediaStreamTrack) => track.stop());
-    audioStream.value = null;
-  }
-
-  isRecording.value = false;
-
-  // Clear any pending timeouts
-  if (microphoneTimeout.value !== null) {
-    clearTimeout(microphoneTimeout.value);
-    microphoneTimeout.value = null;
-  }
-};
-
-// Clean up when the component is destroyed
-onBeforeUnmount(() => {
-  stopRecording();
-});
 
 const handleSrcLanguageSelect = (lang: string) => {
   if (lang === selectedTargetLang.value) {
@@ -239,6 +320,10 @@ const copySourceText = async () => {
 const copyTargetText = async () => {
   await navigator.clipboard.writeText(translatedText.value);
 };
+
+onBeforeUnmount(() => {
+  stopRecording();
+});
 </script>
 
 <style scoped>

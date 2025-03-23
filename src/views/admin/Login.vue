@@ -44,7 +44,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { RequestToLogin } from "../../composables/API/Auth";
-import Button from "../../components/Button.vue";
+import Button from "../../components/ui/Button.vue";
 import { displayErrorNotification } from "../../composables/services/notifications";
 
 const router = useRouter();

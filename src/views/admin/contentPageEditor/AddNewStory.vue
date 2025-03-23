@@ -68,7 +68,7 @@ import {
   RequestToUpdateStory,
 } from "../../../composables/API/Storypage";
 import { type StorypageContent } from "../../../composables/interfaces/Component";
-import Button from "../../../components/Button.vue";
+import Button from "../../../components/ui/Button.vue";
 import {
   displayErrorNotification,
   displaySuccessNotification,

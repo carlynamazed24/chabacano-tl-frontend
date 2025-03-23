@@ -3,7 +3,7 @@
     <div class="header-logo">
       <router-link :to="{ name: 'home' }">
         <img
-          src="../assets/images/chabacano_logo.png"
+          src="../../assets/images/chabacano_logo.png"
           alt="Chabacano Translator Logo"
         />
       </router-link>
@@ -45,7 +45,9 @@
       />
     </div>
     <div class="nav-hamburger">
-      <ButtonIcon @click="isMobileNavOpen = !isMobileNavOpen" />
+      <Button @click="isMobileNavOpen = !isMobileNavOpen" size="sm">
+        <HamburgerIcon :size="20" color="#ffffff" />
+      </Button>
     </div>
 
     <div v-if="isMobileNavOpen" class="mobile-nav">
@@ -61,8 +63,8 @@ import {
   type RouteLocationNormalizedLoadedGeneric,
 } from "vue-router";
 import Button from "./Button.vue";
-import ButtonIcon from "./ButtonIcon.vue";
 import MobileNavBar from "./MobileNavigationBar.vue";
+import HamburgerIcon from "../icons/HamburgerIcon.vue";
 
 const isMobileNavOpen = ref<boolean>(false);
 const route: RouteLocationNormalizedLoadedGeneric = useRoute();
@@ -78,7 +80,7 @@ watch(isMobileNavOpen, (newValue) => {
 </script>
 
 <style scoped>
-@import "../styles/variables.css";
+@import "../../styles/variables.css";
 
 .header {
   position: sticky;

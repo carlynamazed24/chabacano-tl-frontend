@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRouter, type Router } from "vue-router";
-import { type ButtonProps } from "../composables/interfaces/Props";
+import { type ButtonProps } from "../../composables/interfaces/Props";
 
 const props = defineProps<ButtonProps>();
 
@@ -43,7 +43,7 @@ const routeTo = (path: string | undefined) => {
 </script>
 
 <style scoped>
-@import "../styles/variables.css";
+@import "../../styles/variables.css";
 
 .btn {
   display: flex;

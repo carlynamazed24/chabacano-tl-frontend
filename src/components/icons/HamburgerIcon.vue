@@ -1,0 +1,36 @@
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    :width="iconSize"
+    :height="iconSize"
+    x="0"
+    y="0"
+    viewBox="0 0 16 16"
+    style="enable-background: new 0 0 512 512"
+    xml:space="preserve"
+    class=""
+  >
+    <g>
+      <g data-name="31">
+        <path
+          d="M15.5 4H.5a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1zM15.5 9H.5a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1zM15.5 14H.5a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1z"
+          :fill="iconColor"
+          opacity="1"
+          data-original="#000000"
+        ></path>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { type IconProps } from "../../composables/interfaces/Props";
+
+const props = defineProps<IconProps>();
+
+const iconSize = ref<number>(props.size);
+const iconColor = ref<string>(props.color);
+</script>

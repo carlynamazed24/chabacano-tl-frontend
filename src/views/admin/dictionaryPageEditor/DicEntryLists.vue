@@ -57,7 +57,7 @@ import {
 } from "../../../composables/services/notifications";
 import { displayConfirmDialog } from "../../../composables/services/notifications";
 
-import Button from "../../../components/Button.vue";
+import Button from "../../../components/ui/Button.vue";
 import EditIcon from "../../../components/icons/EditIcon.vue";
 import DeleteIcon from "../../../components/icons/DeleteIcon.vue";
 

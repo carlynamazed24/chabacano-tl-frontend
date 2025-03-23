@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { toRefs, watch } from "vue";
-import Button from "../../components/Button.vue";
+import Button from "../../components/ui/Button.vue";
 
 const props = defineProps({
   title: String,

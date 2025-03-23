@@ -32,7 +32,7 @@ const navLists = ref(props.navLists);
 </script>
 
 <style scoped>
-@import "../styles/variables.css";
+@import "../../styles/variables.css";
 
 .nav > .nav-lists {
   display: flex;

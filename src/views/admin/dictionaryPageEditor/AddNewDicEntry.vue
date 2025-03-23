@@ -62,7 +62,7 @@ import {
   RequestToAddNewDictionaryEntry,
   RequestToUpdateDictionaryEntry,
 } from "../../../composables/API/Dictionary";
-import Button from "../../../components/Button.vue";
+import Button from "../../../components/ui/Button.vue";
 import {
   displayErrorNotification,
   displaySuccessNotification,

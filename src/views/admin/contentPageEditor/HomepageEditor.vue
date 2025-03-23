@@ -72,7 +72,7 @@ import {
   RequestToUpdateHomepageContent,
 } from "../../../composables/API/Homepage";
 
-import Button from "../../../components/Button.vue";
+import Button from "../../../components/ui/Button.vue";
 import {
   displayErrorNotification,
   displaySuccessNotification,

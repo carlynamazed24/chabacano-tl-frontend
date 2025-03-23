@@ -3,7 +3,7 @@
     <div class="col">
       <div class="img-container">
         <img
-          src="../assets/images/chabacano_translator_v2.png"
+          src="../../assets/images/chabacano_translator_v2.png"
           alt="Chabacano Logo V2"
         />
       </div>
@@ -41,9 +41,9 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { RequestToLogout } from "../composables/API/Auth";
+import { RequestToLogout } from "../../composables/API/Auth";
 import Button from "./Button.vue";
-import { displayErrorNotification } from "../composables/services/notifications";
+import { displayErrorNotification } from "../../composables/services/notifications";
 
 const router = useRouter();
 
@@ -64,7 +64,7 @@ const logout = async () => {
 </script>
 
 <style scoped>
-@import "../styles/variables.css";
+@import "../../styles/variables.css";
 
 .sidebar {
   display: flex;

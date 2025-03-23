@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import MiniNavBar from "../../../components/MiniNavBar.vue";
+import MiniNavBar from "../../../components/ui/MiniNavBar.vue";
 import { type NavListsProps } from "../../../composables/interfaces/Props";
 
 const NavLists: NavListsProps[] = [

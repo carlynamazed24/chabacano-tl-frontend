@@ -44,7 +44,7 @@ import Button from "./Button.vue";
 </script>
 
 <style scoped>
-@import "../styles/variables.css";
+@import "../../styles/variables.css";
 
 .container {
   display: flex;

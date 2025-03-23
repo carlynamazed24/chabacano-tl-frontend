@@ -73,7 +73,7 @@ import {
   displaySuccessNotification,
 } from "../../../composables/services/notifications";
 
-import Button from "../../../components/Button.vue";
+import Button from "../../../components/ui/Button.vue";
 import ArrowIcon from "../../../components/icons/ArrowIcon.vue";
 import DeleteIcon from "../../../components/icons/DeleteIcon.vue";
 import EditIcon from "../../../components/icons/EditIcon.vue";
