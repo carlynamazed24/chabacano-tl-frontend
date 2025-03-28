@@ -46,10 +46,18 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   z-index: 2;
 }
 
+.hero > .hero-title > h1 {
+  font-size: 7rem;
+}
+
 .hero > .hero-tagline {
-  width: 20%;
+  width: 60%;
   text-align: center;
   margin-block: 2em;
+}
+
+.hero > .hero-tagline > p {
+  font-size: 3rem;
 }
 
 @media (max-width: 925px) {
@@ -59,6 +67,33 @@ watch([title, tagline], ([newTitle, newTagline]) => {
 
   .hero > .hero-tagline {
     width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero > .hero-title > h1 {
+    font-size: 4rem;
+  }
+
+  .hero > .hero-tagline {
+    width: 75%;
+  }
+
+  .hero > .hero-tagline > p {
+    font-size: 2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hero > .hero-title > h1 {
+    font-size: 3rem;
+  }
+
+  .hero > .hero-tagline > p {
+    font-size: 1.5rem;
+  }
+  .hero > .hero-tagline {
+    width: 90%;
   }
 }
 </style>

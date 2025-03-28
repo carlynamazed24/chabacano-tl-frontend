@@ -3,8 +3,9 @@
     <!-- Hero Banner -->
     <div class="hero-banner">
       <img
-        src="../assets/images/cavite_historical_site_bg.jpg"
+        src="../assets/images/cavite_historical_site_bg.png"
         alt="Cavite Historical Site"
+        loading="lazy"
       />
     </div>
 
@@ -149,7 +150,7 @@ const scrollToElement = (elementId: string) => {
 /* Hero Banner */
 .hero-banner {
   width: 100%;
-  height: 300px;
+  height: 400px;
   overflow: hidden;
   margin-bottom: 2rem;
   position: relative;
@@ -158,7 +159,6 @@ const scrollToElement = (elementId: string) => {
 .hero-banner img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   object-position: center;
 }
 

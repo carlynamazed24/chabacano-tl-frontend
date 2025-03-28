@@ -1,46 +1,41 @@
 <template>
   <section class="about-us">
     <div class="about">
-      <div class="col">
+      <div class="about-title text-center">
         <h1 class="fs-heading-3">{{ aboutUsTitle }}</h1>
-        <p class="fs-body-text">
-          {{ aboutUsContent }}
-        </p>
+        <p class="fs-small-text">{{ aboutUsContent }}</p>
       </div>
 
-      <div class="col">
-        <h2 class="fs-heading-6">{{ ourMissionTitle }}</h2>
-        <p class="fs-small-text">
-          {{ ourMissionContent }}
-        </p>
+      <div class="about-content">
+        <div class="col">
+          <h2 class="fs-heading-5">{{ ourMissionTitle }}</h2>
+          <p class="fs-small-text">{{ ourMissionContent }}</p>
+        </div>
+
+        <div class="col">
+          <h2 class="fs-heading-5">{{ ourVisionTitle }}</h2>
+          <p class="fs-small-text">{{ ourVisionContent }}</p>
+        </div>
       </div>
 
-      <div class="col">
-        <h2 class="fs-heading-6">{{ ourVisionTitle }}</h2>
-        <p class="fs-small-text">
-          {{ ourVisionContent }}
-        </p>
-      </div>
-
-      <div class="col">
-        <h2 class="fs-heading-6">{{ whyChabacanoTitle }}</h2>
-        <p class="fs-small-text">
-          {{ whyChabacanoContent }}
-        </p>
+      <div class="about-dev-btn">
+        <Button
+          size="lg"
+          btnText="About Developers"
+          btnType="btn-secondary"
+          @click="toggleModal"
+        />
       </div>
     </div>
-    <div class="img">
-      <img
-        src="../../assets/images/monument_about_us_pic.png"
-        alt="Cavite Monument"
-        loading="lazy"
-      />
-    </div>
+    <DevelopersModal v-if="showModal" @close-modal="toggleModal" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { toRefs, watch } from "vue";
+import { ref, toRefs, watch } from "vue";
+
+import Button from "../../components/ui/Button.vue";
+import DevelopersModal from "../../components/ui/DevelopersModal.vue";
 
 const props = defineProps({
   aboutUsTitle: String,
@@ -63,6 +58,12 @@ let {
   whyChabacanoTitle,
   whyChabacanoContent,
 } = toRefs(props);
+
+const showModal = ref<Boolean>(false);
+
+const toggleModal = () => {
+  showModal.value = !showModal.value;
+};
 
 watch(
   [
@@ -101,10 +102,10 @@ watch(
 @import "../../styles/variables.css";
 
 .about-us {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5em;
   padding: 5em 2em;
   background-color: var(--accent-2-color);
 }
@@ -112,20 +113,50 @@ watch(
 .about-us > .about {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 4em;
+  width: 60%;
 }
 
-.about-us > .about > .col > p {
-  margin-block: 1em;
+.about-us > .about > .about-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (max-width: 768px) {
-  .about-us {
-    flex-direction: column-reverse;
+.about-us > .about > .about-title > p {
+  margin-top: 1em;
+  width: 500px;
+}
+
+.about-us > .about > .about-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5em;
+}
+
+.about-us > .about > .about-content > .col {
+  padding: 1em 0;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.about-us > .about > .about-content > .col > h2 {
+  margin-bottom: 0.5em;
+}
+
+@media screen and (max-width: 480px) {
+  .about-us > .about > .about-title > p {
+    margin-top: 1em;
+    width: 100%;
   }
 
-  .about-us > .img > img {
-    width: 100%;
+  .about-us > .about > .about-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
   }
 }
 </style>

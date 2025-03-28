@@ -36,7 +36,7 @@ type ArrowDirection = "up" | "down" | "left" | "right";
 const props = defineProps<SelfProps>();
 
 const iconSize = ref<number>(props.size);
-const iconColor = ref<string>(props.color);
+const iconColor = ref<string | undefined>(props.color);
 const iconDirection = ref<ArrowDirection>(props.direction as ArrowDirection);
 </script>
 

@@ -36,5 +36,5 @@ import { type IconProps } from "../../composables/interfaces/Props";
 const props = defineProps<IconProps>();
 
 const iconSize = ref<number>(props.size);
-const iconColor = ref<string>(props.color);
+const iconColor = ref<string | undefined>(props.color);
 </script>

@@ -1,6 +1,6 @@
 interface IconProps {
   size: number;
-  color: string;
+  color?: string | undefined;
 }
 
 interface NavListsProps {

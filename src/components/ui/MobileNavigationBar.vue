@@ -13,6 +13,14 @@
         <li class="nav-item">
           <router-link
             class="nav-link fs-heading-6 text-semibold text-light"
+            :to="{ name: 'home' }"
+          >
+            About Us
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link
+            class="nav-link fs-heading-6 text-semibold text-light"
             :to="{ name: 'story' }"
           >
             Story
