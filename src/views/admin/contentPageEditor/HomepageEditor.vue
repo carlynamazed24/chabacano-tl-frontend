@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <div class="section-content">
+    <!--  <div class="section-content">
       <h2 class="fs-heading-6">Why Chabacano Content</h2>
       <div class="input-container">
         <input type="text" v-model="whyChabacanoTitle" />
@@ -53,7 +53,7 @@
       <div class="input-container">
         <textarea v-model="whyChabacanoContent"></textarea>
       </div>
-    </div>
+    </div> -->
 
     <Button
       style="width: 10%"
@@ -86,8 +86,8 @@ const ourMissionTitle = ref<string>("");
 const ourMissionContent = ref<string>("");
 const ourVisionTitle = ref<string>("");
 const ourVisionContent = ref<string>("");
-const whyChabacanoTitle = ref<string>("");
-const whyChabacanoContent = ref<string>("");
+const whyChabacanoTitle = ref<string>("This has been removed from the UI");
+const whyChabacanoContent = ref<string>("This has been removed from the UI");
 
 // Store initial data to compare changes
 const initialData = ref<Record<string, string>>({});
