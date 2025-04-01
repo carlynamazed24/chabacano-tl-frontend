@@ -82,9 +82,9 @@ const fetchDictionary = async () => {
 // Filter by first letter
 const filterByLetter = (letter: string) => {
   selectedLetter.value = letter;
-  filteredEntries.value = dictionaryEntries.value.filter((entry) =>
-    entry.chabacanoLang.startsWith(letter)
-  );
+  filteredEntries.value = dictionaryEntries.value.filter((entry) => {
+    return entry.chabacanoLang.charAt(0).toLowerCase() === letter.toLowerCase();
+  });
 };
 
 // Fetch on mount

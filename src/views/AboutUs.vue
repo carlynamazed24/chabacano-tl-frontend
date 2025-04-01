@@ -32,32 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, watch } from "vue";
-
-import Button from "../../components/ui/Button.vue";
-import DevelopersModal from "../../components/ui/DevelopersModal.vue";
-
-const props = defineProps({
-  aboutUsTitle: String,
-  aboutUsContent: String,
-  ourMissionTitle: String,
-  ourMissionContent: String,
-  ourVisionTitle: String,
-  ourVisionContent: String,
-  whyChabacanoTitle: String,
-  whyChabacanoContent: String,
-});
-
-let {
-  aboutUsTitle,
-  aboutUsContent,
-  ourMissionTitle,
-  ourMissionContent,
-  ourVisionTitle,
-  ourVisionContent,
-  whyChabacanoTitle,
-  whyChabacanoContent,
-} = toRefs(props);
+import { ref, onMounted } from "vue";
+import { RequestToGetHomepageContent } from "../composables/API/Homepage";
+import Button from "../components/ui/Button.vue";
+import DevelopersModal from "../components/ui/DevelopersModal.vue";
 
 const showModal = ref<Boolean>(false);
 
@@ -65,41 +43,36 @@ const toggleModal = () => {
   showModal.value = !showModal.value;
 };
 
-watch(
-  [
-    aboutUsTitle,
-    aboutUsContent,
-    ourMissionTitle,
-    ourMissionContent,
-    ourVisionTitle,
-    ourVisionContent,
-    whyChabacanoTitle,
-    whyChabacanoContent,
-  ],
-  ([
-    newAboutUs,
-    newAboutUsContent,
-    newOurMissionTitle,
-    newOurMissionContent,
-    newOurVisionTitle,
-    newOurVisionContent,
-    newWhyChabacanoTitle,
-    newWhyChabacanoContent,
-  ]) => {
-    aboutUsTitle = newAboutUs;
-    aboutUsContent = newAboutUsContent;
-    ourMissionTitle = newOurMissionTitle;
-    ourMissionContent = newOurMissionContent;
-    ourVisionTitle = newOurVisionTitle;
-    ourVisionContent = newOurVisionContent;
-    whyChabacanoTitle = newWhyChabacanoTitle;
-    whyChabacanoContent = newWhyChabacanoContent;
+const heroTitle = ref<string>("");
+const heroContent = ref<string>("");
+const aboutUsTitle = ref<string>("");
+const aboutUsContent = ref<string>("");
+const ourMissionTitle = ref<string>("");
+const ourMissionContent = ref<string>("");
+const ourVisionTitle = ref<string>("");
+const ourVisionContent = ref<string>("");
+
+onMounted(async () => {
+  const response = await RequestToGetHomepageContent();
+
+  if (response.status === "failed") {
+    console.log("Error fetching homepage content");
+    return;
   }
-);
+
+  heroTitle.value = response.data.heroTitle;
+  heroContent.value = response.data.heroContent;
+  aboutUsTitle.value = response.data.aboutUsTitle;
+  aboutUsContent.value = response.data.aboutUsContent;
+  ourMissionTitle.value = response.data.ourMissionTitle;
+  ourMissionContent.value = response.data.ourMissionContent;
+  ourVisionTitle.value = response.data.ourVisionTitle;
+  ourVisionContent.value = response.data.ourVisionContent;
+});
 </script>
 
 <style scoped>
-@import "../../styles/variables.css";
+@import "../styles/variables.css";
 
 .about-us {
   position: relative;
