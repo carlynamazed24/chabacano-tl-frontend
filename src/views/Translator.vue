@@ -77,13 +77,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from "vue";
+import { ref, onBeforeUnmount, onMounted } from "vue";
 import { RequestToTranslateText } from "../composables/API/Translation";
 import { displayErrorNotification } from "../composables/services/notifications";
 import SwitchIcon from "../components/icons/SwitchIcon.vue";
 import MicIcon from "../components/icons/MicIcon.vue";
 import SpeakerIcon from "../components/icons/SpeakerIcon.vue";
 import CopyIcon from "../components/icons/CopyIcon.vue";
+
+// Define ResponsiveVoice interface
+declare global {
+  interface Window {
+    responsiveVoice?: {
+      speak: (text: string, voice: string, options?: object) => void;
+      cancel: () => void;
+      isPlaying: () => boolean;
+      getVoices: () => string[];
+    };
+    SpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
+    webkitSpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
+  }
+}
 
 interface SpeechRecognitionErrorEvent extends Event {
   error: string;
@@ -116,17 +134,6 @@ interface SpeechRecognition extends EventTarget {
   stop(): void;
 }
 
-declare global {
-  interface Window {
-    SpeechRecognition?: {
-      new (): SpeechRecognition;
-    };
-    webkitSpeechRecognition?: {
-      new (): SpeechRecognition;
-    };
-  }
-}
-
 // Array of supported languages
 const languages = ["Chabacano", "Tagalog", "English"];
 
@@ -137,6 +144,21 @@ const textInput = ref("");
 const translatedText = ref("");
 const isRecording = ref(false);
 const debounceTimeout = ref<number | null>(null);
+const isSpeaking = ref(false);
+
+// Map languages to ResponsiveVoice voices
+const getVoiceForLanguage = (lang: string) => {
+  switch (lang) {
+    case "Chabacano":
+      return "Spanish Latin American Female";
+    case "Tagalog":
+      return "Filipino Female";
+    case "English":
+      return "UK English Female";
+    default:
+      return "UK English Female";
+  }
+};
 
 let recognition: SpeechRecognition;
 
@@ -227,10 +249,51 @@ const stopRecording = () => {
   isRecording.value = false;
 };
 
-// Speak functions (using browser's SpeechSynthesis API)
+// Speak text using ResponsiveVoice
 const speakText = (text: string, lang: string) => {
   if (!text) return;
 
+  if (!window.responsiveVoice) {
+    alert(
+      "ResponsiveVoice is not loaded. Please check your API key and connection."
+    );
+    // Fall back to native speech synthesis
+    speakTextFallback(text, lang);
+    return;
+  }
+
+  try {
+    // Cancel any ongoing speech
+    if (window.responsiveVoice.isPlaying()) {
+      window.responsiveVoice.cancel();
+    }
+
+    const voice = getVoiceForLanguage(lang);
+    window.responsiveVoice.speak(text, voice, {
+      pitch: 1,
+      rate: 1,
+      volume: 1,
+      onstart: () => {
+        isSpeaking.value = true;
+      },
+      onend: () => {
+        isSpeaking.value = false;
+      },
+      onerror: (error: any) => {
+        console.error("ResponsiveVoice error:", error);
+        isSpeaking.value = false;
+      },
+    });
+  } catch (error) {
+    console.error("ResponsiveVoice error:", error);
+    displayErrorNotification("Text-to-speech failed");
+    // Try fallback
+    speakTextFallback(text, lang);
+  }
+};
+
+// Fallback to native SpeechSynthesis if ResponsiveVoice fails
+const speakTextFallback = (text: string, lang: string) => {
   if (!window.speechSynthesis) {
     alert("Text-to-speech is not supported in this browser.");
     return;
@@ -238,7 +301,15 @@ const speakText = (text: string, lang: string) => {
 
   try {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === "Tagalog" ? "fil-PH" : "en-US";
+
+    if (lang === "Tagalog") {
+      utterance.lang = "fil-PH";
+    } else if (lang === "Chabacano") {
+      utterance.lang = "es-ES";
+    } else {
+      utterance.lang = "en-US";
+    }
+
     window.speechSynthesis.speak(utterance);
   } catch (error) {
     console.error("Speech synthesis error:", error);
@@ -321,8 +392,32 @@ const copyTargetText = async () => {
   await navigator.clipboard.writeText(translatedText.value);
 };
 
+// Stop any ongoing speech when component is unmounted
+const stopSpeech = () => {
+  if (window.responsiveVoice && window.responsiveVoice.isPlaying()) {
+    window.responsiveVoice.cancel();
+  } else if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+};
+
+onMounted(() => {
+  // Check if ResponsiveVoice is available
+  if (!window.responsiveVoice) {
+    console.warn(
+      "ResponsiveVoice is not available. Make sure to include the script in your HTML."
+    );
+  } else {
+    console.log(
+      "ResponsiveVoice available voices:",
+      window.responsiveVoice.getVoices()
+    );
+  }
+});
+
 onBeforeUnmount(() => {
   stopRecording();
+  stopSpeech();
 });
 </script>
 
