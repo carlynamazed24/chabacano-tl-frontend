@@ -9,6 +9,17 @@
       </p>
     </div>
 
+    <!-- Search Input -->
+    <div class="search-container">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Search in Chabacano, Tagalog, or English..."
+        class="search-input"
+        @input="filterEntries"
+      />
+    </div>
+
     <!-- Alphabet Navigation -->
     <div class="nav">
       <span
@@ -63,6 +74,7 @@ const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const dictionaryEntries = ref<DictionaryEntry[]>([]);
 const filteredEntries = ref<DictionaryEntry[]>([]);
 const selectedLetter = ref("");
+const searchQuery = ref("");
 const loading = ref(false);
 
 // Fetch dictionary data
@@ -82,9 +94,37 @@ const fetchDictionary = async () => {
 // Filter by first letter
 const filterByLetter = (letter: string) => {
   selectedLetter.value = letter;
-  filteredEntries.value = dictionaryEntries.value.filter((entry) => {
-    return entry.chabacanoLang.charAt(0).toLowerCase() === letter.toLowerCase();
-  });
+  filterEntries();
+};
+
+// Filter entries based on search query and selected letter
+const filterEntries = () => {
+  let filtered = [...dictionaryEntries.value];
+
+  // Apply letter filter if selected
+  if (selectedLetter.value) {
+    filtered = filtered.filter((entry) => {
+      return (
+        entry.chabacanoLang.charAt(0).toLowerCase() ===
+        selectedLetter.value.toLowerCase()
+      );
+    });
+  }
+
+  // Apply search query filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((entry) => {
+      return (
+        entry.chabacanoLang.toLowerCase().includes(query) ||
+        entry.tagalogLang.toLowerCase().includes(query) ||
+        entry.englishLang.toLowerCase().includes(query) ||
+        entry.definition.toLowerCase().includes(query)
+      );
+    });
+  }
+
+  filteredEntries.value = filtered;
 };
 
 // Fetch on mount
@@ -141,5 +181,23 @@ onMounted(fetchDictionary);
   flex-direction: column;
   gap: 1em;
   margin-top: 1em;
+}
+
+.search-container {
+  margin: 1em 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.8em;
+  border: 1px solid var(--accent-3-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
 }
 </style>
