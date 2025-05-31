@@ -1,80 +1,22 @@
-:root {
-  /* Color Palettes */
-  --light-color: #efe8dc;
-  --white-color: #f7f7f7;
-  --dark-color: #4a4a4a;
-  --primary-color: #8e7d6b;
-  --secondary-color: #bda588;
-  --accent-1-color: #d4b59e;
-  --accent-2-color: #f4e3cf;
-  --accent-3-color: #b2b2b2;
+/* This file now imports all token files for backward compatibility */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/animations.css";
+@import "./tokens/breakpoints.css";
 
-  /* Overlay Color */
-  --overlay-color: #4a4a4a65;
+/*
+ * DEPRECATED: This file is maintained for backward compatibility only.
+ * For new components, please import the specific token files directly:
+ * 
+ * @import "../styles/tokens/colors.css";
+ * @import "../styles/tokens/typography.css";
+ * @import "../styles/tokens/spacing.css";
+ * @import "../styles/tokens/animations.css";
+ * @import "../styles/tokens/breakpoints.css";
+ */
 
-  /* Font Sizes */
-  --fs-heading-1: 5.6rem;
-  --fs-heading-2: 4.2rem;
-  --fs-heading-3: 3.2rem;
-  --fs-heading-4: 2.4rem;
-  --fs-heading-5: 1.8rem;
-  --fs-heading-6: 1.3rem;
-
-  --fs-body-text: 1rem;
-  --fs-small-text: 0.8rem;
-  --fs-xsmall-text: 0.6rem;
-
-  /* Font Weights */
-  --fw-light: 300;
-  --fw-normal: 400;
-  --fw-semibold: 600;
-  --fw-bold: 700;
-  --fw-extra-bold: 900;
-}
-
-@media (max-width: 1024px) {
-  :root {
-    --fs-heading-1: 4.8rem;
-    --fs-heading-2: 3.6rem;
-    --fs-heading-3: 2.8rem;
-    --fs-heading-4: 2.2rem;
-    --fs-heading-5: 1.6rem;
-    --fs-heading-6: 1.2rem;
-
-    --fs-body-text: 0.95rem;
-    --fs-small-text: 0.75rem;
-    --fs-xsmall-text: 0.6rem;
-  }
-}
-
-/* Small Devices (Large Phones: 481px - 767px) */
-@media (max-width: 768px) {
-  :root {
-    --fs-heading-1: 4.2rem;
-    --fs-heading-2: 3.2rem;
-    --fs-heading-3: 2.4rem;
-    --fs-heading-4: 2rem;
-    --fs-heading-5: 1.5rem;
-    --fs-heading-6: 1.1rem;
-
-    --fs-body-text: 0.9rem;
-    --fs-small-text: 0.7rem;
-    --fs-xsmall-text: 0.6rem;
-  }
-}
-
-/* Extra Small Devices (Small Phones: 320px - 480px) */
-@media (max-width: 480px) {
-  :root {
-    --fs-heading-1: 3.6rem;
-    --fs-heading-2: 2.8rem;
-    --fs-heading-3: 2rem;
-    --fs-heading-4: 1.8rem;
-    --fs-heading-5: 1.3rem;
-    --fs-heading-6: 1rem;
-
-    --fs-body-text: 0.85rem;
-    --fs-small-text: 0.7rem;
-    --fs-xsmall-text: 0.6rem;
-  }
-}
+/* 
+ * Note: Responsive typography is now handled by the tokens/typography.css file
+ * which uses fluid typography with clamp() functions instead of media queries.
+ */

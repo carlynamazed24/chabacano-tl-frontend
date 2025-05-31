@@ -1,0 +1,32 @@
+:root {
+  /* Device Breakpoint Values */
+  --breakpoint-xs: 480px;   /* Extra small devices (phones) */
+  --breakpoint-sm: 768px;   /* Small devices (tablets) */
+  --breakpoint-md: 1024px;  /* Medium devices (laptops) */
+  --breakpoint-lg: 1280px;  /* Large devices (desktops) */
+  --breakpoint-xl: 1536px;  /* Extra large devices (large desktops) */
+}
+
+/* These breakpoints are used in the following pattern:
+   
+   Mobile-first approach:
+   
+   // Base styles (mobile)
+   .component {
+     // Mobile styles
+   }
+   
+   // Tablet and up
+   @media (min-width: 768px) {
+     .component {
+       // Tablet styles
+     }
+   }
+   
+   // Desktop and up
+   @media (min-width: 1024px) {
+     .component {
+       // Desktop styles
+     }
+   }
+*/

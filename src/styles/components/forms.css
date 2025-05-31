@@ -1,0 +1,164 @@
+/* Enhanced Form Styles */
+
+/* Base Input Styles */
+.input-base {
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-text);
+  color: var(--dark-color);
+  background-color: transparent;
+  border: 1px solid var(--accent-1-color);
+  border-radius: var(--border-radius-sm);
+  transition: 
+    border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+/* Input States */
+.input-base:hover {
+  border-color: var(--primary-color);
+}
+
+.input-base:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.input-base:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--accent-2-color);
+}
+
+.input-base::placeholder {
+  color: var(--accent-3-color);
+}
+
+/* Form Controls */
+.ct-input {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-text);
+  color: var(--dark-color);
+  background-color: transparent;
+  border: 1px solid var(--accent-1-color);
+  border-radius: var(--border-radius-sm);
+  transition: 
+    border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.ct-input:hover {
+  border-color: var(--primary-color);
+}
+
+.ct-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+/* Textarea */
+.ct-textarea {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-text);
+  color: var(--dark-color);
+  background-color: transparent;
+  border: 1px solid var(--accent-1-color);
+  border-radius: var(--border-radius-sm);
+  resize: vertical;
+  min-height: 100px;
+  transition: 
+    border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.ct-textarea:hover {
+  border-color: var(--primary-color);
+}
+
+.ct-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+/* Translator Text Areas */
+.translator > .col > .input-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: var(--spacing-md);
+  height: 100%;
+  border: 1px solid var(--light-color);
+  border-radius: var(--border-radius-sm);
+  transition: 
+    transform var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.translator > .col > .input-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.translator > .col > .input-container.disabled {
+  background-color: rgba(189, 165, 136, 0.8);
+}
+
+.translator > .col > .input-container > textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: 0;
+  border: 0;
+  color: var(--light-color);
+  padding: var(--spacing-lg);
+  resize: none;
+  overflow-y: auto;
+  font-family: inherit;
+  font-size: 1.5rem !important;
+  transition: background-color var(--transition-normal) var(--ease-out);
+}
+
+/* Form Layout */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-body-semibold);
+  font-size: var(--fs-small-text);
+  color: var(--dark-color);
+}
+
+/* Form Validation */
+.input-base.error {
+  border-color: #FF6B6B;
+}
+
+.error-message {
+  margin-top: var(--spacing-xs);
+  font-size: var(--fs-small-text);
+  color: #FF6B6B;
+}
+
+/* Form Responsive */
+@media (max-width: 768px) {
+  .ct-input,
+  .ct-textarea {
+    padding: var(--spacing-sm);
+  }
+}

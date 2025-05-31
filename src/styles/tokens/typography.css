@@ -1,0 +1,37 @@
+:root {
+  /* Fluid typography base */
+  --fs-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  
+  /* Font Sizes using fluid typography */
+  --fs-heading-1: clamp(3.6rem, 2.5rem + 3vw, 5.6rem);
+  --fs-heading-2: clamp(2.8rem, 2rem + 2.5vw, 4.2rem);
+  --fs-heading-3: clamp(2rem, 1.5rem + 2vw, 3.2rem);
+  --fs-heading-4: clamp(1.8rem, 1.4rem + 1.5vw, 2.4rem);
+  --fs-heading-5: clamp(1.3rem, 1.1rem + 1vw, 1.8rem);
+  --fs-heading-6: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
+
+  --fs-body-text: clamp(0.85rem, 0.8rem + 0.25vw, 1rem);
+  --fs-small-text: clamp(0.7rem, 0.65rem + 0.15vw, 0.8rem);
+  --fs-xsmall-text: 0.6rem;
+
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extra-bold: 900;
+  
+  /* Line Heights */
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.8;
+  
+  /* Font Families - referencing existing fonts */
+  --font-heading: "Play Fair Display Regular", serif;
+  --font-heading-bold: "Play Fair Display Bold", serif;
+  --font-body: "Raleway Regular", sans-serif;
+  --font-body-bold: "Raleway Bold", sans-serif;
+  --font-body-semibold: "Raleway Semibold", sans-serif;
+}
+
+/* Legacy compatibility - fallbacks removed as we're using fluid typography */

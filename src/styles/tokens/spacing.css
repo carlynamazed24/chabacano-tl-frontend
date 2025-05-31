@@ -1,0 +1,31 @@
+:root {
+  /* Base spacing unit */
+  --spacing-unit: 0.25rem;
+  
+  /* Spacing scale */
+  --spacing-xs: calc(var(--spacing-unit) * 1);    /* 0.25rem */
+  --spacing-sm: calc(var(--spacing-unit) * 2);    /* 0.5rem */
+  --spacing-md: calc(var(--spacing-unit) * 4);    /* 1rem */
+  --spacing-lg: calc(var(--spacing-unit) * 6);    /* 1.5rem */
+  --spacing-xl: calc(var(--spacing-unit) * 8);    /* 2rem */
+  --spacing-2xl: calc(var(--spacing-unit) * 12);  /* 3rem */
+  --spacing-3xl: calc(var(--spacing-unit) * 16);  /* 4rem */
+  --spacing-4xl: calc(var(--spacing-unit) * 20);  /* 5rem */
+  
+  /* Layout spacing */
+  --container-padding: clamp(1rem, 5vw, 3rem);
+  --section-spacing: clamp(2rem, 8vw, 6rem);
+  --grid-gap: var(--spacing-md);
+  
+  /* Component spacing */
+  --component-padding: var(--spacing-md);
+  --component-gap: var(--spacing-sm);
+  --button-padding-x: var(--spacing-lg);
+  --button-padding-y: var(--spacing-md);
+  
+  /* Border radius */
+  --border-radius-sm: 0.125rem;
+  --border-radius-md: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-pill: 9999px;
+}

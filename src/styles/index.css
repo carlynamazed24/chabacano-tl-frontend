@@ -1,17 +1,23 @@
-@import "./variables.css";
+/* Design Tokens */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/animations.css";
+@import "./tokens/breakpoints.css";
+
+/* Base Styles */
 @import "./fonts.css";
 @import "./resets.css";
+
+/* Global Components & Utilities */
 @import "./globals.css";
 
-/* @import "./components/NavigationBar.css";
+/* Component Styles */
+@import "./components/buttons.css";
+@import "./components/forms.css";
 
-@import "./sections/HeroSection.css";
-@import "./sections//AboutUsSection.css";
-@import "./sections/CTASection.css";
-@import "./sections/FooterSection.css";
+/* Layout Styles */
+@import "./layouts/grid.css";
 
-@import "./views/translator.css";
-@import "./views/dictionary.css";
-@import "./views/login.css";
-@import "./views/story.css";
-@import "./views/admin/index.css"; */
+/* We're keeping the variables.css import for backward compatibility */
+@import "./variables.css";

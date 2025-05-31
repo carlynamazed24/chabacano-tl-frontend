@@ -1,21 +1,25 @@
 <template>
-  <section class="hero section-bg">
-    <div class="hero-title">
-      <h1 class="fs-heading-1 text-light">{{ title }}</h1>
+  <section class="hero">
+    <div class="hero__background">
+      <div class="hero__overlay"></div>
     </div>
-    <div class="hero-tagline">
-      <p class="fs-body-text text-light">
-        {{ tagline }}
-      </p>
-    </div>
+    
+    <div class="hero__content">
+      <div class="hero__title fade-in">
+        <h1 class="fs-heading-1 text-light">{{ title }}</h1>
+      </div>
+      <div class="hero__tagline slide-up">
+        <p class="fs-body-text text-light">{{ tagline }}</p>
+      </div>
 
-    <div class="hero-action">
-      <Button
-        class="btn-primary"
-        :btnText="'Translate Now'"
-        :path="'translator'"
-        size="lg"
-      />
+      <div class="hero__action scale-in">
+        <Button
+          class="btn-primary hero__button"
+          :btnText="'Translate Now'"
+          :path="'translator'"
+          size="lg"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -38,62 +42,121 @@ watch([title, tagline], ([newTitle, newTagline]) => {
 </script>
 
 <style scoped>
-@import "../../styles/variables.css";
+@import "../../styles/tokens/colors.css";
+@import "../../styles/tokens/typography.css";
+@import "../../styles/tokens/spacing.css";
+@import "../../styles/tokens/animations.css";
+@import "../../styles/tokens/breakpoints.css";
 
-.hero > .hero-title,
-.hero > .hero-tagline,
-.hero > .hero-action {
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--light-color);
+}
+
+.hero__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../../assets/images/chabacano_translator_hero_bg.png') center center/cover no-repeat;
+  z-index: -2;
+}
+
+.hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(74, 74, 74, 0.6), rgba(142, 125, 107, 0.8));
+  z-index: -1;
+}
+
+.hero__content {
+  position: relative;
+  width: 90%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
   z-index: 2;
 }
 
-.hero > .hero-title > h1 {
-  font-size: 7rem;
+.hero__title {
+  margin-bottom: var(--spacing-xl);
 }
 
-.hero > .hero-tagline {
-  width: 60%;
-  text-align: center;
-  margin-block: 2em;
+.hero__title h1 {
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: var(--fw-bold);
+  line-height: var(--line-height-tight);
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
 }
 
-.hero > .hero-tagline > p {
-  font-size: 3rem;
+.hero__tagline {
+  width: 70%;
+  max-width: 800px;
+  margin-bottom: var(--spacing-2xl);
 }
 
-@media (max-width: 925px) {
-  .hero > .hero-title {
-    text-align: center;
-  }
-
-  .hero > .hero-tagline {
-    width: 50%;
-  }
+.hero__tagline p {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: var(--fw-light);
+  line-height: var(--line-height-normal);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.hero__action {
+  animation-delay: 0.5s;
+}
+
+.hero__button {
+  transform-origin: center;
+  transition: all var(--transition-normal) var(--ease-out);
+}
+
+.hero__button:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive styling */
 @media (max-width: 768px) {
-  .hero > .hero-title > h1 {
-    font-size: 4rem;
+  .hero {
+    min-height: 600px;
   }
-
-  .hero > .hero-tagline {
-    width: 75%;
+  
+  .hero__title {
+    margin-bottom: var(--spacing-lg);
   }
-
-  .hero > .hero-tagline > p {
-    font-size: 2rem;
+  
+  .hero__tagline {
+    width: 85%;
+    margin-bottom: var(--spacing-xl);
   }
 }
 
 @media screen and (max-width: 480px) {
-  .hero > .hero-title > h1 {
-    font-size: 3rem;
+  .hero {
+    min-height: 500px;
   }
-
-  .hero > .hero-tagline > p {
-    font-size: 1.5rem;
+  
+  .hero__content {
+    padding: var(--spacing-xl) var(--spacing-md);
   }
-  .hero > .hero-tagline {
-    width: 90%;
+  
+  .hero__tagline {
+    width: 100%;
   }
 }
 </style>
