@@ -9,34 +9,47 @@
         class="story-page__hero-image"
       />
       <div class="story-page__hero-overlay">
-        <h1 class="story-page__hero-title fs-heading-3 text-light slide-up">Chabacano Stories</h1>
+        <h1 class="story-page__hero-title fs-heading-3 text-light slide-up">
+          Chabacano Stories
+        </h1>
       </div>
     </div>
 
     <!-- Main Content -->
     <div class="story-page__container">
       <!-- Navigation Sidebar -->
-      <aside class="story-page__sidebar slide-in-left" :class="{ 'story-page__sidebar--sticky': isScrolled }">
+      <aside
+        class="story-page__sidebar slide-in-left"
+        :class="{ 'story-page__sidebar--sticky': isScrolled }"
+      >
         <div class="story-page__sidebar-content">
           <h2 class="story-page__sidebar-title">Contents</h2>
           <nav class="story-page__nav" aria-label="Table of contents">
             <ul class="story-page__nav-list">
-              <li 
-                v-for="(content, index) in storypageContents" 
+              <li
+                v-for="(content, index) in storypageContents"
                 :key="content.id"
                 class="story-page__nav-item"
-                :class="{ 'story-page__nav-item--active': activeSection === `section-${content.id}` }"
+                :class="{
+                  'story-page__nav-item--active':
+                    activeSection === `section-${content.id}`,
+                }"
               >
                 <a
                   :href="`#section-${content.id}`"
                   class="story-page__nav-link"
-                  :class="{ 'story-page__nav-link--active': activeSection === `section-${content.id}` }"
+                  :class="{
+                    'story-page__nav-link--active':
+                      activeSection === `section-${content.id}`,
+                  }"
                   @click.prevent="scrollToElement(`section-${content.id}`)"
                 >
                   <span class="story-page__nav-number">{{ index + 1 }}</span>
-                  <span class="story-page__nav-text">{{ content.headingTitle }}</span>
+                  <span class="story-page__nav-text">{{
+                    content.headingTitle
+                  }}</span>
                 </a>
-                
+
                 <!-- Sub-section links if they exist -->
                 <ul
                   v-if="content.subHeaders && content.subHeaders.length > 0"
@@ -46,13 +59,21 @@
                     v-for="subHeader in content.subHeaders"
                     :key="subHeader.id"
                     class="story-page__subnav-item"
-                    :class="{ 'story-page__subnav-item--active': activeSection === `subsection-${subHeader.id}` }"
+                    :class="{
+                      'story-page__subnav-item--active':
+                        activeSection === `subsection-${subHeader.id}`,
+                    }"
                   >
                     <a
                       :href="`#subsection-${subHeader.id}`"
                       class="story-page__subnav-link"
-                      :class="{ 'story-page__subnav-link--active': activeSection === `subsection-${subHeader.id}` }"
-                      @click.prevent="scrollToElement(`subsection-${subHeader.id}`)"
+                      :class="{
+                        'story-page__subnav-link--active':
+                          activeSection === `subsection-${subHeader.id}`,
+                      }"
+                      @click.prevent="
+                        scrollToElement(`subsection-${subHeader.id}`)
+                      "
                     >
                       {{ subHeader.subHeadingTitle }}
                     </a>
@@ -78,15 +99,21 @@
             v-for="(content, index) in storypageContents"
             :key="content.id"
             class="story-page__section"
-            :class="{ 
+            :class="{
               'story-page__section--highlight': index === 0,
-              'story-page__section--active': activeSection === `section-${content.id}`
+              'story-page__section--active':
+                activeSection === `section-${content.id}`,
             }"
             :id="`section-${content.id}`"
-            :ref="el => { if(el) sectionRefs[`section-${content.id}`] = el }"
+            :ref="el => { if(el) sectionRefs[`section-${content.id}`] = el as HTMLElement }"
           >
-            <h2 class="story-page__section-title">{{ content.headingTitle }}</h2>
-            <div class="story-page__section-content" v-html="content.headingContent"></div>
+            <h2 class="story-page__section-title">
+              {{ content.headingTitle }}
+            </h2>
+            <div
+              class="story-page__section-content"
+              v-html="content.headingContent"
+            ></div>
 
             <!-- Render sub-headers if they exist -->
             <div
@@ -97,9 +124,12 @@
                 v-for="subHeader in content.subHeaders"
                 :key="subHeader.id"
                 class="story-page__subsection"
-                :class="{ 'story-page__subsection--active': activeSection === `subsection-${subHeader.id}` }"
+                :class="{
+                  'story-page__subsection--active':
+                    activeSection === `subsection-${subHeader.id}`,
+                }"
                 :id="`subsection-${subHeader.id}`"
-                :ref="el => { if(el) sectionRefs[`subsection-${subHeader.id}`] = el }"
+                :ref="el => { if(el) sectionRefs[`subsection-${subHeader.id}`] = el as HTMLElement }"
               >
                 <h3 class="story-page__subsection-title">
                   {{ subHeader.subHeadingTitle }}
@@ -116,8 +146,8 @@
     </div>
 
     <!-- Mobile Navigation Toggle -->
-    <button 
-      class="story-page__mobile-nav-toggle" 
+    <button
+      class="story-page__mobile-nav-toggle"
       :class="{ 'story-page__mobile-nav-toggle--active': mobileNavOpen }"
       @click="toggleMobileNav"
       aria-label="Toggle table of contents"
@@ -130,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { RequestToGetStorypageContents } from "../composables/API/Storypage";
 import { type StorypageContent } from "../composables/interfaces/Component";
 
@@ -151,14 +181,14 @@ onMounted(async () => {
       storypageContents.value.sort(
         (a, b) => (a.sectionOrder ?? 0) - (b.sectionOrder ?? 0)
       );
-      
+
       // Initialize active section after DOM update
       setTimeout(() => {
         updateActiveSection();
         setupIntersectionObserver();
       }, 100);
     }
-    
+
     // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
   } catch (error) {
@@ -169,7 +199,7 @@ onMounted(async () => {
 onUnmounted(() => {
   // Clean up event listeners
   window.removeEventListener("scroll", handleScroll);
-  
+
   // Clean up intersection observer
   if (observer) {
     observer.disconnect();
@@ -180,7 +210,7 @@ onUnmounted(() => {
 const handleScroll = () => {
   // Update sticky header state
   isScrolled.value = window.scrollY > 100;
-  
+
   // Update active section based on scroll position
   updateActiveSection();
 };
@@ -191,20 +221,20 @@ let observer: IntersectionObserver | null = null;
 const setupIntersectionObserver = () => {
   const options = {
     root: null,
-    rootMargin: '-100px 0px -70% 0px',
-    threshold: 0
+    rootMargin: "-100px 0px -70% 0px",
+    threshold: 0,
   };
-  
+
   observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         activeSection.value = entry.target.id;
       }
     });
   }, options);
-  
+
   // Observe all sections and subsections
-  Object.values(sectionRefs.value).forEach(el => {
+  Object.values(sectionRefs.value).forEach((el) => {
     if (el) observer?.observe(el);
   });
 };
@@ -212,21 +242,23 @@ const setupIntersectionObserver = () => {
 // Update active section based on scroll position as a fallback
 const updateActiveSection = () => {
   if (Object.keys(sectionRefs.value).length === 0) return;
-  
+
   // Find the section closest to the top of the viewport
   const scrollPosition = window.scrollY + 150; // Offset for header
-  
+
   let currentSection = "";
   let minDistance = Infinity;
-  
+
   Object.entries(sectionRefs.value).forEach(([id, element]) => {
-    const distance = Math.abs(element.getBoundingClientRect().top + window.scrollY - scrollPosition);
+    const distance = Math.abs(
+      element.getBoundingClientRect().top + window.scrollY - scrollPosition
+    );
     if (distance < minDistance) {
       minDistance = distance;
       currentSection = id;
     }
   });
-  
+
   if (currentSection && currentSection !== activeSection.value) {
     activeSection.value = currentSection;
   }
@@ -241,7 +273,7 @@ const scrollToElement = (elementId: string) => {
     if (mobileNavOpen.value) {
       mobileNavOpen.value = false;
     }
-    
+
     const offset = 120;
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.scrollY - offset;
@@ -250,7 +282,7 @@ const scrollToElement = (elementId: string) => {
       top: offsetPosition,
       behavior: "smooth",
     });
-    
+
     // Update active section
     setTimeout(() => {
       activeSection.value = elementId;
@@ -261,12 +293,12 @@ const scrollToElement = (elementId: string) => {
 // Toggle mobile navigation
 const toggleMobileNav = () => {
   mobileNavOpen.value = !mobileNavOpen.value;
-  
+
   // Add body class to prevent scrolling when nav is open
   if (mobileNavOpen.value) {
-    document.body.classList.add('nav-open');
+    document.body.classList.add("nav-open");
   } else {
-    document.body.classList.remove('nav-open');
+    document.body.classList.remove("nav-open");
   }
 };
 </script>
@@ -278,14 +310,13 @@ const toggleMobileNav = () => {
 @import "../styles/tokens/animations.css";
 @import "../styles/tokens/breakpoints.css";
 
-
 /* Base Layout */
 .story-page {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   color: var(--dark-color);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: var(--fs-body-text);
   font-weight: var(--fw-normal);
   background-color: var(--white-color);
@@ -445,7 +476,7 @@ const toggleMobileNav = () => {
 }
 
 .story-page__section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -596,7 +627,7 @@ const toggleMobileNav = () => {
 }
 
 .story-page__subnav-item--active::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -1px;
   top: 0;
@@ -617,7 +648,7 @@ const toggleMobileNav = () => {
 }
 
 .story-page__subnav-link::before {
-  content: '\2022';
+  content: "\2022";
   position: absolute;
   left: -0.5rem;
   color: var(--accent-3-color);
@@ -677,7 +708,7 @@ const toggleMobileNav = () => {
 
 .story-page__mobile-nav-icon::before,
 .story-page__mobile-nav-icon::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   width: 100%;
@@ -721,24 +752,32 @@ const toggleMobileNav = () => {
 
 /* Animation Keyframes */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUpFade {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: translateY(20px);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Layout */
@@ -746,7 +785,7 @@ const toggleMobileNav = () => {
   .story-page__container {
     gap: 1.5rem;
   }
-  
+
   .story-page__sidebar {
     width: 250px;
   }
@@ -757,12 +796,12 @@ const toggleMobileNav = () => {
     height: 300px;
     margin-bottom: 1.5rem;
   }
-  
+
   .story-page__container {
     flex-direction: column;
     gap: 2rem;
   }
-  
+
   .story-page__sidebar {
     width: 100%;
     max-height: none;
@@ -770,30 +809,30 @@ const toggleMobileNav = () => {
     top: 0;
     order: 1;
   }
-  
+
   .story-page__sidebar--sticky {
     box-shadow: none;
   }
-  
+
   .story-page__nav-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  
+
   .story-page__nav-item {
     margin-bottom: 0.5rem;
     flex: 1 1 calc(50% - 0.5rem);
   }
-  
+
   .story-page__main {
     order: 2;
   }
-  
+
   .story-page__subnav-list {
     display: none;
   }
-  
+
   .story-page__nav-item--active .story-page__subnav-list {
     display: block;
   }
@@ -803,34 +842,34 @@ const toggleMobileNav = () => {
   .story-page {
     padding-bottom: 6rem;
   }
-  
+
   .story-page__hero {
     height: 240px;
     border-radius: 0;
   }
-  
+
   .story-page__hero-title {
     font-size: var(--fs-heading-4);
   }
-  
+
   .story-page__section-title {
     font-size: var(--fs-heading-5);
   }
-  
+
   .story-page__section-content,
   .story-page__subsection-content {
     font-size: var(--fs-small-text);
   }
-  
+
   .story-page__section {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
   }
-  
+
   .story-page__nav-item {
     flex: 1 1 100%;
   }
-  
+
   .story-page__sidebar {
     display: none;
     position: fixed;
@@ -843,14 +882,14 @@ const toggleMobileNav = () => {
     padding: 1rem;
     overflow-y: auto;
   }
-  
+
   .story-page__sidebar-content {
     max-height: 80vh;
     overflow-y: auto;
     margin-top: 15vh;
     animation: slideUpFade 0.3s ease-out;
   }
-  
+
   /* Show sidebar when mobile nav is open */
   body.nav-open .story-page__sidebar {
     display: block;
@@ -861,32 +900,32 @@ const toggleMobileNav = () => {
   .story-page {
     padding: 0;
   }
-  
+
   .story-page__container {
     padding: 0 0.5rem;
   }
-  
+
   .story-page__hero {
     height: 180px;
     margin-bottom: 1rem;
   }
-  
+
   .story-page__hero-overlay {
     padding: 1rem 0.5rem 0.5rem;
   }
-  
+
   .story-page__hero-title {
     font-size: var(--fs-heading-5);
   }
-  
+
   .story-page__section-title {
     font-size: var(--fs-heading-5);
   }
-  
+
   .story-page__subsection-title {
     font-size: var(--fs-body-text);
   }
-  
+
   .story-page__mobile-nav-toggle {
     bottom: 0.5rem;
     right: 0.5rem;

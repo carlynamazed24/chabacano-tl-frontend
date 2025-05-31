@@ -21,7 +21,17 @@
           aria-label="Search dictionary"
         />
         <div class="search-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -49,28 +59,41 @@
     <!-- Dictionary Results -->
     <div class="dictionary__contents slide-up" style="animation-delay: 0.4s">
       <h2 class="dictionary__results-heading fs-heading-6">
-        Results: <span class="dictionary__results-count">{{ filteredEntries.length }}</span>
+        Results:
+        <span class="dictionary__results-count">{{
+          filteredEntries.length
+        }}</span>
       </h2>
 
       <div v-if="loading" class="dictionary__loading">
         <div class="loading-spinner"></div>
         <span>Loading dictionary entries...</span>
       </div>
-      
+
       <div v-else class="dictionary__results">
         <div v-if="filteredEntries.length" class="dictionary__entries">
-          <div 
-            v-for="(entry, index) in filteredEntries" 
-            :key="entry.id" 
+          <div
+            v-for="(entry, index) in filteredEntries"
+            :key="entry.id"
             class="dictionary__entry"
-            :style="{ animationDelay: `${0.1 + (index * 0.05)}s` }"
+            :style="{ animationDelay: `${0.1 + index * 0.05}s` }"
           >
             <h3 class="dictionary__entry-title fs-body-text-semibold">
-              <span class="dictionary__entry-lang">{{ entry.chabacanoLang }}</span> / 
-              <span class="dictionary__entry-lang">{{ entry.tagalogLang }}</span> /
-              <span class="dictionary__entry-lang">{{ entry.englishLang }}</span>
+              <span class="dictionary__entry-lang">{{
+                entry.chabacanoLang
+              }}</span>
+              /
+              <span class="dictionary__entry-lang">{{
+                entry.tagalogLang
+              }}</span>
+              /
+              <span class="dictionary__entry-lang">{{
+                entry.englishLang
+              }}</span>
             </h3>
-            <p class="dictionary__entry-definition fs-body-text">{{ entry.definition }}</p>
+            <p class="dictionary__entry-definition fs-body-text">
+              {{ entry.definition }}
+            </p>
           </div>
         </div>
         <div v-else class="dictionary__no-results">
@@ -87,7 +110,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { RequestToGetDictionaryEntries } from "../composables/API/Dictionary";
-import Button from "../components/ui/Button.vue";
 
 interface DictionaryEntry {
   id: number;
@@ -392,20 +414,20 @@ onMounted(fetchDictionary);
     padding: var(--spacing-md) var(--spacing-md);
     margin-top: var(--spacing-xl);
   }
-  
+
   .dictionary__entries {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
-  
+
   .search-input {
     padding: var(--spacing-sm) var(--spacing-md);
   }
-  
+
   .nav {
     gap: 4px;
   }
-  
+
   .nav-item {
     padding: var(--spacing-xs) calc(var(--spacing-xs) + 2px);
     font-size: calc(var(--fs-small-text) * 1.1);
@@ -416,11 +438,11 @@ onMounted(fetchDictionary);
   .dictionary {
     padding: var(--spacing-sm);
   }
-  
+
   .dictionary__heading {
     padding: var(--spacing-md) 0;
   }
-  
+
   .dictionary__entry {
     padding: var(--spacing-sm);
   }
