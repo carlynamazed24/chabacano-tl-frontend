@@ -3,7 +3,7 @@
     <div class="col">
       <div class="img-container">
         <img
-          src="../../assets/images/chabacano_translator_v2.png"
+          src="../../assets/images/chabacano_logo.png"
           alt="Chabacano Logo V2"
         />
       </div>
@@ -84,7 +84,7 @@ const logout = async () => {
 }
 
 .sidebar > .col > .img-container > img {
-  width: 200px;
+  width: 150px;
 }
 
 .sidebar > .col > .nav-list {

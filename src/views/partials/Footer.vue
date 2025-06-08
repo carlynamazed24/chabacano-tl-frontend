@@ -89,7 +89,7 @@
 }
 
 .footer > .footer-nav > .footer-logo > a > img {
-  width: 300px;
+  width: 80px;
 }
 
 .footer > .footer-nav > .nav-container > .nav-lists {

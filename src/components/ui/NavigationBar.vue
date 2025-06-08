@@ -11,7 +11,11 @@
     </div>
     <nav class="nav-container" aria-label="Main navigation">
       <ul class="nav-lists">
-        <li class="nav-item" v-for="(link, index) in navLinks" :key="`nav-link-${index}`">
+        <li
+          class="nav-item"
+          v-for="(link, index) in navLinks"
+          :key="`nav-link-${index}`"
+        >
           <router-link
             class="nav-link fs-body-text-semibold text-light"
             :to="{ name: link.route }"
@@ -31,8 +35,8 @@
       />
     </div>
     <div class="nav-hamburger">
-      <Button 
-        @click="isMobileNavOpen = !isMobileNavOpen" 
+      <Button
+        @click="isMobileNavOpen = !isMobileNavOpen"
         size="sm"
         :aria-expanded="isMobileNavOpen"
         aria-controls="mobile-menu"
@@ -64,10 +68,10 @@ const route: RouteLocationNormalizedLoadedGeneric = useRoute();
 
 // Navigation links
 const navLinks = [
-  { text: 'Home', route: 'home' },
-  { text: 'About Us', route: 'about-us' },
-  { text: 'Story', route: 'story' },
-  { text: 'Dictionary', route: 'dictionary' }
+  { text: "Home", route: "home" },
+  { text: "About Us", route: "about-us" },
+  { text: "Story", route: "story" },
+  { text: "Dictionary", route: "dictionary" },
 ];
 
 // Close mobile nav when route changes
@@ -83,7 +87,7 @@ watch(isMobileNavOpen, (newValue) => {
 
 // Add scroll effect to navbar
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener("scroll", handleScroll);
 });
 
 function handleScroll() {
@@ -110,8 +114,8 @@ function handleScroll() {
   color: var(--light-color);
   z-index: 1000;
   transition: padding var(--transition-normal) var(--ease-out),
-              box-shadow var(--transition-normal) var(--ease-out),
-              background-color var(--transition-normal) var(--ease-out);
+    box-shadow var(--transition-normal) var(--ease-out),
+    background-color var(--transition-normal) var(--ease-out);
 }
 
 /* Scrolled header state */
@@ -128,12 +132,12 @@ function handleScroll() {
 }
 
 .header-logo__image {
-  width: 280px;
+  width: 110px;
   transition: width var(--transition-normal) var(--ease-out);
 }
 
 .header--scrolled .header-logo__image {
-  width: 240px;
+  width: 80px;
 }
 
 /* Navigation container */
@@ -164,7 +168,7 @@ function handleScroll() {
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   left: 0;
@@ -203,19 +207,19 @@ function handleScroll() {
   .header {
     padding: var(--spacing-md) var(--spacing-lg);
   }
-  
+
   .header--scrolled {
     padding: var(--spacing-sm) var(--spacing-lg);
   }
-  
+
   .header-logo__image {
-    width: 240px;
+    width: 80px;
   }
-  
+
   .header--scrolled .header-logo__image {
-    width: 220px;
+    width: 70px;
   }
-  
+
   .nav-lists {
     gap: var(--spacing-lg);
   }
@@ -225,12 +229,12 @@ function handleScroll() {
   .header {
     padding: var(--spacing-md) var(--spacing-md);
   }
-  
+
   .nav-container,
   .action-btn-nav {
     display: none;
   }
-  
+
   .nav-hamburger {
     display: block;
   }
@@ -254,13 +258,13 @@ function handleScroll() {
   .header {
     padding: var(--spacing-sm) var(--spacing-md);
   }
-  
+
   .header-logo__image {
-    width: 200px;
+    width: 50px;
   }
-  
+
   .header--scrolled .header-logo__image {
-    width: 180px;
+    width: 40px;
   }
 }
 </style>
