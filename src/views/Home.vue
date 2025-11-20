@@ -4,11 +4,13 @@
     <main class="main-content">
       <RouterView />
     </main>
+    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
 import NavigationBar from "../components/ui/NavigationBar.vue";
+import Footer from "../views/partials/Footer.vue";
 </script>
 
 <style scoped>
@@ -31,7 +33,7 @@ import NavigationBar from "../components/ui/NavigationBar.vue";
 .page-enter-active,
 .page-leave-active {
   transition: opacity var(--transition-normal) var(--ease-out),
-              transform var(--transition-normal) var(--ease-out);
+    transform var(--transition-normal) var(--ease-out);
 }
 
 .page-enter-from {

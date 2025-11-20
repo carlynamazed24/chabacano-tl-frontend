@@ -3,7 +3,7 @@
     <div class="header-logo fade-in">
       <router-link :to="{ name: 'home' }" aria-label="Go to home page">
         <img
-          src="../../assets/images/chabacano_logo.png"
+          src="../../assets/images/chabacano_logo_white.png"
           alt="Chabacano Translator Logo"
           class="header-logo__image"
         />
@@ -137,7 +137,7 @@ function handleScroll() {
 }
 
 .header--scrolled .header-logo__image {
-  width: 80px;
+  width: 150px;
 }
 
 /* Navigation container */

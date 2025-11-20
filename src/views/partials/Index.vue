@@ -1,15 +1,19 @@
 <template>
   <Hero :title="heroTitle" :tagline="heroContent" />
+  <FeaturesSection />
+  <HowItWorks />
+  <FAQSection />
   <CTA />
-  <Footer />
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { RequestToGetHomepageContent } from "../../composables/API/Homepage";
 import Hero from "./Hero.vue";
+import FeaturesSection from "../../components/ui/FeaturesSection.vue";
+import HowItWorks from "../../components/ui/HowItWorks.vue";
+import FAQSection from "../../components/ui/FAQSection.vue";
 import CTA from "./CTA.vue";
-import Footer from "./Footer.vue";
 
 const heroTitle = ref<string>("");
 const heroContent = ref<string>("");

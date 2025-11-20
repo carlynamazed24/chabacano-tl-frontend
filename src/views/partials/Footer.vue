@@ -4,7 +4,7 @@
       <div class="footer-logo">
         <router-link :to="{ name: 'home' }">
           <img
-            src="../../assets/images/chabacano_logo.png"
+            src="../../assets/images/chabacano_logo_white.png"
             alt="Chabacano Translator Logo"
           />
         </router-link>
