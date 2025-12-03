@@ -1,13 +1,18 @@
 <template>
   <div class="section-bg">
     <div class="translator fade-in">
-      <div class="col translator__panel" :class="{ 'translator__panel--active': isRecording }">
+      <div
+        class="col translator__panel"
+        :class="{ 'translator__panel--active': isRecording }"
+      >
         <nav class="translator-nav">
           <ul class="translator-nav__list">
             <li v-for="lang in languages" :key="`src-${lang}`">
               <button
                 class="translator-nav__btn fs-body-text text-light"
-                :class="{ 'translator-nav__btn--active': selectedSrcLang === lang }"
+                :class="{
+                  'translator-nav__btn--active': selectedSrcLang === lang,
+                }"
                 @click="handleSrcLanguageSelect(lang)"
               >
                 {{ lang }}
@@ -36,11 +41,19 @@
               />
               <span class="btn-highlight"></span>
             </button>
-            <button class="btn btn-primary translator__action-btn" @click="speakSourceText" aria-label="Speak source text">
+            <button
+              class="btn btn-primary translator__action-btn"
+              @click="speakSourceText"
+              aria-label="Speak source text"
+            >
               <SpeakerIcon :size="30" :color="'#EFE8DC'" />
               <span class="btn-highlight"></span>
             </button>
-            <button class="btn btn-primary translator__action-btn" @click="copySourceText" aria-label="Copy source text">
+            <button
+              class="btn btn-primary translator__action-btn"
+              @click="copySourceText"
+              aria-label="Copy source text"
+            >
               <CopyIcon :size="30" :color="'#EFE8DC'" />
               <span class="btn-highlight"></span>
             </button>
@@ -48,8 +61,17 @@
         </div>
       </div>
       <div class="col translator__switch-col">
-        <button class="translator__switch-btn" @click="switchLanguages" aria-label="Switch languages" title="Switch languages">
-          <SwitchIcon :size="35" :color="'#EFE8DC'" class="translator__switch-icon" />
+        <button
+          class="translator__switch-btn"
+          @click="switchLanguages"
+          aria-label="Switch languages"
+          title="Switch languages"
+        >
+          <SwitchIcon
+            :size="24"
+            :color="'#EFE8DC'"
+            class="translator__switch-icon"
+          />
         </button>
       </div>
       <div class="col translator__panel">
@@ -58,7 +80,9 @@
             <li v-for="lang in languages" :key="`target-${lang}`">
               <button
                 class="translator-nav__btn fs-body-text text-light"
-                :class="{ 'translator-nav__btn--active': selectedTargetLang === lang }"
+                :class="{
+                  'translator-nav__btn--active': selectedTargetLang === lang,
+                }"
                 @click="handleTargetLanguageSelect(lang)"
               >
                 {{ lang }}
@@ -67,13 +91,27 @@
           </ul>
         </nav>
         <div class="input-container disabled">
-          <textarea rows="3" class="translator__textarea" disabled v-model="translatedText" placeholder="Translation will appear here..."></textarea>
+          <textarea
+            rows="3"
+            class="translator__textarea"
+            disabled
+            v-model="translatedText"
+            placeholder="Translation will appear here..."
+          ></textarea>
           <div class="actions translator__actions">
-            <button class="btn btn-primary translator__action-btn" @click="speakTranslatedText" aria-label="Speak translated text">
+            <button
+              class="btn btn-primary translator__action-btn"
+              @click="speakTranslatedText"
+              aria-label="Speak translated text"
+            >
               <SpeakerIcon :size="30" :color="'#EFE8DC'" />
               <span class="btn-highlight"></span>
             </button>
-            <button class="btn btn-primary translator__action-btn" @click="copyTargetText" aria-label="Copy translated text">
+            <button
+              class="btn btn-primary translator__action-btn"
+              @click="copyTargetText"
+              aria-label="Copy translated text"
+            >
               <CopyIcon :size="30" :color="'#EFE8DC'" />
               <span class="btn-highlight"></span>
             </button>
@@ -466,7 +504,7 @@ onBeforeUnmount(() => {
   flex: 1;
   position: relative;
   transition: transform var(--transition-normal) var(--ease-out),
-              box-shadow var(--transition-normal) var(--ease-out);
+    box-shadow var(--transition-normal) var(--ease-out);
 }
 
 .translator__panel--active {
@@ -477,17 +515,21 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
+  width: 50px;
+  flex-shrink: 0;
 }
 
 .translator__switch-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--light-color);
   cursor: pointer;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs);
   border-radius: 50%;
   transition: background-color var(--transition-normal) var(--ease-out),
-              transform var(--transition-normal) var(--ease-out);
+    transform var(--transition-normal) var(--ease-out),
+    border-color var(--transition-normal) var(--ease-out);
+  pointer-events: auto;
+  z-index: 10;
 }
 
 .translator__switch-icon {
@@ -495,12 +537,18 @@ onBeforeUnmount(() => {
 }
 
 .translator__switch-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.25);
   transform: scale(1.1);
+  border-color: var(--accent-2-color);
 }
 
 .translator__switch-btn:hover .translator__switch-icon {
   transform: rotate(180deg);
+}
+
+.translator__switch-btn:active {
+  transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Navigation */
@@ -522,7 +570,7 @@ onBeforeUnmount(() => {
 }
 
 .translator-nav__btn::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -550,7 +598,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--light-color);
   border-radius: var(--border-radius-sm);
   transition: transform var(--transition-normal) var(--ease-out),
-              box-shadow var(--transition-normal) var(--ease-out);
+    box-shadow var(--transition-normal) var(--ease-out);
   overflow: hidden;
 }
 
@@ -629,7 +677,7 @@ onBeforeUnmount(() => {
     width: 90%;
     gap: 15px;
   }
-  
+
   .translator__textarea {
     padding: var(--spacing-sm);
   }
@@ -637,80 +685,121 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .section-bg {
-    padding: 60px 0;
-  }
-  
-  .translator {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-sm);
-    width: 90%;
+    padding: 80px var(--spacing-md) 40px;
+    min-height: auto;
   }
 
-  .translator > .col {
+  .translator {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
     width: 100%;
-    height: 250px;
+    min-height: auto;
+  }
+
+  .translator > .col.translator__panel {
+    width: 100%;
+    min-height: 220px;
+    height: auto;
   }
 
   .translator__switch-col {
     width: 100%;
     height: auto;
-    margin: var(--spacing-xs) 0;
+    padding: var(--spacing-sm) 0;
+    order: 1;
   }
-  
+
+  .translator__panel:first-child {
+    order: 0;
+  }
+
+  .translator__panel:last-child {
+    order: 2;
+  }
+
   .translator__switch-btn {
     transform: rotate(90deg);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.15);
   }
-  
-  .translator__switch-btn:hover {
+
+  .translator__switch-btn:hover,
+  .translator__switch-btn:active {
     transform: rotate(90deg) scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
   }
-  
+
+  .translator__switch-btn:active .translator__switch-icon,
   .translator__switch-btn:hover .translator__switch-icon {
     transform: rotate(180deg);
+  }
+
+  .translator-nav__list {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .input-container {
+    min-height: 150px;
+  }
+
+  .translator__textarea {
+    min-height: 100px;
   }
 }
 
 @media (max-width: 480px) {
   .section-bg {
-    padding: 50px 0;
+    padding: 70px var(--spacing-sm) 30px;
   }
-  
+
   .translator {
-    width: 95%;
-    gap: var(--spacing-xs);
+    width: 100%;
+    gap: 0;
   }
-  
-  .translator > .col {
-    height: 200px;
+
+  .translator > .col.translator__panel {
+    min-height: 180px;
   }
-  
+
   .translator-nav__list {
     gap: var(--spacing-xs);
+    justify-content: center;
   }
-  
+
   .translator-nav__btn {
-    padding: var(--spacing-xs) var(--spacing-xs);
+    padding: var(--spacing-xs);
     font-size: var(--fs-small-text);
   }
-  
+
   .translator__textarea {
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
+    padding: var(--spacing-sm);
+    min-height: 80px;
+  }
+
+  .translator__actions {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-xs);
+  }
+
+  .translator__action-btn {
+    padding: var(--spacing-xs);
+    margin: 0;
+  }
+
+  .translator__switch-col {
+    padding: var(--spacing-xs) 0;
+  }
+
+  .translator__switch-btn {
     padding: var(--spacing-sm);
   }
-  
-  .translator__actions {
-    padding: var(--spacing-2xs);
-  }
-  
-  .translator__action-btn {
-    padding: var(--spacing-2xs);
-    margin: 0 var(--spacing-2xs);
-  }
-  
-  .translator__switch-col {
-    margin: 5px 0;
+
+  .input-container {
+    min-height: 120px;
   }
 }
 </style>
