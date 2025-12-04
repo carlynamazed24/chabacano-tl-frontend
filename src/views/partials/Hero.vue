@@ -3,7 +3,7 @@
     <div class="hero__background">
       <div class="hero__overlay"></div>
     </div>
-    
+
     <div class="hero__content">
       <div class="hero__title fade-in">
         <h1 class="fs-heading-1 text-light">{{ title }}</h1>
@@ -65,7 +65,8 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../../assets/images/chabacano_translator_hero_bg.png') center center/cover no-repeat;
+  background: url("../../assets/images/chabacano_translator_hero_bg.png") center
+    center/cover no-repeat;
   z-index: -2;
 }
 
@@ -75,7 +76,7 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(74, 74, 74, 0.6), rgba(142, 125, 107, 0.8));
+  background: var(--gradient-hero);
   z-index: -1;
 }
 
@@ -135,11 +136,11 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   .hero {
     min-height: 600px;
   }
-  
+
   .hero__title {
     margin-bottom: var(--spacing-lg);
   }
-  
+
   .hero__tagline {
     width: 85%;
     margin-bottom: var(--spacing-xl);
@@ -150,11 +151,11 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   .hero {
     min-height: 500px;
   }
-  
+
   .hero__content {
     padding: var(--spacing-xl) var(--spacing-md);
   }
-  
+
   .hero__tagline {
     width: 100%;
   }

@@ -142,6 +142,144 @@
             </div>
           </section>
         </div>
+
+        <!-- Image Gallery Section -->
+        <section class="story-page__gallery" id="gallery-section">
+          <h2 class="story-page__section-title">Gallery</h2>
+          <p class="story-page__gallery-description">
+            Explore the rich visual heritage of Cavite and Chabacano culture
+            through these images.
+          </p>
+          <div class="story-page__gallery-grid">
+            <div class="story-page__gallery-item" v-for="n in 6" :key="n">
+              <div class="story-page__gallery-placeholder">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span>Image {{ n }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Activities in Cavite Section -->
+        <section class="story-page__activities" id="activities-section">
+          <h2 class="story-page__section-title">Things to Do in Cavite</h2>
+          <p class="story-page__activities-description">
+            Discover the best activities and attractions in Cavite, the historic
+            province where Chabacano culture thrives.
+          </p>
+          <div class="story-page__activities-grid">
+            <div
+              class="story-page__activity-card"
+              v-for="activity in caviteActivities"
+              :key="activity.id"
+            >
+              <div class="story-page__activity-image">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+              </div>
+              <div class="story-page__activity-content">
+                <span class="story-page__activity-category">{{
+                  activity.category
+                }}</span>
+                <h3 class="story-page__activity-title">{{ activity.title }}</h3>
+                <p class="story-page__activity-description">
+                  {{ activity.description }}
+                </p>
+                <span class="story-page__activity-location">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {{ activity.location }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- References & Sources Section -->
+        <section class="story-page__references" id="references-section">
+          <h2 class="story-page__section-title">References & Sources</h2>
+          <p class="story-page__references-description">
+            Learn more about Cavite and Chabacano from these trusted sources.
+          </p>
+          <div class="story-page__references-list">
+            <a
+              v-for="source in referenceSources"
+              :key="source.id"
+              :href="source.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="story-page__reference-card"
+            >
+              <div class="story-page__reference-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </div>
+              <div class="story-page__reference-content">
+                <h4 class="story-page__reference-title">{{ source.title }}</h4>
+                <p class="story-page__reference-description">
+                  {{ source.description }}
+                </p>
+                <span class="story-page__reference-url">{{
+                  source.displayUrl
+                }}</span>
+              </div>
+            </a>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -170,6 +308,102 @@ const isScrolled = ref(false);
 const activeSection = ref("");
 const mobileNavOpen = ref(false);
 const sectionRefs = ref<Record<string, HTMLElement>>({});
+
+// Cavite Activities Data
+const caviteActivities = ref([
+  {
+    id: 1,
+    category: "Historical Site",
+    title: "Aguinaldo Shrine",
+    description:
+      "The historic residence of General Emilio Aguinaldo where Philippine independence was declared.",
+    location: "Kawit, Cavite",
+  },
+  {
+    id: 2,
+    category: "Nature & Adventure",
+    title: "People's Park in the Sky",
+    description:
+      "A mountaintop park offering panoramic views of Tagaytay and Taal Lake.",
+    location: "Tagaytay City",
+  },
+  {
+    id: 3,
+    category: "Cultural Heritage",
+    title: "Baldomero Aguinaldo Shrine",
+    description:
+      "Museum dedicated to the revolutionary leader and cousin of Gen. Emilio Aguinaldo.",
+    location: "Kawit, Cavite",
+  },
+  {
+    id: 4,
+    category: "Religious Site",
+    title: "Immaculate Conception Cathedral",
+    description:
+      "A historic church built during the Spanish colonial era, showcasing baroque architecture.",
+    location: "Imus, Cavite",
+  },
+  {
+    id: 5,
+    category: "Nature & Scenery",
+    title: "Taal Vista & Lake",
+    description:
+      "Breathtaking views of the world's smallest active volcano within a lake.",
+    location: "Tagaytay City",
+  },
+  {
+    id: 6,
+    category: "Museum",
+    title: "Museo De La Salle",
+    description:
+      "Features artifacts and exhibits about Philippine history and natural science.",
+    location: "Dasmariñas, Cavite",
+  },
+]);
+
+// Reference Sources Data
+const referenceSources = ref([
+  {
+    id: 1,
+    title: "National Historical Commission of the Philippines",
+    description:
+      "Official government resource for Philippine historical landmarks and heritage sites.",
+    url: "https://nhcp.gov.ph/",
+    displayUrl: "nhcp.gov.ph",
+  },
+  {
+    id: 2,
+    title: "Cavite Provincial Government",
+    description:
+      "Official portal with information about Cavite's history, culture, and tourism.",
+    url: "https://cavite.gov.ph/",
+    displayUrl: "cavite.gov.ph",
+  },
+  {
+    id: 3,
+    title: "Department of Tourism - Region IV-A",
+    description:
+      "Tourism information and travel guides for CALABARZON region including Cavite.",
+    url: "https://www.tourism.gov.ph/",
+    displayUrl: "tourism.gov.ph",
+  },
+  {
+    id: 4,
+    title: "Encyclopedia of Philippine Heritage",
+    description:
+      "Comprehensive resource about Filipino languages including Chabacano.",
+    url: "https://example.com/placeholder",
+    displayUrl: "philippineheritage.ph",
+  },
+  {
+    id: 5,
+    title: "Komisyon sa Wikang Filipino",
+    description:
+      "The official government agency for Philippine languages and linguistics.",
+    url: "https://kwf.gov.ph/",
+    displayUrl: "kwf.gov.ph",
+  },
+]);
 
 // Fetch story content
 onMounted(async () => {
@@ -398,7 +632,7 @@ const toggleMobileNav = () => {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(142, 125, 107, 0.3);
+  border: 3px solid rgba(13, 148, 136, 0.3);
   border-top: 3px solid var(--primary-color);
   border-radius: 50%;
   margin-bottom: 1rem;
@@ -454,7 +688,7 @@ const toggleMobileNav = () => {
 }
 
 .story-page__section--highlight {
-  background-color: rgba(244, 227, 207, 0.3);
+  background-color: rgba(254, 243, 199, 0.3);
   border-radius: 0.5rem;
   padding: 1rem;
   margin-left: -1rem;
@@ -530,7 +764,7 @@ const toggleMobileNav = () => {
     background-color: transparent;
   }
   30% {
-    background-color: rgba(244, 227, 207, 0.5);
+    background-color: rgba(254, 243, 199, 0.5);
   }
   100% {
     background-color: transparent;
@@ -574,7 +808,7 @@ const toggleMobileNav = () => {
 .story-page__nav-link--active {
   color: var(--primary-color);
   border-left-color: var(--primary-color);
-  background-color: rgba(142, 125, 107, 0.1);
+  background-color: rgba(13, 148, 136, 0.1);
   font-weight: var(--fw-semibold);
 }
 
@@ -658,10 +892,228 @@ const toggleMobileNav = () => {
 .story-page__subnav-link:hover,
 .story-page__subnav-link:focus {
   color: var(--primary-color);
-  background-color: rgba(142, 125, 107, 0.05);
+  background-color: rgba(13, 148, 136, 0.05);
 }
 
 .story-page__subnav-link--active {
+  color: var(--primary-color);
+  font-weight: var(--fw-medium);
+}
+
+/* ===== Image Gallery Section ===== */
+.story-page__gallery {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--accent-2-color);
+}
+
+.story-page__gallery-description {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.story-page__gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.story-page__gallery-item {
+  aspect-ratio: 4/3;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.story-page__gallery-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.story-page__gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent-2-color) 0%, #e5e7eb 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--accent-3-color);
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+}
+
+.story-page__gallery-placeholder svg {
+  opacity: 0.5;
+}
+
+.story-page__gallery-placeholder span {
+  font-size: var(--fs-small-text);
+  font-weight: var(--fw-medium);
+}
+
+/* ===== Activities in Cavite Section ===== */
+.story-page__activities {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--accent-2-color);
+}
+
+.story-page__activities-description {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.story-page__activities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.story-page__activity-card {
+  background: var(--white-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--accent-2-color);
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.story-page__activity-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.story-page__activity-image {
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--accent-1-color) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0.9;
+}
+
+.story-page__activity-content {
+  padding: 1rem;
+}
+
+.story-page__activity-category {
+  display: inline-block;
+  background-color: var(--accent-2-color);
+  color: var(--primary-color);
+  font-size: 0.7rem;
+  font-weight: var(--fw-semibold);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.story-page__activity-title {
+  font-size: var(--fs-body-text);
+  font-weight: var(--fw-bold);
+  color: var(--dark-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.story-page__activity-description {
+  font-size: var(--fs-small-text);
+  color: var(--accent-3-color);
+  line-height: 1.5;
+  margin: 0 0 0.75rem 0;
+}
+
+.story-page__activity-location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  font-weight: var(--fw-medium);
+}
+
+/* ===== References & Sources Section ===== */
+.story-page__references {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--accent-2-color);
+}
+
+.story-page__references-description {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.story-page__references-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.story-page__reference-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--white-color);
+  border-radius: 0.75rem;
+  border: 1px solid var(--accent-2-color);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.story-page__reference-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(13, 148, 136, 0.1);
+  transform: translateX(4px);
+}
+
+.story-page__reference-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--accent-2-color) 0%, #e5e7eb 100%);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.story-page__reference-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.story-page__reference-title {
+  font-size: var(--fs-body-text);
+  font-weight: var(--fw-semibold);
+  color: var(--dark-color);
+  margin: 0 0 0.25rem 0;
+}
+
+.story-page__reference-description {
+  font-size: var(--fs-small-text);
+  color: var(--accent-3-color);
+  line-height: 1.5;
+  margin: 0 0 0.5rem 0;
+}
+
+.story-page__reference-url {
+  font-size: 0.75rem;
   color: var(--primary-color);
   font-weight: var(--fw-medium);
 }
@@ -870,6 +1322,20 @@ const toggleMobileNav = () => {
     flex: 1 1 100%;
   }
 
+  /* Gallery responsive */
+  .story-page__gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Activities responsive */
+  .story-page__activities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story-page__activity-image {
+    height: 100px;
+  }
+
   .story-page__sidebar {
     display: none;
     position: fixed;
@@ -930,6 +1396,36 @@ const toggleMobileNav = () => {
     bottom: 0.5rem;
     right: 0.5rem;
     padding: 0.25rem 0.5rem;
+  }
+
+  /* Gallery responsive - small screens */
+  .story-page__gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .story-page__gallery-item {
+    aspect-ratio: 16/9;
+  }
+
+  /* Activities responsive - small screens */
+  .story-page__activity-card {
+    border-radius: 0.75rem;
+  }
+
+  .story-page__activity-content {
+    padding: 0.75rem;
+  }
+
+  /* References responsive - small screens */
+  .story-page__reference-card {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .story-page__reference-icon {
+    width: 40px;
+    height: 40px;
   }
 }
 </style>

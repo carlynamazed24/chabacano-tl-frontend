@@ -23,14 +23,6 @@
           <li class="nav-item">
             <router-link
               class="nav-link fs-body-text-semibold text-light"
-              :to="{ name: 'about-us' }"
-            >
-              About Us
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link
-              class="nav-link fs-body-text-semibold text-light"
               :to="{ name: 'story' }"
             >
               Story

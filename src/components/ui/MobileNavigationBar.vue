@@ -2,7 +2,11 @@
   <div class="mobile-menu">
     <nav class="mobile-menu__nav" aria-label="Mobile navigation">
       <ul class="mobile-menu__list">
-        <li v-for="(link, index) in navLinks" :key="`mobile-nav-${index}`" class="mobile-menu__item">
+        <li
+          v-for="(link, index) in navLinks"
+          :key="`mobile-nav-${index}`"
+          class="mobile-menu__item"
+        >
           <router-link
             class="mobile-menu__link fs-heading-6 text-light"
             :to="{ name: link.route }"
@@ -26,17 +30,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, type RouteLocationNormalizedLoadedGeneric } from "vue-router";
+import {
+  useRoute,
+  type RouteLocationNormalizedLoadedGeneric,
+} from "vue-router";
 import Button from "./Button.vue";
 
 const route: RouteLocationNormalizedLoadedGeneric = useRoute();
 
 // Navigation links - same as main navigation
 const navLinks = [
-  { text: 'Home', route: 'home' },
-  { text: 'About Us', route: 'about-us' },
-  { text: 'Story', route: 'story' },
-  { text: 'Dictionary', route: 'dictionary' }
+  { text: "Home", route: "home" },
+  { text: "Story", route: "story" },
+  { text: "Dictionary", route: "dictionary" },
 ];
 </script>
 
@@ -86,11 +92,11 @@ const navLinks = [
   font-family: var(--font-heading);
   text-decoration: none;
   transition: transform var(--transition-normal) var(--ease-out),
-              color var(--transition-normal) var(--ease-out);
+    color var(--transition-normal) var(--ease-out);
 }
 
 .mobile-menu__link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   left: 0;
@@ -134,7 +140,7 @@ const navLinks = [
     gap: var(--spacing-xl);
     padding: var(--spacing-lg) var(--spacing-sm);
   }
-  
+
   .mobile-menu__list {
     gap: var(--spacing-lg);
   }

@@ -1,67 +1,80 @@
 /* Font Sizes */
 .fs-heading-1 {
   font-size: var(--fs-heading-1);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-heading-1-bold {
   font-size: var(--fs-heading-1);
-  font-family: "Play Fair Display Bold", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-heading-2 {
   font-size: var(--fs-heading-2);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-heading-3 {
   font-size: var(--fs-heading-3);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-heading-4 {
   font-size: var(--fs-heading-4);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-heading-5 {
   font-size: var(--fs-heading-5);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-semibold);
 }
 
 .fs-heading-6 {
   font-size: var(--fs-heading-6);
-  font-family: "Play Fair Display Regular", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-semibold);
 }
 
 .fs-heading-6-bold {
   font-size: var(--fs-heading-6);
-  font-family: "Play Fair Display Bold", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-body-text {
   font-size: var(--fs-body-text);
-  font-family: "Raleway Regular", serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-normal);
 }
 
 .fs-body-text-bold {
   font-size: var(--fs-body-text);
-  font-family: "Raleway Bold", serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-bold);
 }
 
 .fs-body-text-semibold {
   font-size: var(--fs-body-text);
-  font-family: "Raleway Semibold", serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-semibold);
 }
 
 .fs-small-text {
   font-size: var(--fs-small-text);
-  font-family: "Raleway Regular", serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-normal);
 }
 
 .fs-xsmall-text {
   font-size: var(--fs-xsmall-text);
-  font-family: "Raleway Regular", serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: var(--fw-normal);
 }
 
 /* Colors */

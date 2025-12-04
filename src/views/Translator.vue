@@ -1,121 +1,109 @@
 <template>
   <div class="section-bg">
     <div class="translator fade-in">
+      <!-- Source Panel -->
       <div
-        class="col translator__panel"
+        class="translator__panel"
         :class="{ 'translator__panel--active': isRecording }"
       >
-        <nav class="translator-nav">
-          <ul class="translator-nav__list">
-            <li v-for="lang in languages" :key="`src-${lang}`">
-              <button
-                class="translator-nav__btn fs-body-text text-light"
-                :class="{
-                  'translator-nav__btn--active': selectedSrcLang === lang,
-                }"
-                @click="handleSrcLanguageSelect(lang)"
-              >
-                {{ lang }}
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <div class="input-container">
+        <!-- Language Dropdown -->
+        <div class="translator__header">
+          <select
+            v-model="selectedSrcLang"
+            @change="handleSrcLanguageChange"
+            class="translator__select"
+          >
+            <option value="Chabacano">Chabacano</option>
+            <option value="Tagalog">Tagalog</option>
+            <option value="English">English</option>
+          </select>
+        </div>
+
+        <!-- Text Area -->
+        <div class="translator__body">
           <textarea
-            rows="3"
             class="translator__textarea"
             v-model="textInput"
             @input="translateText"
-            placeholder="Enter text to translate..."
+            placeholder="Isulat mo..."
           ></textarea>
-          <div class="actions translator__actions">
-            <button
-              class="btn btn-primary translator__action-btn"
-              @click="toggleMicrophone"
-              :class="{ 'mic-active': isRecording }"
-              aria-label="Record speech"
-            >
-              <MicIcon
-                :size="30"
-                :color="isRecording ? '#FF6B6B' : '#EFE8DC'"
-              />
-              <span class="btn-highlight"></span>
-            </button>
-            <button
-              class="btn btn-primary translator__action-btn"
-              @click="speakSourceText"
-              aria-label="Speak source text"
-            >
-              <SpeakerIcon :size="30" :color="'#EFE8DC'" />
-              <span class="btn-highlight"></span>
-            </button>
-            <button
-              class="btn btn-primary translator__action-btn"
-              @click="copySourceText"
-              aria-label="Copy source text"
-            >
-              <CopyIcon :size="30" :color="'#EFE8DC'" />
-              <span class="btn-highlight"></span>
-            </button>
-          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="translator__footer">
+          <button
+            class="translator__btn translator__btn--clear"
+            @click="clearInput"
+          >
+            <span class="btn-text">Clear</span>
+          </button>
         </div>
       </div>
-      <div class="col translator__switch-col">
+
+      <!-- Switch Button -->
+      <div class="translator__switch-col">
         <button
           class="translator__switch-btn"
           @click="switchLanguages"
+          type="button"
           aria-label="Switch languages"
           title="Switch languages"
         >
-          <SwitchIcon
-            :size="24"
-            :color="'#EFE8DC'"
-            class="translator__switch-icon"
-          />
+          <SwitchIcon :size="28" :color="'#1a1a1a'" />
         </button>
       </div>
-      <div class="col translator__panel">
-        <nav class="translator-nav">
-          <ul class="translator-nav__list">
-            <li v-for="lang in languages" :key="`target-${lang}`">
-              <button
-                class="translator-nav__btn fs-body-text text-light"
-                :class="{
-                  'translator-nav__btn--active': selectedTargetLang === lang,
-                }"
-                @click="handleTargetLanguageSelect(lang)"
-              >
-                {{ lang }}
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <div class="input-container disabled">
+
+      <!-- Target Panel -->
+      <div class="translator__panel translator__panel--target">
+        <!-- Language Dropdown -->
+        <div class="translator__header">
+          <select
+            v-model="selectedTargetLang"
+            @change="handleTargetLanguageChange"
+            class="translator__select"
+          >
+            <option value="Chabacano">Chabacano</option>
+            <option value="Tagalog">Tagalog</option>
+            <option value="English">English</option>
+          </select>
+        </div>
+
+        <!-- Text Area -->
+        <div class="translator__body">
           <textarea
-            rows="3"
             class="translator__textarea"
             disabled
             v-model="translatedText"
             placeholder="Translation will appear here..."
           ></textarea>
-          <div class="actions translator__actions">
+
+          <!-- Audio Icons -->
+          <div class="translator__audio-controls">
             <button
-              class="btn btn-primary translator__action-btn"
+              class="translator__audio-btn"
               @click="speakTranslatedText"
               aria-label="Speak translated text"
             >
-              <SpeakerIcon :size="30" :color="'#EFE8DC'" />
-              <span class="btn-highlight"></span>
+              <SpeakerIcon :size="20" :color="'#1a1a1a'" />
             </button>
             <button
-              class="btn btn-primary translator__action-btn"
+              class="translator__audio-btn"
               @click="copyTargetText"
               aria-label="Copy translated text"
             >
-              <CopyIcon :size="30" :color="'#EFE8DC'" />
-              <span class="btn-highlight"></span>
+              <CopyIcon :size="20" :color="'#1a1a1a'" />
             </button>
           </div>
+        </div>
+
+        <!-- Translate Button -->
+        <div class="translator__footer">
+          <button
+            class="translator__btn translator__btn--translate"
+            @click="translateText"
+          >
+            <span class="btn-text">Translate</span>
+          </button>
         </div>
       </div>
     </div>
@@ -126,10 +114,9 @@
 import { ref, onBeforeUnmount, onMounted } from "vue";
 import { RequestToTranslateText } from "../composables/API/Translation";
 import { displayErrorNotification } from "../composables/services/notifications";
-import SwitchIcon from "../components/icons/SwitchIcon.vue";
-import MicIcon from "../components/icons/MicIcon.vue";
 import SpeakerIcon from "../components/icons/SpeakerIcon.vue";
 import CopyIcon from "../components/icons/CopyIcon.vue";
+import SwitchIcon from "../components/icons/SwitchIcon.vue";
 
 // Define ResponsiveVoice interface
 declare global {
@@ -413,6 +400,24 @@ const handleTargetLanguageSelect = (lang: string) => {
   resetInput();
 };
 
+const handleSrcLanguageChange = () => {
+  if (selectedSrcLang.value === selectedTargetLang.value) {
+    // Swap to prevent same language on both sides
+    selectedTargetLang.value =
+      selectedSrcLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
+  }
+  translateText();
+};
+
+const handleTargetLanguageChange = () => {
+  if (selectedTargetLang.value === selectedSrcLang.value) {
+    // Swap to prevent same language on both sides
+    selectedSrcLang.value =
+      selectedTargetLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
+  }
+  translateText();
+};
+
 const switchLanguages = () => {
   const textInputTemp = textInput.value;
   textInput.value = translatedText.value;
@@ -426,6 +431,11 @@ const switchLanguages = () => {
 };
 
 const resetInput = () => {
+  textInput.value = "";
+  translatedText.value = "";
+};
+
+const clearInput = () => {
   textInput.value = "";
   translatedText.value = "";
 };
@@ -474,240 +484,245 @@ onBeforeUnmount(() => {
 @import "../styles/tokens/animations.css";
 @import "../styles/tokens/breakpoints.css";
 
+/* Background Section */
 .section-bg {
-  background-color: rgba(142, 125, 107, 0.9);
+  background: var(--overlay-color);
+  background-image: url("../assets/images/chabacano_translator_hero_bg.png");
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
   min-height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 80px 0;
-  overflow-x: hidden;
+  padding: 100px 20px;
 }
 
+/* Translator Container */
 .translator {
   display: flex;
-  justify-content: space-between;
-  width: 85%;
-  max-width: 1200px;
-  min-height: 380px;
   gap: 20px;
+  width: 100%;
+  max-width: 1100px;
+  align-items: center;
   animation: fadeIn var(--transition-slow) ease-out;
 }
 
-.col {
+/* Switch Button Column */
+.translator__switch-col {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 10;
 }
 
+.translator__switch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  position: relative;
+}
+
+.translator__switch-btn:hover {
+  background: #f5f5f5;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.translator__switch-btn:hover svg {
+  transform: rotate(180deg);
+}
+
+.translator__switch-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.translator__switch-btn:active {
+  transform: scale(0.95);
+}
+
+/* Panel Styles */
 .translator__panel {
   flex: 1;
-  position: relative;
-  transition: transform var(--transition-normal) var(--ease-out),
-    box-shadow var(--transition-normal) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border-radius: 12px;
 }
 
 .translator__panel--active {
   box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
 }
 
-.translator__switch-col {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  flex-shrink: 0;
-}
-
-.translator__switch-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--light-color);
-  cursor: pointer;
-  padding: var(--spacing-xs);
-  border-radius: 50%;
-  transition: background-color var(--transition-normal) var(--ease-out),
-    transform var(--transition-normal) var(--ease-out),
-    border-color var(--transition-normal) var(--ease-out);
-  pointer-events: auto;
-  z-index: 10;
-}
-
-.translator__switch-icon {
-  transition: transform var(--transition-slow) var(--ease-out);
-}
-
-.translator__switch-btn:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-  transform: scale(1.1);
-  border-color: var(--accent-2-color);
-}
-
-.translator__switch-btn:hover .translator__switch-icon {
-  transform: rotate(180deg);
-}
-
-.translator__switch-btn:active {
-  transform: scale(0.95);
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Navigation */
-.translator-nav__list {
-  display: flex;
-  gap: var(--spacing-md);
+/* Header with Dropdown */
+.translator__header {
   padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
-.translator-nav__btn {
+  margin-bottom: 12px;
   position: relative;
-  background: none;
+  z-index: 5;
+}
+
+.translator__select {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1a1a1a;
+  background-color: #ffffff;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  transition: color var(--transition-normal) var(--ease-out);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 5;
 }
 
-.translator-nav__btn::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--light-color);
-  transition: width var(--transition-normal) var(--ease-out);
+.translator__select option {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  padding: 12px;
 }
 
-.translator-nav__btn:hover::after {
-  width: 100%;
+.translator__select:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.translator-nav__btn--active::after {
-  width: 100%;
+.translator__select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
 }
 
-/* Input Containers */
-.input-container {
+/* Body - Textarea Container */
+.translator__body {
+  position: relative;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.98);
+  border-radius: 10px;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin-top: var(--spacing-md);
-  height: 100%;
-  border: 1px solid var(--light-color);
-  border-radius: var(--border-radius-sm);
-  transition: transform var(--transition-normal) var(--ease-out),
-    box-shadow var(--transition-normal) var(--ease-out);
-  overflow: hidden;
-}
-
-.input-container.disabled {
-  background-color: rgba(189, 165, 136, 0.8);
+  border: 2px solid rgba(0, 0, 0, 0.08);
 }
 
 .translator__textarea {
-  display: block;
+  flex: 1;
   width: 100%;
-  height: 100%;
-  background: transparent;
-  outline: 0;
-  border: 0;
-  color: var(--light-color);
-  padding: var(--spacing-md);
-  resize: none;
-  overflow-y: auto;
+  padding: 20px;
+  font-size: 1.15rem;
   font-family: inherit;
-  font-size: 1.1rem !important;
-  line-height: 1.6;
+  color: #1a1a1a;
+  background: transparent;
+  border: none;
+  resize: none;
+  outline: none;
+  line-height: 1.7;
 }
 
 .translator__textarea::placeholder {
-  color: rgba(239, 232, 220, 0.6);
+  color: #888;
+  font-size: 1.1rem;
 }
 
-/* Action Buttons */
-.translator__actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: var(--spacing-xs);
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.translator__action-btn {
-  position: relative;
-  padding: var(--spacing-xs);
-  margin: 0 var(--spacing-xs);
+.translator__textarea:disabled {
+  color: #1a1a1a;
   background: transparent;
+}
+
+/* Audio Controls */
+.translator__audio-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.translator__audio-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
-  border: 0;
-  outline: 0;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  transition: background-color var(--transition-fast) var(--ease-out);
+  transition: all var(--transition-fast) ease;
 }
 
-.translator__action-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.translator__audio-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
 }
 
-/* Mic Active State */
-.mic-active {
-  background-color: rgba(255, 107, 107, 0.2) !important;
-  box-shadow: 0 0 12px rgba(255, 107, 107, 0.3);
-  animation: pulse 1.5s infinite;
+/* Footer with Buttons */
+.translator__footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
 }
 
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
-  }
+.translator__btn {
+  padding: 14px 40px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+}
+
+.translator__btn--clear {
+  background: transparent;
+  color: var(--light-color);
+  border: 1.5px solid var(--light-color);
+}
+
+.translator__btn--clear:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.translator__btn--translate {
+  background: transparent;
+  color: var(--light-color);
+  border: 1.5px solid var(--light-color);
+}
+
+.translator__btn--translate:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 /* Responsive Styling */
-@media (max-width: 1024px) {
-  .translator {
-    width: 90%;
-    gap: 15px;
-  }
-
-  .translator__textarea {
-    padding: var(--spacing-sm);
-  }
-}
-
 @media (max-width: 768px) {
   .section-bg {
-    padding: 80px var(--spacing-md) 40px;
+    padding: 80px 16px 40px;
     min-height: auto;
   }
 
   .translator {
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0;
-    width: 100%;
-    min-height: auto;
-  }
-
-  .translator > .col.translator__panel {
-    width: 100%;
-    min-height: 220px;
-    height: auto;
+    gap: 16px;
   }
 
   .translator__switch-col {
-    width: 100%;
-    height: auto;
-    padding: var(--spacing-sm) 0;
     order: 1;
   }
 
@@ -720,86 +735,69 @@ onBeforeUnmount(() => {
   }
 
   .translator__switch-btn {
+    width: 44px;
+    height: 44px;
     transform: rotate(90deg);
-    padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.15);
   }
 
-  .translator__switch-btn:hover,
-  .translator__switch-btn:active {
+  .translator__switch-btn:hover {
     transform: rotate(90deg) scale(1.1);
-    background: rgba(255, 255, 255, 0.25);
   }
 
-  .translator__switch-btn:active .translator__switch-icon,
-  .translator__switch-btn:hover .translator__switch-icon {
-    transform: rotate(180deg);
+  .translator__panel {
+    min-height: auto;
   }
 
-  .translator-nav__list {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .input-container {
+  .translator__body {
     min-height: 150px;
   }
 
+  .translator__select {
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
   .translator__textarea {
-    min-height: 100px;
+    min-height: 120px;
+  }
+
+  .translator__btn {
+    padding: 10px 28px;
+    font-size: 0.95rem;
   }
 }
 
 @media (max-width: 480px) {
   .section-bg {
-    padding: 70px var(--spacing-sm) 30px;
+    padding: 70px 12px 30px;
   }
 
   .translator {
-    width: 100%;
-    gap: 0;
+    gap: 16px;
   }
 
-  .translator > .col.translator__panel {
-    min-height: 180px;
-  }
-
-  .translator-nav__list {
-    gap: var(--spacing-xs);
-    justify-content: center;
-  }
-
-  .translator-nav__btn {
-    padding: var(--spacing-xs);
-    font-size: var(--fs-small-text);
+  .translator__body {
+    min-height: 130px;
   }
 
   .translator__textarea {
-    font-size: 0.95rem !important;
-    padding: var(--spacing-sm);
-    min-height: 80px;
+    padding: 12px;
+    font-size: 0.95rem;
+    min-height: 100px;
   }
 
-  .translator__actions {
-    padding: var(--spacing-xs);
-    gap: var(--spacing-xs);
+  .translator__audio-controls {
+    bottom: 8px;
+    right: 8px;
   }
 
-  .translator__action-btn {
-    padding: var(--spacing-xs);
-    margin: 0;
+  .translator__audio-btn {
+    width: 32px;
+    height: 32px;
   }
 
-  .translator__switch-col {
-    padding: var(--spacing-xs) 0;
-  }
-
-  .translator__switch-btn {
-    padding: var(--spacing-sm);
-  }
-
-  .input-container {
-    min-height: 120px;
+  .translator__btn {
+    padding: 8px 20px;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <button
     class="btn"
-    :class="[buttonType, buttonSize, {'btn--loading': loadingState}]"
+    :class="[buttonType, buttonSize, { 'btn--loading': loadingState }]"
     @click="routeTo(path)"
     :disabled="loadingState"
   >
@@ -60,8 +60,7 @@ const routeTo = (path: string | undefined) => {
   font-size: var(--fs-body-text);
   font-weight: var(--fw-semibold);
   overflow: hidden;
-  transition: 
-    background-color var(--transition-normal) var(--ease-out),
+  transition: background-color var(--transition-normal) var(--ease-out),
     color var(--transition-normal) var(--ease-out),
     transform var(--transition-fast) var(--ease-out),
     box-shadow var(--transition-normal) var(--ease-out);
@@ -100,12 +99,16 @@ const routeTo = (path: string | undefined) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
   transform: scale(0);
   opacity: 0;
   z-index: 1;
-  transition: transform var(--transition-fast) var(--ease-out), 
-              opacity var(--transition-fast) var(--ease-out);
+  transition: transform var(--transition-fast) var(--ease-out),
+    opacity var(--transition-fast) var(--ease-out);
 }
 
 .btn:hover .btn-highlight {
@@ -154,7 +157,7 @@ const routeTo = (path: string | undefined) => {
 
 .btn.btn-outline:hover {
   background-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(142, 125, 107, 0.25);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
 }
 
 .btn.btn-outline:hover > .btn-text {
@@ -164,7 +167,7 @@ const routeTo = (path: string | undefined) => {
 .btn.btn-secondary {
   border: 1px solid transparent;
   background-color: var(--primary-color);
-  box-shadow: 0 2px 6px rgba(142, 125, 107, 0.15);
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.15);
 }
 
 .btn.btn-secondary > .btn-text {
@@ -174,7 +177,7 @@ const routeTo = (path: string | undefined) => {
 .btn.btn-secondary:hover {
   border-color: var(--primary-color);
   background-color: transparent;
-  box-shadow: 0 4px 12px rgba(142, 125, 107, 0.2);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
 .btn.btn-secondary:hover > .btn-text {
@@ -213,7 +216,7 @@ const routeTo = (path: string | undefined) => {
   .btn.md {
     padding: var(--spacing-sm) var(--spacing-lg);
   }
-  
+
   .btn.lg {
     padding: var(--spacing-md) var(--spacing-xl);
   }

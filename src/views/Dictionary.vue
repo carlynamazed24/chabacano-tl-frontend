@@ -263,7 +263,7 @@ onMounted(fetchDictionary);
 .search-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 4px 10px rgba(142, 125, 107, 0.15);
+  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.15);
 }
 
 .search-input:focus + .search-icon {
@@ -295,7 +295,7 @@ onMounted(fetchDictionary);
 
 .nav-item:hover {
   color: var(--primary-color);
-  background-color: rgba(142, 125, 107, 0.1);
+  background-color: rgba(13, 148, 136, 0.1);
   transform: translateY(-1px);
 }
 
@@ -308,7 +308,7 @@ onMounted(fetchDictionary);
 .nav-item--active:hover {
   color: var(--light-color);
   background-color: var(--primary-color);
-  box-shadow: 0 2px 8px rgba(142, 125, 107, 0.3);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 
 /* Dictionary Results */

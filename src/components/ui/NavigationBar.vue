@@ -69,7 +69,6 @@ const route: RouteLocationNormalizedLoadedGeneric = useRoute();
 // Navigation links
 const navLinks = [
   { text: "Home", route: "home" },
-  { text: "About Us", route: "about-us" },
   { text: "Story", route: "story" },
   { text: "Dictionary", route: "dictionary" },
 ];
@@ -109,7 +108,7 @@ function handleScroll() {
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-2xl);
+  padding: var(--spacing-sm) var(--spacing-2xl);
   background-color: var(--primary-color);
   color: var(--light-color);
   z-index: 1000;
@@ -120,10 +119,10 @@ function handleScroll() {
 
 /* Scrolled header state */
 .header--scrolled {
-  padding: var(--spacing-md) var(--spacing-2xl);
-  background-color: rgba(142, 125, 107, 0.95);
+  padding: var(--spacing-xs) var(--spacing-2xl);
+  background-color: rgba(13, 148, 136, 0.95);
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Logo styling */
@@ -248,7 +247,7 @@ function handleScroll() {
     bottom: 0;
     height: 100vh;
     padding-top: 80px;
-    background-color: rgba(142, 125, 107, 0.98);
+    background-color: rgba(13, 148, 136, 0.98);
     backdrop-filter: blur(8px);
     z-index: 999;
   }

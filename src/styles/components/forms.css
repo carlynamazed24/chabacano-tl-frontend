@@ -10,8 +10,7 @@
   background-color: transparent;
   border: 1px solid var(--accent-1-color);
   border-radius: var(--border-radius-sm);
-  transition: 
-    border-color var(--transition-normal) var(--ease-out),
+  transition: border-color var(--transition-normal) var(--ease-out),
     box-shadow var(--transition-normal) var(--ease-out);
 }
 
@@ -48,8 +47,7 @@
   background-color: transparent;
   border: 1px solid var(--accent-1-color);
   border-radius: var(--border-radius-sm);
-  transition: 
-    border-color var(--transition-normal) var(--ease-out),
+  transition: border-color var(--transition-normal) var(--ease-out),
     box-shadow var(--transition-normal) var(--ease-out);
 }
 
@@ -77,8 +75,7 @@
   border-radius: var(--border-radius-sm);
   resize: vertical;
   min-height: 100px;
-  transition: 
-    border-color var(--transition-normal) var(--ease-out),
+  transition: border-color var(--transition-normal) var(--ease-out),
     box-shadow var(--transition-normal) var(--ease-out);
 }
 
@@ -101,18 +98,17 @@
   height: 100%;
   border: 1px solid var(--light-color);
   border-radius: var(--border-radius-sm);
-  transition: 
-    transform var(--transition-normal) var(--ease-out),
+  transition: transform var(--transition-normal) var(--ease-out),
     box-shadow var(--transition-normal) var(--ease-out);
 }
 
 .translator > .col > .input-container:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .translator > .col > .input-container.disabled {
-  background-color: rgba(189, 165, 136, 0.8);
+  background-color: rgba(6, 182, 212, 0.2);
 }
 
 .translator > .col > .input-container > textarea {
@@ -146,13 +142,13 @@
 
 /* Form Validation */
 .input-base.error {
-  border-color: #FF6B6B;
+  border-color: #ff6b6b;
 }
 
 .error-message {
   margin-top: var(--spacing-xs);
   font-size: var(--fs-small-text);
-  color: #FF6B6B;
+  color: #ff6b6b;
 }
 
 /* Form Responsive */
