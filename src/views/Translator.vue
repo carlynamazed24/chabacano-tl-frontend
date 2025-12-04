@@ -167,9 +167,6 @@ interface SpeechRecognition extends EventTarget {
   stop(): void;
 }
 
-// Array of supported languages
-const languages = ["Chabacano", "Tagalog", "English"];
-
 // Reactive references
 const selectedSrcLang = ref("Chabacano");
 const selectedTargetLang = ref("Tagalog");
@@ -244,44 +241,6 @@ try {
   } as SpeechRecognition;
 }
 
-// Toggle microphone
-const toggleMicrophone = () => {
-  if (isRecording.value) {
-    stopRecording();
-  } else {
-    startRecording();
-  }
-};
-
-// Start recording
-const startRecording = () => {
-  // Check if the Speech Recognition API is supported
-  if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
-    alert("Speech recognition is not supported in this browser.");
-    return;
-  }
-  try {
-    // Set recognition language based on selected source language
-    recognition.lang = selectedSrcLang.value === "Tagalog" ? "fil-PH" : "en-US";
-    recognition.start();
-    isRecording.value = true;
-  } catch (error) {
-    console.error("Error starting speech recognition:", error);
-    displayErrorNotification("Could not start speech recognition");
-    isRecording.value = false;
-  }
-};
-
-// Stop recording
-const stopRecording = () => {
-  try {
-    recognition.stop();
-  } catch (error) {
-    console.error("Error stopping speech recognition:", error);
-  }
-  isRecording.value = false;
-};
-
 // Speak text using ResponsiveVoice
 const speakText = (text: string, lang: string) => {
   if (!text) return;
@@ -350,10 +309,6 @@ const speakTextFallback = (text: string, lang: string) => {
   }
 };
 
-const speakSourceText = () => {
-  speakText(textInput.value, selectedSrcLang.value);
-};
-
 const speakTranslatedText = () => {
   speakText(translatedText.value, selectedTargetLang.value);
 };
@@ -382,22 +337,6 @@ const translateText = async () => {
     }
     translatedText.value = response?.translation ?? response.result;
   }, 1000);
-};
-
-const handleSrcLanguageSelect = (lang: string) => {
-  if (lang === selectedTargetLang.value) {
-    selectedTargetLang.value = selectedSrcLang.value;
-  }
-  selectedSrcLang.value = lang;
-  resetInput();
-};
-
-const handleTargetLanguageSelect = (lang: string) => {
-  if (lang === selectedSrcLang.value) {
-    selectedSrcLang.value = selectedTargetLang.value;
-  }
-  selectedTargetLang.value = lang;
-  resetInput();
 };
 
 const handleSrcLanguageChange = () => {
@@ -430,18 +369,9 @@ const switchLanguages = () => {
   translateText();
 };
 
-const resetInput = () => {
-  textInput.value = "";
-  translatedText.value = "";
-};
-
 const clearInput = () => {
   textInput.value = "";
   translatedText.value = "";
-};
-
-const copySourceText = async () => {
-  await navigator.clipboard.writeText(textInput.value);
 };
 
 const copyTargetText = async () => {
@@ -472,7 +402,13 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  stopRecording();
+  // Stop any ongoing speech recognition
+  try {
+    recognition.stop();
+  } catch (error) {
+    // Ignore errors when stopping
+  }
+  isRecording.value = false;
   stopSpeech();
 });
 </script>
