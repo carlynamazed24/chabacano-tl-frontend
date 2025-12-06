@@ -143,37 +143,6 @@
           </section>
         </div>
 
-        <!-- Image Gallery Section -->
-        <section class="story-page__gallery" id="gallery-section">
-          <h2 class="story-page__section-title">Gallery</h2>
-          <p class="story-page__gallery-description">
-            Explore the rich visual heritage of Cavite and Chabacano culture
-            through these images.
-          </p>
-          <div class="story-page__gallery-grid">
-            <div class="story-page__gallery-item" v-for="n in 6" :key="n">
-              <div class="story-page__gallery-placeholder">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                <span>Image {{ n }}</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- Activities in Cavite Section -->
         <section class="story-page__activities" id="activities-section">
           <h2 class="story-page__section-title">Things to Do in Cavite</h2>
@@ -365,43 +334,51 @@ const caviteActivities = ref([
 const referenceSources = ref([
   {
     id: 1,
+    title: "Ternate, Cavite - Wikipedia",
+    description:
+      "Comprehensive encyclopedia article covering the history, geography, demographics, and culture of Ternate municipality in Cavite province.",
+    url: "https://en.wikipedia.org/wiki/Ternate,_Cavite",
+    displayUrl: "en.wikipedia.org",
+  },
+  {
+    id: 2,
+    title: "Chabacano Language and Heritage",
+    description:
+      "Information about the Chavacano/Chabacano Spanish-based creole languages of the Philippines, including the Ternateño variant.",
+    url: "https://en.wikipedia.org/wiki/Chabacano",
+    displayUrl: "en.wikipedia.org",
+  },
+  {
+    id: 3,
+    title: "Spanish in the Pacific (PDF)",
+    description:
+      "Academic paper by John M. Lipski discussing Spanish language influences in the Pacific, including the Ternate settlement and Chabacano development.",
+    url: "https://johnlipski.github.io/pacific.pdf",
+    displayUrl: "johnlipski.github.io",
+  },
+  {
+    id: 4,
+    title: "Municipality of Ternate Official Website",
+    description:
+      "Official local government website with current information about Ternate's governance, services, and community programs.",
+    url: "https://lgu201.dilg.gov.ph/view.php?r=04&p=21&m=21",
+    displayUrl: "dilg.gov.ph",
+  },
+  {
+    id: 5,
     title: "National Historical Commission of the Philippines",
     description:
-      "Official government resource for Philippine historical landmarks and heritage sites.",
+      "Official government resource for Philippine historical landmarks, heritage sites, and cultural preservation.",
     url: "https://nhcp.gov.ph/",
     displayUrl: "nhcp.gov.ph",
   },
   {
-    id: 2,
+    id: 6,
     title: "Cavite Provincial Government",
     description:
-      "Official portal with information about Cavite's history, culture, and tourism.",
+      "Official portal with information about Cavite's history, culture, tourism, and local government services.",
     url: "https://cavite.gov.ph/",
     displayUrl: "cavite.gov.ph",
-  },
-  {
-    id: 3,
-    title: "Department of Tourism - Region IV-A",
-    description:
-      "Tourism information and travel guides for CALABARZON region including Cavite.",
-    url: "https://www.tourism.gov.ph/",
-    displayUrl: "tourism.gov.ph",
-  },
-  {
-    id: 4,
-    title: "Encyclopedia of Philippine Heritage",
-    description:
-      "Comprehensive resource about Filipino languages including Chabacano.",
-    url: "https://example.com/placeholder",
-    displayUrl: "philippineheritage.ph",
-  },
-  {
-    id: 5,
-    title: "Komisyon sa Wikang Filipino",
-    description:
-      "The official government agency for Philippine languages and linguistics.",
-    url: "https://kwf.gov.ph/",
-    displayUrl: "kwf.gov.ph",
   },
 ]);
 
@@ -900,62 +877,6 @@ const toggleMobileNav = () => {
   font-weight: var(--fw-medium);
 }
 
-/* ===== Image Gallery Section ===== */
-.story-page__gallery {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--accent-2-color);
-}
-
-.story-page__gallery-description {
-  color: var(--dark-color);
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.story-page__gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.story-page__gallery-item {
-  aspect-ratio: 4/3;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.story-page__gallery-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.story-page__gallery-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, var(--accent-2-color) 0%, #e5e7eb 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--accent-3-color);
-  border: 2px dashed #d1d5db;
-  border-radius: 0.75rem;
-}
-
-.story-page__gallery-placeholder svg {
-  opacity: 0.5;
-}
-
-.story-page__gallery-placeholder span {
-  font-size: var(--fs-small-text);
-  font-weight: var(--fw-medium);
-}
-
 /* ===== Activities in Cavite Section ===== */
 .story-page__activities {
   margin-top: 3rem;
@@ -1322,11 +1243,6 @@ const toggleMobileNav = () => {
     flex: 1 1 100%;
   }
 
-  /* Gallery responsive */
-  .story-page__gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   /* Activities responsive */
   .story-page__activities-grid {
     grid-template-columns: 1fr;
@@ -1396,16 +1312,6 @@ const toggleMobileNav = () => {
     bottom: 0.5rem;
     right: 0.5rem;
     padding: 0.25rem 0.5rem;
-  }
-
-  /* Gallery responsive - small screens */
-  .story-page__gallery-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .story-page__gallery-item {
-    aspect-ratio: 16/9;
   }
 
   /* Activities responsive - small screens */

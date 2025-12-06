@@ -30,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "dictionary",
         component: () => import("../views/Dictionary.vue"),
       },
+      {
+        path: "/history",
+        name: "history",
+        component: () => import("../views/History.vue"),
+      },
     ],
   },
 
