@@ -28,16 +28,6 @@
             placeholder="Isulat mo..."
           ></textarea>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="translator__footer">
-          <button
-            class="translator__btn translator__btn--clear"
-            @click="clearInput"
-          >
-            <span class="btn-text">Clear</span>
-          </button>
-        </div>
       </div>
 
       <!-- Switch Button -->
@@ -94,16 +84,6 @@
               <CopyIcon :size="20" :color="'#1a1a1a'" />
             </button>
           </div>
-        </div>
-
-        <!-- Translate Button -->
-        <div class="translator__footer">
-          <button
-            class="translator__btn translator__btn--translate"
-            @click="translateText"
-          >
-            <span class="btn-text">Translate</span>
-          </button>
         </div>
       </div>
     </div>
@@ -369,11 +349,6 @@ const switchLanguages = () => {
   translateText();
 };
 
-const clearInput = () => {
-  textInput.value = "";
-  translatedText.value = "";
-};
-
 const copyTargetText = async () => {
   await navigator.clipboard.writeText(translatedText.value);
 };
@@ -438,10 +413,10 @@ onBeforeUnmount(() => {
 /* Translator Container */
 .translator {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
-  max-width: 1100px;
-  align-items: center;
+  max-width: 1400px;
+  align-items: stretch;
   animation: fadeIn var(--transition-slow) ease-out;
 }
 
@@ -495,6 +470,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   background: transparent;
   border-radius: 12px;
+  min-height: 500px;
 }
 
 .translator__panel--active {
@@ -511,14 +487,14 @@ onBeforeUnmount(() => {
 
 .translator__select {
   width: 100%;
-  padding: 16px 20px;
-  font-size: 1.1rem;
+  padding: 20px 24px;
+  font-size: 1.25rem;
   font-weight: 600;
   font-family: inherit;
   color: #1a1a1a;
   background-color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
@@ -549,8 +525,7 @@ onBeforeUnmount(() => {
   position: relative;
   flex: 1;
   background-color: rgba(255, 255, 255, 0.98);
-  border-radius: 10px;
-  min-height: 280px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   border: 2px solid rgba(0, 0, 0, 0.08);
@@ -559,8 +534,8 @@ onBeforeUnmount(() => {
 .translator__textarea {
   flex: 1;
   width: 100%;
-  padding: 20px;
-  font-size: 1.15rem;
+  padding: 24px;
+  font-size: 1.3rem;
   font-family: inherit;
   color: #1a1a1a;
   background: transparent;
@@ -572,7 +547,7 @@ onBeforeUnmount(() => {
 
 .translator__textarea::placeholder {
   color: #888;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 .translator__textarea:disabled {
@@ -583,18 +558,18 @@ onBeforeUnmount(() => {
 /* Audio Controls */
 .translator__audio-controls {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
+  bottom: 16px;
+  right: 16px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .translator__audio-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   background: rgba(0, 0, 0, 0.05);
   border: none;
   border-radius: 50%;
@@ -609,17 +584,15 @@ onBeforeUnmount(() => {
 
 /* Footer with Buttons */
 .translator__footer {
-  margin-top: 14px;
-  display: flex;
-  justify-content: center;
+  display: none;
 }
 
 .translator__btn {
-  padding: 14px 40px;
-  font-size: 1.05rem;
+  padding: 16px 48px;
+  font-size: 1.15rem;
   font-family: inherit;
   font-weight: 600;
-  border-radius: 25px;
+  border-radius: 30px;
   cursor: pointer;
   transition: all var(--transition-fast) ease;
 }
@@ -627,7 +600,7 @@ onBeforeUnmount(() => {
 .translator__btn--clear {
   background: transparent;
   color: var(--light-color);
-  border: 1.5px solid var(--light-color);
+  border: 2px solid var(--light-color);
 }
 
 .translator__btn--clear:hover {
@@ -649,13 +622,15 @@ onBeforeUnmount(() => {
 /* Responsive Styling */
 @media (max-width: 768px) {
   .section-bg {
-    padding: 80px 16px 40px;
+    padding: 80px 24px 50px;
     min-height: auto;
   }
 
   .translator {
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .translator__switch-col {
@@ -671,8 +646,8 @@ onBeforeUnmount(() => {
   }
 
   .translator__switch-btn {
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     transform: rotate(90deg);
   }
 
@@ -682,58 +657,79 @@ onBeforeUnmount(() => {
 
   .translator__panel {
     min-height: auto;
+    width: 100%;
   }
 
   .translator__body {
-    min-height: 150px;
+    min-height: 200px;
   }
 
   .translator__select {
-    padding: 14px 16px;
-    font-size: 1rem;
+    padding: 18px 20px;
+    font-size: 1.15rem;
   }
 
   .translator__textarea {
-    min-height: 120px;
+    min-height: 160px;
+    font-size: 1.15rem;
+    padding: 20px;
   }
 
   .translator__btn {
-    padding: 10px 28px;
-    font-size: 0.95rem;
+    padding: 14px 36px;
+    font-size: 1.05rem;
+  }
+
+  .translator__audio-controls {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .translator__audio-btn {
+    width: 42px;
+    height: 42px;
   }
 }
 
 @media (max-width: 480px) {
   .section-bg {
-    padding: 70px 12px 30px;
+    padding: 70px 20px 40px;
   }
 
   .translator {
-    gap: 16px;
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .translator__body {
-    min-height: 130px;
+    min-height: 180px;
   }
 
   .translator__textarea {
-    padding: 12px;
-    font-size: 0.95rem;
-    min-height: 100px;
+    padding: 18px;
+    font-size: 1.1rem;
+    min-height: 140px;
+  }
+
+  .translator__select {
+    padding: 16px 18px;
+    font-size: 1.1rem;
   }
 
   .translator__audio-controls {
-    bottom: 8px;
-    right: 8px;
+    bottom: 12px;
+    right: 12px;
   }
 
   .translator__audio-btn {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
 
   .translator__btn {
-    padding: 8px 20px;
+    padding: 12px 32px;
+    font-size: 1rem;
   }
 }
 </style>

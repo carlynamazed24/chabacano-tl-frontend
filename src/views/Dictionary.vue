@@ -39,25 +39,12 @@
       </div>
     </div>
 
-    <!-- Alphabet Navigation -->
-    <div class="dictionary__nav slide-up" style="animation-delay: 0.3s">
-      <div class="nav">
-        <button
-          v-for="(letter, index) in alphabets"
-          :key="index"
-          class="nav-item fs-body-text"
-          :class="{ 'nav-item--active': selectedLetter === letter }"
-          @click="filterByLetter(letter)"
-          :aria-pressed="selectedLetter === letter"
-          :aria-label="`Filter by letter ${letter}`"
-        >
-          {{ letter }}
-        </button>
-      </div>
-    </div>
-
     <!-- Dictionary Results -->
-    <div class="dictionary__contents slide-up" style="animation-delay: 0.4s">
+    <div
+      v-if="searchQuery"
+      class="dictionary__contents slide-up"
+      style="animation-delay: 0.4s"
+    >
       <h2 class="dictionary__results-heading fs-heading-6">
         Results:
         <span class="dictionary__results-count">{{
@@ -120,13 +107,9 @@ interface DictionaryEntry {
   definition: string;
 }
 
-// Alphabet letters
-const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
 // Dictionary data
 const dictionaryEntries = ref<DictionaryEntry[]>([]);
 const filteredEntries = ref<DictionaryEntry[]>([]);
-const selectedLetter = ref("");
 const searchQuery = ref("");
 const loading = ref(false);
 
@@ -136,7 +119,7 @@ const fetchDictionary = async () => {
   try {
     const response = await RequestToGetDictionaryEntries();
     dictionaryEntries.value = response.data || [];
-    filteredEntries.value = dictionaryEntries.value; // Default: show all
+    filteredEntries.value = [];
   } catch (error) {
     console.error("Error fetching dictionary:", error);
   } finally {
@@ -144,52 +127,28 @@ const fetchDictionary = async () => {
   }
 };
 
-// Filter by first letter
-const filterByLetter = (letter: string) => {
-  // Toggle letter selection if already selected
-  if (selectedLetter.value === letter) {
-    selectedLetter.value = "";
-  } else {
-    selectedLetter.value = letter;
-  }
-  filterEntries();
-};
-
 // Reset all filters
 const resetFilters = () => {
-  selectedLetter.value = "";
   searchQuery.value = "";
-  filteredEntries.value = [...dictionaryEntries.value];
+  filteredEntries.value = [];
 };
 
-// Filter entries based on search query and selected letter
+// Filter entries based on search query
 const filterEntries = () => {
-  let filtered = [...dictionaryEntries.value];
-
-  // Apply letter filter if selected
-  if (selectedLetter.value) {
-    filtered = filtered.filter((entry) => {
-      return (
-        entry.chabacanoLang.charAt(0).toLowerCase() ===
-        selectedLetter.value.toLowerCase()
-      );
-    });
+  if (!searchQuery.value.trim()) {
+    filteredEntries.value = [];
+    return;
   }
 
-  // Apply search query filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter((entry) => {
-      return (
-        entry.chabacanoLang.toLowerCase().includes(query) ||
-        entry.tagalogLang.toLowerCase().includes(query) ||
-        entry.englishLang.toLowerCase().includes(query) ||
-        entry.definition.toLowerCase().includes(query)
-      );
-    });
-  }
-
-  filteredEntries.value = filtered;
+  const query = searchQuery.value.toLowerCase();
+  filteredEntries.value = dictionaryEntries.value.filter((entry) => {
+    return (
+      entry.chabacanoLang.toLowerCase().includes(query) ||
+      entry.tagalogLang.toLowerCase().includes(query) ||
+      entry.englishLang.toLowerCase().includes(query) ||
+      entry.definition.toLowerCase().includes(query)
+    );
+  });
 };
 
 // Fetch on mount
@@ -229,7 +188,8 @@ onMounted(fetchDictionary);
 
 /* Search Section */
 .dictionary__search {
-  margin: var(--spacing-md) 0 var(--spacing-lg);
+  margin: var(--spacing-2xl) auto;
+  max-width: 600px;
 }
 
 .search-container {
@@ -268,47 +228,6 @@ onMounted(fetchDictionary);
 
 .search-input:focus + .search-icon {
   color: var(--primary-color);
-}
-
-/* Alphabet Navigation */
-.dictionary__nav {
-  margin: var(--spacing-lg) 0;
-}
-
-.nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  justify-content: center;
-}
-
-.nav-item {
-  cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: none;
-  border: none;
-  color: var(--accent-3-color);
-  transition: all var(--transition-normal) var(--ease-out);
-  font-family: var(--font-body-semibold);
-  border-radius: var(--border-radius-sm);
-}
-
-.nav-item:hover {
-  color: var(--primary-color);
-  background-color: rgba(13, 148, 136, 0.1);
-  transform: translateY(-1px);
-}
-
-.nav-item--active {
-  color: var(--light-color);
-  background-color: var(--primary-color);
-  font-weight: var(--fw-bold);
-}
-
-.nav-item--active:hover {
-  color: var(--light-color);
-  background-color: var(--primary-color);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 
 /* Dictionary Results */
@@ -422,15 +341,6 @@ onMounted(fetchDictionary);
 
   .search-input {
     padding: var(--spacing-sm) var(--spacing-md);
-  }
-
-  .nav {
-    gap: 4px;
-  }
-
-  .nav-item {
-    padding: var(--spacing-xs) calc(var(--spacing-xs) + 2px);
-    font-size: calc(var(--fs-small-text) * 1.1);
   }
 }
 
