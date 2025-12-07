@@ -16,18 +16,19 @@
         <!-- Hero Text -->
         <div class="history-page__hero-text">
           <h2 class="history-page__hero-subtitle fs-body-text">
-            Ternate, Cavite Heritage
+            Cavite Heritage
           </h2>
           <h1 class="history-page__hero-title">
-            Discover the Rich Legacy of Ternate's Merdicas and Chabacano Culture
+            Discover the Rich Legacy of Cavite's Spanish Colonial History and
+            Cultural Traditions
           </h1>
           <p class="history-page__hero-description fs-body-text">
-            Journey through the fascinating history of Ternate, from the 1663
-            arrival of the Merdicas from the Moluccas to the present day.
-            Explore how this unique community from Indonesia's Ternate and
-            Tidore islands settled in Cavite, bringing with them their Catholic
-            faith, rich traditions, and the distinctive Ternateño Chabacano
-            language that continues to thrive today.
+            Journey through centuries of Philippine history in Cavite, from the
+            Spanish colonial fortifications to vibrant festivals. Explore
+            historic churches like San Roque, military landmarks such as Fort
+            San Felipe, and cultural celebrations including the colorful Regada
+            Festival that bring water, faith, and community together in unique
+            Caviteño traditions.
           </p>
           <button class="history-page__hero-btn">Explore History</button>
         </div>
@@ -142,17 +143,8 @@
             v-for="item in featuredPosts"
             :key="item.id"
             class="history-page__featured-card"
-            :class="{ 'history-page__featured-card--large': item.id === 1 }"
             @click="openModal(item)"
           >
-            <div class="history-page__featured-image">
-              <img
-                :src="item.image"
-                :alt="item.title"
-                class="history-page__featured-img"
-              />
-              <div class="history-page__featured-overlay"></div>
-            </div>
             <div class="history-page__featured-content">
               <h3 class="history-page__featured-title">{{ item.title }}</h3>
               <p class="history-page__featured-excerpt">{{ item.excerpt }}</p>
@@ -189,9 +181,6 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
-            <div class="history-page__modal-image">
-              <img :src="selectedPost.image" :alt="selectedPost.title" />
-            </div>
             <div class="history-page__modal-body">
               <h2 class="history-page__modal-title fs-heading-4">
                 {{ selectedPost.title }}
@@ -231,25 +220,98 @@
             through these images.
           </p>
           <div class="history-page__gallery-grid">
-            <div class="history-page__gallery-item" v-for="n in 6" :key="n">
-              <div class="history-page__gallery-placeholder">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                <span>Image {{ n }}</span>
-              </div>
+            <div
+              class="history-page__gallery-item"
+              v-for="(image, index) in galleryImages"
+              :key="index"
+              @click="openGalleryModal(index)"
+            >
+              <img
+                :src="image"
+                :alt="`Historical image ${index + 1}`"
+                class="history-page__gallery-image"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <!-- Gallery Modal -->
+          <div
+            v-if="selectedGalleryIndex !== null"
+            class="history-page__gallery-modal"
+            @click="closeGalleryModal"
+          >
+            <button
+              class="history-page__gallery-modal-close"
+              @click="closeGalleryModal"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <div class="history-page__gallery-modal-content">
+              <img
+                :src="galleryImages[selectedGalleryIndex]"
+                :alt="`Historical image ${selectedGalleryIndex + 1}`"
+                class="history-page__gallery-modal-image"
+                @click.stop
+              />
+            </div>
+
+            <button
+              class="history-page__gallery-modal-nav history-page__gallery-modal-nav--prev"
+              @click.stop="prevGalleryImage"
+              v-if="selectedGalleryIndex > 0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+
+            <button
+              class="history-page__gallery-modal-nav history-page__gallery-modal-nav--next"
+              @click.stop="nextGalleryImage"
+              v-if="selectedGalleryIndex < galleryImages.length - 1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+
+            <div class="history-page__gallery-modal-counter">
+              {{ selectedGalleryIndex + 1 }} / {{ galleryImages.length }}
             </div>
           </div>
         </section>
@@ -332,7 +394,7 @@ interface FeaturedPost {
   id: number;
   title: string;
   excerpt: string;
-  image: string;
+  image?: string;
   fullDescription: string;
   details?: string[];
 }
@@ -350,73 +412,277 @@ const closeModal = () => {
   document.body.style.overflow = "";
 };
 
-// Featured Posts - Ternate, Cavite Historical Highlights
+// Gallery Images from assets
+const galleryImages = ref<string[]>([
+  new URL("../assets/images/history_page/history_img_1.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_2.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_3.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_4.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_5.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_6.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_7.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_8.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_9.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_10.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_11.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_12.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_13.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_14.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_15.jpeg", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_16.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_17.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_18.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_19.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_20.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_21.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_22.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_23.png", import.meta.url)
+    .href,
+  new URL("../assets/images/history_page/history_img_24.png", import.meta.url)
+    .href,
+]);
+
+const selectedGalleryIndex = ref<number | null>(null);
+
+const openGalleryModal = (index: number) => {
+  selectedGalleryIndex.value = index;
+  document.body.style.overflow = "hidden";
+};
+
+const closeGalleryModal = () => {
+  selectedGalleryIndex.value = null;
+  document.body.style.overflow = "";
+};
+
+const prevGalleryImage = () => {
+  if (selectedGalleryIndex.value !== null && selectedGalleryIndex.value > 0) {
+    selectedGalleryIndex.value--;
+  }
+};
+
+const nextGalleryImage = () => {
+  if (
+    selectedGalleryIndex.value !== null &&
+    selectedGalleryIndex.value < galleryImages.value.length - 1
+  ) {
+    selectedGalleryIndex.value++;
+  }
+};
+
+// Featured Posts - Cavite Historical Highlights
 const featuredPosts = ref<FeaturedPost[]>([
   {
     id: 1,
-    title: "The Merdicas Migration (1663)",
+    title: "San Roque Church (Cavite City)",
     excerpt:
-      "The arrival of Catholic natives from Ternate and Tidore islands in the Moluccas, who were resettled in Cavite to defend Manila, marking the birth of Ternate municipality.",
+      "A historic Spanish colonial church built in 1595, serving as the spiritual center of Cavite City and host to the annual Feast of San Roque every August 16.",
     image: "../assets/images/cavite_historical_site_bg.png",
     fullDescription:
-      "In 1663, a pivotal moment in Philippine history unfolded when the Merdicas (also spelled Mardicas or Mardikas), Catholic natives from the islands of Ternate and Tidore in the Moluccas, were resettled near the mouth of the Maragondon River in Cavite. These people had been converted to Christianity by Portuguese Jesuit missionaries during the Portuguese occupation of their homeland. When the Spanish garrison in Ternate was forced to withdraw to defend Manila against an impending invasion by Chinese warlord Koxinga, the Merdicas volunteered to relocate. Among them was their ruler, Sultan Said Din Burkat, who was deported to Manila with his entourage and family, later converting to Christianity. Though Koxinga's invasion never materialized due to his illness and death, the Merdicas community remained in Cavite, establishing what would become the municipality of Ternate.",
+      "San Roque Church stands as one of the oldest and most significant religious landmarks in Cavite City, with its origins dating back to 1595 during the Spanish colonial period. Located in the heart of Cavite City, this historic church has witnessed centuries of Philippine history, from Spanish rule through the Philippine Revolution and into modern times. The church is dedicated to Saint Roch (San Roque), the patron saint of plague victims and dogs, and serves as the focal point for one of Cavite's most important religious celebrations. Every August 16, the church becomes the center of the Feast of San Roque, drawing devotees from across the province. The church's architecture reflects classic Spanish colonial religious design, with its enduring structure standing as a testament to the craftsmanship and faith of its builders. Today, San Roque Church continues to serve the Catholic community of Cavite City, maintaining its role as both a place of worship and a keeper of local heritage.",
     details: [
-      "The Merdicas were of mixed Mexican-Filipino-Spanish and Papuan-Indonesian-Portuguese descent",
-      "They settled in a sandbar known as Bahra de Maragondon",
-      "The area was previously called 'Wawa' by native Tagalogs, meaning 'river mouth'",
-      "Sultan Said Din Burkat led his people in their resettlement",
-      "The community volunteered to help defend Manila from Koxinga's threatened invasion",
+      "Built in 1595 during Spanish colonial era",
+      "Located in Cavite City, one of the oldest cities in the Philippines",
+      "Dedicated to Saint Roch (San Roque), patron saint of plague victims",
+      "Annual Feast of San Roque celebrated every August 16",
+      "Features Spanish colonial architectural elements",
+      "Continues to serve as active parish church for local Catholic community",
     ],
   },
   {
     id: 2,
-    title: "Ternateño Chabacano Language",
+    title: "Fort San Felipe",
     excerpt:
-      "A unique Spanish-based creole with Portuguese and Papuan influences, locally called 'Bahra', spoken by descendants of the Merdicas community for over 360 years.",
+      "A 16th-century Spanish fortress on Cavite Peninsula that defended Manila Bay and witnessed key moments in Philippine revolutionary history.",
     image: "../assets/images/cavite_historical_site_bg.png",
     fullDescription:
-      "Ternateño Chabacano, locally known simply as 'Bahra', is a Spanish-based creole language with distinctive Portuguese and Papuan influences that has been spoken by the descendants of the Merdicas community for over 360 years. This unique linguistic heritage reflects the complex history of the Ternate community, combining elements from their Indonesian origins, the Spanish colonial presence, Portuguese missionary influence, and interaction with local Tagalog speakers. Despite the passage of centuries and the dominance of Tagalog in the region, the Ternateño Chabacano language continues to be used by the community today, serving as a living link to their remarkable history and cultural identity.",
+      "Fort San Felipe is a historic Spanish military fortification constructed in the 16th century on the strategic Cavite Peninsula, positioned to guard the entrance to Manila Bay. This stone fortress played a crucial role in the defense of Spanish colonial interests, serving as a military garrison and naval base for centuries. The fort's strategic location on the peninsula made it a key defensive position, protecting both Manila and the important naval facilities in Cavite. Throughout its history, Fort San Felipe witnessed numerous significant events in Philippine history, including battles during the Philippine Revolution against Spain and later conflicts. The fort's thick stone walls and strategic design exemplify Spanish colonial military architecture adapted to tropical conditions. Today, Fort San Felipe stands as a national historical landmark, its weathered walls bearing silent witness to centuries of Philippine history. The site offers visitors a tangible connection to the Spanish colonial era and the struggles for Philippine independence, while also providing insights into military architecture and strategy of the period.",
     details: [
-      "Locally called 'Bahra' by native speakers",
-      "Contains vocabulary from Spanish, Portuguese, Papuan languages, and Tagalog",
-      "Different from other Chabacano variants like Zamboangueño",
-      "Continues to be spoken by descendants of the original Merdicas settlers",
-      "Represents over 360 years of continuous linguistic tradition",
-      "One of several Spanish-based creole varieties found in the Philippines",
+      "Constructed in the 16th century during Spanish colonial rule",
+      "Located on Cavite Peninsula overlooking Manila Bay",
+      "Served as military garrison and naval defense fortification",
+      "Strategic position guarded entrance to Manila Bay",
+      "Witnessed events during Philippine Revolution and independence struggles",
+      "Features classic Spanish colonial military architecture with thick stone walls",
+      "Now preserved as a national historical landmark",
     ],
   },
   {
     id: 3,
-    title: "Municipal Independence (1857)",
+    title: "Regada Festival",
     excerpt:
-      "On March 31, 1857, Ternate became the first barrio to gain independence from Maragondon, establishing itself as a distinct municipality with its own identity.",
+      "Cavite City's vibrant water festival celebrated every June, featuring the Caracol ni San Juan Bautista procession, where devotees splash water as a blessing and celebration of faith.",
     image: "../assets/images/cavite_historical_site_bg.png",
     fullDescription:
-      "On March 31, 1857, Ternate achieved a significant milestone by becoming the first barrio to attain full independence from the municipality of Maragondon. This historic agreement was signed on behalf of the residents of Ternate by five distinguished community leaders: Tomás de León, Félix Nigosa, Pablo de León, Florencio Nino Franco, and Juan Ramos. The establishment of Ternate as an independent municipality recognized the unique character and historical significance of the Merdicas community. However, during the American colonial period, Act No. 947 merged Ternate with Naic on October 15, 1903, as part of a consolidation that reduced Cavite's twenty-three municipalities to eleven. This merger proved temporary, and by virtue of Executive Order No. 96 issued in November 1915 (effective January 1, 1916), Ternate was separated from Naic and re-established as an independent municipality, a status it maintains to this day.",
+      "The Regada Festival is Cavite City's most colorful and unique cultural celebration, held annually in June to honor San Juan Bautista (Saint John the Baptist). The festival's name comes from the Spanish word 'regar' meaning 'to water' or 'to sprinkle,' reflecting its central theme of water as a symbol of baptism, blessing, and purification. The highlight of the festival is the Caracol ni San Juan Bautista, a religious procession featuring a street dance where participants and spectators joyfully splash water on each other, creating a festive atmosphere that combines deep religious devotion with community celebration. The water splashing tradition represents the baptism performed by Saint John the Baptist and serves as both a blessing and a way to beat the Philippine summer heat. The Regada Festival has become a major tourist attraction, drawing visitors from across the country who come to experience this unique blend of faith, culture, and celebration. Through music, dance, colorful costumes, and the communal act of water splashing, the festival embodies the soul of Cavite - a community bound by faith, tradition, and the joyous celebration of their shared heritage.",
     details: [
-      "Independence achieved on March 31, 1857",
-      "First barrio in Maragondon to gain municipal status",
-      "Agreement signed by Tomás de León, Félix Nigosa, Pablo de León, Florencio Nino Franco, and Juan Ramos",
-      "Temporarily merged with Naic in 1903 under American colonial rule",
-      "Re-established as independent municipality on January 1, 1916",
-      "Currently has 10 barangays and a population of approximately 24,891 (2024)",
+      "Celebrated annually every June in Cavite City",
+      "Honors San Juan Bautista (Saint John the Baptist)",
+      "Name derives from Spanish 'regar' meaning to water or sprinkle",
+      "Features the Caracol ni San Juan Bautista religious procession and street dance",
+      "Participants splash water as symbol of baptism and blessing",
+      "Combines religious devotion with festive community celebration",
+      "Major cultural tourism attraction for Cavite province",
+      "Water splashing tradition helps participants stay cool during summer heat",
     ],
   },
   {
     id: 4,
-    title: "Bahra de Maragondon Settlement",
+    title: "Cavite City Baywalk & Samonte Park",
     excerpt:
-      "The sandbar near Maragondon River where the Merdicas first settled, originally known as 'Wawa' by native Tagalogs, meaning river mouth or river delta.",
+      "The historic seawall area and Samonte Park along Manila Bay, surrounded by Old Cavite Puerto's colonial-era landmarks including the Cavite Mutiny historical marker.",
     image: "../assets/images/cavite_historical_site_bg.png",
     fullDescription:
-      "The Bahra de Maragondon, a sandbar formation near the mouth of the Maragondon River, served as the initial settlement location for the Merdicas community when they arrived in Cavite in 1663. Prior to the arrival of the migrants, this area was known as 'Wawa' by the native Tagalog population, a term derived from the Tagalog language meaning 'river mouth' or 'river delta'. The strategic location near the river and Manila Bay made it suitable for the community's needs while allowing them to maintain a degree of separation from the existing settlements. Over time, this settlement grew and evolved into what is now the municipality of Ternate. The name 'Bahra' continues to be used by locals as an alternative name for both the town and their language, serving as a linguistic connection to this historic settlement site.",
+      "The Cavite City Baywalk and Samonte Park area represents a beautiful convergence of natural seaside beauty and profound historical significance. The seawall, constructed during the Spanish colonial period, stretches along Manila Bay and offers stunning sunset views while serving as a popular recreational space for locals and visitors. Samonte Park, named after a local hero, provides a green oasis along the waterfront with its landscaped gardens and walking paths. The surrounding Old Cavite Puerto (Port Cavite) area is rich in colonial-era heritage, featuring historical buildings and sites that tell the story of Cavite's role as a major Spanish naval base. Among the most significant landmarks is the historical marker commemorating the Cavite Mutiny of 1872, a pivotal event in Philippine history that helped spark the revolutionary movement against Spanish colonial rule. The mutiny, led by Filipino soldiers and workers at the Cavite arsenal, was brutally suppressed, but it inspired nationalist sentiment and is considered a precursor to the Philippine Revolution. Walking through this heritage district offers visitors a journey through time, from the Spanish colonial fortifications at Porta Vaga to the sites where Filipino patriots made their stand for freedom.",
     details: [
-      "Located near the mouth of the Maragondon River",
-      "Originally called 'Wawa' by native Tagalogs (meaning river mouth/delta)",
-      "Sandbar formation provided suitable land for settlement",
-      "Strategic location near Manila Bay and Tanza, Cavite",
-      "The term 'Bahra' is still used locally to refer to Ternate and its language",
-      "Site evolved from temporary settlement to permanent municipality",
+      "Seawall and Samonte Park located along Manila Bay coastline",
+      "Seawall constructed during Spanish colonial era",
+      "Popular spot for sunset viewing and recreational activities",
+      "Surrounded by Old Cavite Puerto historic district",
+      "Cavite Mutiny of 1872 historical marker located in the area",
+      "The mutiny was a significant precursor to Philippine Revolution",
+      "Porta Vaga gate and other Spanish colonial structures nearby",
+      "Area features colonial-era architecture and heritage walking routes",
+      "Recognized for historical significance in Philippine independence movement",
+    ],
+  },
+  {
+    id: 5,
+    title: "Cavite Mutiny of 1872",
+    excerpt:
+      "A pivotal uprising by Filipino soldiers and workers at the Cavite arsenal that sparked nationalist sentiment and became a precursor to the Philippine Revolution.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "The Cavite Mutiny of 1872 was a watershed moment in Philippine history that would ultimately contribute to the birth of Filipino nationalism and the revolutionary movement against Spanish colonial rule. On January 20, 1872, around 200 Filipino soldiers and workers at the Cavite arsenal rose up against their Spanish officers. The uprising was brutally suppressed by Spanish authorities, but its impact reverberated far beyond the immediate event. In the aftermath, Spanish colonial authorities used the mutiny as a pretext to crack down on Filipino reformists and intellectuals. Three prominent Filipino priests - Jose Burgos, Mariano Gomez, and Jacinto Zamora (collectively known as Gomburza) - were controversially accused of instigating the mutiny and executed by garrote on February 17, 1872. Their martyrdom galvanized Filipino consciousness and inspired a generation of reformists and revolutionaries, including Jose Rizal, whose writings would later fuel the Philippine Revolution. Today, a historical marker in Cavite City commemorates this significant event, reminding visitors of the sacrifice made by those who dared to challenge colonial oppression.",
+    details: [
+      "Occurred on January 20, 1872, at the Cavite arsenal",
+      "Led by around 200 Filipino soldiers and workers",
+      "Brutally suppressed by Spanish colonial authorities",
+      "Led to execution of Gomburza priests (Burgos, Gomez, Zamora)",
+      "Gomburza executed by garrote on February 17, 1872",
+      "Inspired Jose Rizal and other Filipino nationalists",
+      "Considered a precursor to the Philippine Revolution of 1896",
+      "Historical marker located in Cavite City",
+      "Symbol of early Filipino resistance to colonial rule",
+    ],
+  },
+  {
+    id: 6,
+    title: "Porta Vaga - Gateway to Old Cavite",
+    excerpt:
+      "One of the remaining gates of the fortified Spanish colonial city of Cavite, serving as an enduring symbol of the city's defensive past and architectural heritage.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "Porta Vaga stands as one of the few remaining tangible connections to Cavite's identity as a fortified Spanish colonial city. This historic gate was part of the extensive defensive walls that once encircled the old city of Cavite, protecting it from naval attacks and foreign invasions. During the Spanish colonial period, Cavite served as a major naval base and shipyard, making it a strategic military installation that required substantial fortifications. The name 'Porta Vaga' reflects the Spanish colonial administrative and military terminology used throughout the Philippines. Today, while much of the original wall system has disappeared, Porta Vaga remains as a cherished heritage landmark, symbolizing Cavite's role in Philippine colonial history. The gate represents the architectural and military engineering practices of the Spanish colonial era, adapted to the tropical Philippine environment and the specific defensive needs of a coastal naval base. Visitors to Porta Vaga can imagine the bustling activity of the Spanish colonial port city and reflect on how this small gate witnessed centuries of Philippine history unfold.",
+    details: [
+      "Part of the original Spanish fortification system of Cavite City",
+      "Served as one of the gates to the fortified colonial city",
+      "Protected the strategic Spanish naval base and shipyard",
+      "One of few remaining structures from the original wall system",
+      "Example of Spanish colonial military architecture",
+      "Now preserved as a heritage landmark",
+      "Symbol of Cavite's defensive and naval history",
+      "Popular stop on heritage walking tours of Old Cavite",
+    ],
+  },
+  {
+    id: 7,
+    title: "Cavite Peninsula - Strategic Naval Gateway",
+    excerpt:
+      "The historic peninsula that served as the cornerstone of Spanish and American naval power in the Philippines, hosting crucial military installations and shipyards.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "The Cavite Peninsula has played a pivotal role in Philippine military and naval history for over four centuries. Its strategic location at the entrance to Manila Bay made it an ideal site for Spanish colonial authorities to establish a major naval base and shipyard. The peninsula's geographic advantages - including its defensible position, deep water access, and proximity to Manila - made it invaluable for controlling maritime traffic in and out of Manila Bay. During the Spanish colonial era, the Cavite Naval Yard became one of the most important shipbuilding facilities in the Spanish Empire's Pacific territories, constructing and repairing galleons and warships. The peninsula witnessed numerous historic events, including naval battles, the execution of Filipino revolutionaries, and the transition from Spanish to American colonial rule. During World War II, the area saw intense fighting as Japanese forces captured the peninsula and later as American forces returned. Today, the Cavite Peninsula remains home to important naval facilities while also preserving sites of historical significance that tell the story of the Philippines' complex colonial and military past.",
+    details: [
+      "Strategic location at the entrance to Manila Bay",
+      "Site of major Spanish colonial naval base and shipyard",
+      "Key shipbuilding facility for Spanish Pacific fleet",
+      "Witnessed transition from Spanish to American rule in 1898",
+      "Scene of battles during Philippine Revolution and World War II",
+      "Continues to host Philippine naval facilities",
+      "Contains multiple historical landmarks including Fort San Felipe",
+      "Essential to understanding Philippine maritime and military history",
+    ],
+  },
+  {
+    id: 8,
+    title: "Caracol ni San Juan Bautista",
+    excerpt:
+      "The centerpiece religious procession of the Regada Festival, featuring a spiraling street dance where devotees honor Saint John the Baptist with joyful water splashing.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "The Caracol ni San Juan Bautista is the heart and soul of Cavite City's Regada Festival, representing a unique fusion of deep Catholic devotion and exuberant communal celebration. The term 'caracol' refers to the spiral or winding pattern of the religious procession as it moves through the streets of Cavite City. Participants carry the image of San Juan Bautista (Saint John the Baptist) through the city while performing traditional dances and splashing water on each other and spectators. The water splashing is deeply symbolic, representing the baptisms performed by Saint John in the Jordan River and serving as a form of blessing for the participants and community. The procession creates a festive atmosphere where religious reverence and playful celebration merge seamlessly. Devotees dress in colorful costumes, often incorporating elements that reference water and baptism. The event draws thousands of participants and spectators each year, making it one of the most anticipated religious and cultural celebrations in Cavite province. Through the Caracol, the community reaffirms its faith, preserves its traditions, and celebrates its collective identity.",
+    details: [
+      "Central event of the annual Regada Festival in June",
+      "Features spiral or winding procession pattern (caracol)",
+      "Participants carry the image of San Juan Bautista through city streets",
+      "Combines religious procession with traditional street dancing",
+      "Water splashing symbolizes baptism and blessing",
+      "Participants wear colorful costumes with water-themed elements",
+      "Draws thousands of devotees and tourists annually",
+      "Represents unique blend of Catholic faith and Filipino cultural expression",
+      "Community participates in both solemn reverence and joyful celebration",
+    ],
+  },
+  {
+    id: 9,
+    title: "Old Cavite Puerto Heritage District",
+    excerpt:
+      "The historic port area that served as Spain's principal naval base in Asia, featuring colonial architecture, fortifications, and sites of revolutionary significance.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "Old Cavite Puerto (Port Cavite) represents one of the most historically significant districts in the Philippines, serving as the epicenter of Spanish naval power in Asia for over three centuries. This compact area witnessed the ebb and flow of empires, revolutions, and the birth of the Filipino nation. During the Spanish colonial period, Puerto Cavite was a bustling naval base, shipyard, and garrison town, housing Spanish officials, soldiers, sailors, and Filipino workers. The district's strategic importance made it a focal point during the Philippine Revolution, and many revolutionary heroes and martyrs had connections to this area. Walking through Old Cavite Puerto today is like stepping back in time - narrow streets lined with colonial-era buildings, historic churches, old fortification walls, and markers commemorating significant events in Philippine history. The district encompasses numerous heritage sites including Porta Vaga, the San Roque Church, sites related to the Cavite Mutiny, and various Spanish colonial structures. Recent efforts to promote heritage tourism have highlighted the area's potential as a living museum of Philippine colonial and revolutionary history.",
+    details: [
+      "Served as Spain's principal naval base in Asia for over 300 years",
+      "Major Spanish shipyard and garrison during colonial period",
+      "Site of numerous events during Philippine Revolution",
+      "Features compact street layout typical of Spanish colonial towns",
+      "Contains multiple heritage landmarks and historical markers",
+      "Home to colonial-era churches, fortifications, and government buildings",
+      "Connected to stories of Filipino revolutionaries and martyrs",
+      "Designated as heritage district for preservation and tourism",
+      "Offers heritage walking tours showcasing colonial and revolutionary history",
+    ],
+  },
+  {
+    id: 10,
+    title: "Historical Map: Cavite 1815",
+    excerpt:
+      "Detailed cartographic record showing the layout and fortifications of Spanish colonial Cavite, providing insights into the city's military and urban planning.",
+    image: "../assets/images/cavite_historical_site_bg.png",
+    fullDescription:
+      "The historical map of Cavite from 1815 serves as an invaluable document for understanding the layout, fortifications, and urban development of one of Spain's most important colonial outposts in the Pacific. Created during the height of Spanish colonial power, this map reveals the careful military planning that went into designing Cavite as a fortified naval base. The map shows the extensive wall system that surrounded the city, the strategic placement of gates like Porta Vaga, the location of Fort San Felipe, and the organization of streets and buildings within the fortified perimeter. It also illustrates the relationship between the military installations, the shipyard facilities, religious structures like San Roque Church, and residential areas. For historians and heritage advocates, maps like this are crucial for reconstruction efforts and for understanding how much of the original Spanish colonial layout has been preserved or altered over time. The 1815 map represents Cavite at a time before the revolutionary movements that would transform Philippine society, offering a snapshot of colonial urban planning and military architecture. Researchers and visitors can use such historical cartographic evidence to trace the evolution of Cavite from a Spanish fortress-city to a modern Philippine municipality.",
+    details: [
+      "Historical map dating from 1815 during Spanish colonial period",
+      "Shows fortification walls and defensive structures",
+      "Illustrates location of Fort San Felipe and other military installations",
+      "Documents street layout and urban organization",
+      "Reveals location of religious buildings including churches",
+      "Important resource for heritage conservation and research",
+      "Helps trace urban development and changes over two centuries",
+      "Available through academic research publications",
+      "Used for heritage walking tour development and education",
     ],
   },
 ]);
@@ -528,35 +794,179 @@ const historyItems = ref<HistoryItem[]>([
 const references = ref([
   {
     id: 1,
-    title: "Ternate, Cavite - Wikipedia",
+    title: "San Roque Church (Cavite City) - Wikipedia",
     description:
-      "Comprehensive encyclopedia article covering the history, geography, demographics, and culture of Ternate municipality in Cavite province.",
+      "Comprehensive encyclopedia article about the historic San Roque Church built in 1595, one of Cavite City's most important religious landmarks.",
     source: "Wikipedia",
-    url: "https://en.wikipedia.org/wiki/Ternate,_Cavite",
+    url: "https://en.wikipedia.org/wiki/San_Roque_Church_%28Cavite_City%29",
   },
   {
     id: 2,
-    title: "Chabacano Language and Heritage",
+    title: "San Roque Church - Mapcarta",
     description:
-      "Information about the Chavacano/Chabacano Spanish-based creole languages of the Philippines, including the Ternateño variant.",
-    source: "Wikipedia",
-    url: "https://en.wikipedia.org/wiki/Chabacano",
+      "Interactive map and location information for San Roque Church in Cavite City with geographic context and nearby landmarks.",
+    source: "Mapcarta",
+    url: "https://mapcarta.com/W234096351",
   },
   {
     id: 3,
-    title: "Spanish in the Pacific (PDF)",
+    title: "San Roque Church Image - Wikimedia Commons",
     description:
-      "Academic paper by John M. Lipski discussing Spanish language influences in the Pacific, including the Ternate settlement and Chabacano development.",
-    source: "Research Paper",
-    url: "https://johnlipski.github.io/pacific.pdf",
+      "Historical photograph and documentation of San Roque Church architecture and its significance in Cavite City's religious heritage.",
+    source: "Wikimedia Commons",
+    url: "https://commons.wikimedia.org/wiki/File%3ASan_Roque_Church_%28Cavite_City%29.png",
   },
   {
     id: 4,
-    title: "Municipality of Ternate Official Website",
+    title: "Fort San Felipe - Wikipedia",
     description:
-      "Official local government website with current information about Ternate's governance, services, and community programs.",
-    source: "Local Government",
-    url: "https://lgu201.dilg.gov.ph/view.php?r=04&p=21&m=21",
+      "Detailed article covering the history, architecture, and military significance of Fort San Felipe, the 16th-century Spanish fortress on Cavite Peninsula.",
+    source: "Wikipedia",
+    url: "https://en.wikipedia.org/wiki/Fort_San_Felipe_%28Cavite%29",
+  },
+  {
+    id: 5,
+    title: "Fort San Felipe - Mapcarta",
+    description:
+      "Geographic information and interactive map showing Fort San Felipe's strategic location on Cavite Peninsula overlooking Manila Bay.",
+    source: "Mapcarta",
+    url: "https://mapcarta.com/W404525071",
+  },
+  {
+    id: 6,
+    title: "Cavite Peninsula - Wikipedia",
+    description:
+      "Encyclopedia article about the historic Cavite Peninsula, its strategic importance, and role in Philippine military and naval history.",
+    source: "Wikipedia",
+    url: "https://en.wikipedia.org/wiki/Cavite_Peninsula",
+  },
+  {
+    id: 7,
+    title: "Cavite City Seawall - Samonte Park (2020)",
+    description:
+      "Photographic documentation of the Sea Wall and Samonte Park area in Cavite City, showcasing the baywalk and coastal heritage sites.",
+    source: "Wikimedia Commons",
+    url: "https://commons.wikimedia.org/wiki/File%3ASea_Wall%2C_Samonte_Park%2C_Cavite_City_2020.jpg",
+  },
+  {
+    id: 8,
+    title: "Samonte Park Photowalk (April 2016)",
+    description:
+      "Photo blog documentation of Samonte Park and Cavite City heritage sites, featuring the baywalk area and colonial-era architecture.",
+    source: "Calabarzon D Blog",
+    url: "https://calabarzoned.wordpress.com/2016/04/15/samonte-park-cavite-city-photowalk-april-2016/",
+  },
+  {
+    id: 9,
+    title: "Historical Map: Cavite 1815",
+    description:
+      "Research publication featuring historical maps and documentation of Cavite during the Spanish colonial period (1815), showing Old Puerto area.",
+    source: "ResearchGate",
+    url: "https://www.researchgate.net/figure/SHM-42-Cavite-1815_fig5_305429797",
+  },
+  {
+    id: 10,
+    title: "Cavite Mutiny of 1872 Historical Marker",
+    description:
+      "Photograph and information about the historical marker commemorating the pivotal Cavite Mutiny of 1872, a precursor to the Philippine Revolution.",
+    source: "Wikimedia Commons",
+    url: "https://commons.wikimedia.org/wiki/File%3ACavite_Mutiny_of_1872_historical_marker_in_Cavite_City.jpg",
+  },
+  {
+    id: 11,
+    title: "Porta Vaga - Cavite Heritage Site",
+    description:
+      "Article about Porta Vaga, one of the remaining gates of the old Spanish fortified city of Cavite, an important heritage landmark.",
+    source: "Yodisphere",
+    url: "https://www.yodisphere.com/2021/06/Porta-Vaga-Cavite.html",
+  },
+  {
+    id: 12,
+    title: "Cavite City Tourist Spots & Historical Significance",
+    description:
+      "Comprehensive guide to Cavite City's historical tourist attractions, covering churches, forts, heritage sites, and their significance.",
+    source: "Hop N Cruise",
+    url: "https://hopncruise.com/2023/11/15/cavite-city-tourist-spots-love-their-historical-significance/",
+  },
+  {
+    id: 13,
+    title: "Regada Festival - Official Cavite Province Website",
+    description:
+      "Official information about Cavite's Regada Festival, the annual water festival celebrating San Juan Bautista with religious processions and festivities.",
+    source: "Cavite Provincial Government",
+    url: "https://cavite.gov.ph/home/regada-festival/",
+  },
+  {
+    id: 14,
+    title: "Caviterrific - Cultural Heritage Guide",
+    description:
+      "Interactive website showcasing Cavite's rich cultural heritage, festivals, historical sites, and traditions including the Regada Festival.",
+    source: "Caviterrific",
+    url: "https://markandrewcolocado.github.io/Caviterrific/main.html",
+  },
+  {
+    id: 15,
+    title: "Regada Festival 2019 - Video Documentation",
+    description:
+      "Video footage of the Regada Festival celebration in 2019, featuring the Caracol ni San Juan Bautista procession and water festivities.",
+    source: "YouTube",
+    url: "https://www.youtube.com/watch?v=6XiQFthN5Ho",
+  },
+  {
+    id: 16,
+    title: "Regada Festival 2019 - Official Photo",
+    description:
+      "Official photograph from Cavite City government documenting the 2019 Regada Festival celebration and street festivities.",
+    source: "Cavite City Government",
+    url: "http://cavitecity.gov.ph/images/regada%202019.jpg",
+  },
+  {
+    id: 17,
+    title: "Caracol ni San Juan Bautista - Festive Pinoy",
+    description:
+      "Article about the Caracol procession during Cavite's Regada Festival, explaining the water blessing tradition and religious significance.",
+    source: "Festive Pinoy",
+    url: "https://festivepinoy.com/cavites-regada-festival/",
+  },
+  {
+    id: 18,
+    title: "Regada Festival Documentary - YouTube",
+    description:
+      "Documentary-style video exploring the history, traditions, and cultural significance of the Regada Festival in Cavite City.",
+    source: "YouTube",
+    url: "https://www.youtube.com/watch?v=uQP7SyN1sHY",
+  },
+  {
+    id: 19,
+    title: "Regada Festival News Coverage - PNA",
+    description:
+      "Philippine News Agency coverage of the Regada Festival, highlighting its role in Cavite's cultural tourism and community celebration.",
+    source: "Philippine News Agency",
+    url: "https://www.pna.gov.ph/articles/1039362",
+  },
+  {
+    id: 20,
+    title: "Feast of San Roque - Cavite Festivals",
+    description:
+      "Information about the Feast of San Roque celebrated at San Roque Church every August 16, one of Cavite City's important religious celebrations.",
+    source: "Lutong Cavite Blog",
+    url: "https://lutongcavite.blogspot.com/p/cavite-festivals.html",
+  },
+  {
+    id: 21,
+    title: "Water, Faith and Fiesta: Experiencing Cavite's Soul Through Regada",
+    description:
+      "Feature article exploring the deep cultural and spiritual significance of the Regada Festival in expressing Cavite's community identity.",
+    source: "Business Mirror",
+    url: "https://businessmirror.com.ph/2025/08/02/water-faith-and-fiesta-experiencing-the-soul-of-cavite-through-regada/",
+  },
+  {
+    id: 22,
+    title: "Cavite City Strives to Make a Splash with Regada Festival",
+    description:
+      "News article about Cavite City's efforts to promote and preserve the Regada Festival as a major cultural tourism attraction.",
+    source: "Manila Bulletin Tribune",
+    url: "https://tribune.net.ph/2025/07/20/cavite-city-strives-to-make-a-splash",
   },
 ]);
 
@@ -816,7 +1226,7 @@ const filteredHistory = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 99999;
   padding: var(--spacing-lg);
   animation: fadeIn var(--transition-fast);
   overflow-y: auto;
@@ -1187,27 +1597,141 @@ const filteredHistory = computed(() => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.history-page__gallery-placeholder {
+.history-page__gallery-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--accent-2-color) 0%, #e5e7eb 100%);
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-normal);
+}
+
+.history-page__gallery-item:hover .history-page__gallery-image {
+  transform: scale(1.05);
+}
+
+/* Gallery Modal */
+.history-page__gallery-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  color: var(--accent-3-color);
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
+  z-index: 99999;
+  padding: var(--spacing-xl);
 }
 
-.history-page__gallery-placeholder svg {
-  opacity: 0.5;
+.history-page__gallery-modal-close {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 1);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  z-index: 100001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.history-page__gallery-placeholder span {
+.history-page__gallery-modal-close:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.history-page__gallery-modal-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-page__gallery-modal-image {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.history-page__gallery-modal-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 1);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
+  font-size: 24px;
+  z-index: 100001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.history-page__gallery-modal-nav:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.history-page__gallery-modal-nav--prev {
+  left: var(--spacing-xl);
+}
+
+.history-page__gallery-modal-nav--next {
+  right: var(--spacing-xl);
+}
+
+.history-page__gallery-modal-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.history-page__gallery-modal-nav:disabled:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-50%) scale(1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.history-page__gallery-modal-counter {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--light-color);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 20px;
   font-size: var(--fs-small-text);
   font-weight: var(--fw-medium);
+  backdrop-filter: blur(10px);
+  z-index: 100001;
 }
 
 /* ===== References Section ===== */
@@ -1453,6 +1977,42 @@ const filteredHistory = computed(() => {
   .history-page__modal-close {
     width: 36px;
     height: 36px;
+  }
+
+  .history-page__gallery-modal {
+    padding: var(--spacing-sm);
+  }
+
+  .history-page__gallery-modal-close {
+    width: 40px;
+    height: 40px;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: 20px;
+  }
+
+  .history-page__gallery-modal-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .history-page__gallery-modal-nav--prev {
+    left: var(--spacing-sm);
+  }
+
+  .history-page__gallery-modal-nav--next {
+    right: var(--spacing-sm);
+  }
+
+  .history-page__gallery-modal-counter {
+    bottom: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--fs-tiny-text);
+  }
+
+  .history-page__gallery-modal-image {
+    max-height: 70vh;
   }
 }
 </style>
