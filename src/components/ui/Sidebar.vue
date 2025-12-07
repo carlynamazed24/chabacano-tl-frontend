@@ -3,7 +3,7 @@
     <div class="col">
       <div class="img-container">
         <img
-          src="../../assets/images/chabacano_logo.png"
+          src="../../assets/images/chabacano_logo_white.png"
           alt="Chabacano Logo V2"
         />
       </div>
