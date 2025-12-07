@@ -21,11 +21,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/Translator.vue"),
       },
       {
-        path: "story",
-        name: "story",
-        component: () => import("../views/Story.vue"),
-      },
-      {
         path: "dictionary",
         name: "dictionary",
         component: () => import("../views/Dictionary.vue"),

@@ -69,7 +69,6 @@ const route: RouteLocationNormalizedLoadedGeneric = useRoute();
 // Navigation links
 const navLinks = [
   { text: "Home", route: "home" },
-  { text: "Story", route: "story" },
   { text: "History", route: "history" },
   { text: "Dictionary", route: "dictionary" },
 ];

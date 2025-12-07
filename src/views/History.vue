@@ -35,6 +35,204 @@
       </div>
     </section>
 
+    <!-- Chabacano Stories Section with Sidebar Navigation -->
+    <section class="history-page__stories-section">
+      <div class="history-page__stories-container">
+        <!-- Navigation Sidebar -->
+        <aside
+          class="history-page__sidebar slide-in-left"
+          :class="{ 'history-page__sidebar--sticky': isScrolled }"
+        >
+          <div class="history-page__sidebar-content">
+            <h2 class="history-page__sidebar-title">Contents</h2>
+            <nav class="history-page__nav" aria-label="Table of contents">
+              <ul class="history-page__nav-list">
+                <li
+                  v-for="(content, index) in storypageContents"
+                  :key="content.id"
+                  class="history-page__nav-item"
+                  :class="{
+                    'history-page__nav-item--active':
+                      activeSection === `section-${content.id}`,
+                  }"
+                >
+                  <a
+                    :href="`#section-${content.id}`"
+                    class="history-page__nav-link"
+                    :class="{
+                      'history-page__nav-link--active':
+                        activeSection === `section-${content.id}`,
+                    }"
+                    @click.prevent="scrollToElement(`section-${content.id}`)"
+                  >
+                    <span class="history-page__nav-number">{{
+                      index + 1
+                    }}</span>
+                    <span class="history-page__nav-text">{{
+                      content.headingTitle
+                    }}</span>
+                  </a>
+
+                  <!-- Sub-section links if they exist -->
+                  <ul
+                    v-if="content.subHeaders && content.subHeaders.length > 0"
+                    class="history-page__subnav-list"
+                  >
+                    <li
+                      v-for="subHeader in content.subHeaders"
+                      :key="subHeader.id"
+                      class="history-page__subnav-item"
+                      :class="{
+                        'history-page__subnav-item--active':
+                          activeSection === `subsection-${subHeader.id}`,
+                      }"
+                    >
+                      <a
+                        :href="`#subsection-${subHeader.id}`"
+                        class="history-page__subnav-link"
+                        :class="{
+                          'history-page__subnav-link--active':
+                            activeSection === `subsection-${subHeader.id}`,
+                        }"
+                        @click.prevent="
+                          scrollToElement(`subsection-${subHeader.id}`)
+                        "
+                      >
+                        {{ subHeader.subHeadingTitle }}
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </aside>
+
+        <main class="history-page__stories-main">
+          <!-- Loading State -->
+          <div
+            v-if="storypageContents.length === 0 && !storiesError"
+            class="history-page__loading"
+          >
+            <div class="loading-spinner"></div>
+            <p>Loading content...</p>
+          </div>
+
+          <!-- Dynamic Content Sections from Story Page -->
+          <div
+            v-else-if="storypageContents.length > 0"
+            class="history-page__story-content"
+          >
+            <section
+              v-for="(content, index) in storypageContents"
+              :key="content.id"
+              class="history-page__story-section"
+              :class="{
+                'history-page__story-section--highlight': index === 0,
+                'history-page__story-section--active':
+                  activeSection === `section-${content.id}`,
+              }"
+              :id="`section-${content.id}`"
+              :ref="el => { if(el) sectionRefs[`section-${content.id}`] = el as HTMLElement }"
+            >
+              <h2 class="history-page__story-section-title">
+                {{ content.headingTitle }}
+              </h2>
+              <div
+                class="history-page__story-section-content"
+                v-html="content.headingContent"
+              ></div>
+
+              <!-- Render sub-headers if they exist -->
+              <div
+                v-if="content.subHeaders && content.subHeaders.length > 0"
+                class="history-page__story-subsections"
+              >
+                <div
+                  v-for="subHeader in content.subHeaders"
+                  :key="subHeader.id"
+                  class="history-page__story-subsection"
+                  :class="{
+                    'history-page__story-subsection--active':
+                      activeSection === `subsection-${subHeader.id}`,
+                  }"
+                  :id="`subsection-${subHeader.id}`"
+                  :ref="el => { if(el) sectionRefs[`subsection-${subHeader.id}`] = el as HTMLElement }"
+                >
+                  <h3 class="history-page__story-subsection-title">
+                    {{ subHeader.subHeadingTitle }}
+                  </h3>
+                  <div
+                    class="history-page__story-subsection-content"
+                    v-html="subHeader.subHeadingContent"
+                  ></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Activities in Cavite Section -->
+          <section class="history-page__activities" id="activities-section">
+            <h2 class="history-page__section-title">Things to Do in Cavite</h2>
+            <p class="history-page__activities-description fs-body-text">
+              Discover the best activities and attractions in Cavite, the
+              historic province where Chabacano culture thrives.
+            </p>
+            <div class="history-page__activities-grid">
+              <div
+                class="history-page__activity-card"
+                v-for="activity in caviteActivities"
+                :key="activity.id"
+              >
+                <div class="history-page__activity-content">
+                  <span class="history-page__activity-category">{{
+                    activity.category
+                  }}</span>
+                  <h3 class="history-page__activity-title">
+                    {{ activity.title }}
+                  </h3>
+                  <p class="history-page__activity-description">
+                    {{ activity.description }}
+                  </p>
+                  <span class="history-page__activity-location">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {{ activity.location }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- Mobile Navigation Toggle -->
+        <button
+          class="history-page__mobile-nav-toggle"
+          :class="{ 'history-page__mobile-nav-toggle--active': mobileNavOpen }"
+          @click="toggleMobileNav"
+          aria-label="Toggle table of contents"
+          :aria-expanded="mobileNavOpen"
+        >
+          <span class="history-page__mobile-nav-icon"></span>
+          <span class="history-page__mobile-nav-label">Contents</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Most Viewed Posts Section -->
     <section class="history-page__featured-section">
       <div class="history-page__container">
@@ -378,7 +576,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { RequestToGetStorypageContents } from "../composables/API/Storypage";
+import { type StorypageContent } from "../composables/interfaces/Component";
 
 interface HistoryItem {
   id: number;
@@ -398,6 +598,14 @@ interface FeaturedPost {
   fullDescription: string;
   details?: string[];
 }
+
+// Story page state variables
+const storypageContents = ref<StorypageContent[]>([]);
+const isScrolled = ref(false);
+const activeSection = ref("");
+const mobileNavOpen = ref(false);
+const sectionRefs = ref<Record<string, HTMLElement>>({});
+const storiesError = ref(false);
 
 const searchQuery = ref<string>("");
 const selectedPost = ref<FeaturedPost | null>(null);
@@ -967,6 +1175,190 @@ const references = ref([
     url: "https://tribune.net.ph/2025/07/20/cavite-city-strives-to-make-a-splash",
   },
 ]);
+
+// Cavite Activities Data
+const caviteActivities = ref([
+  {
+    id: 1,
+    category: "Historical Site",
+    title: "Aguinaldo Shrine",
+    description:
+      "The historic residence of General Emilio Aguinaldo where Philippine independence was declared.",
+    location: "Kawit, Cavite",
+  },
+  {
+    id: 2,
+    category: "Nature & Adventure",
+    title: "People's Park in the Sky",
+    description:
+      "A mountaintop park offering panoramic views of Tagaytay and Taal Lake.",
+    location: "Tagaytay City",
+  },
+  {
+    id: 3,
+    category: "Cultural Heritage",
+    title: "Baldomero Aguinaldo Shrine",
+    description:
+      "Museum dedicated to the revolutionary leader and cousin of Gen. Emilio Aguinaldo.",
+    location: "Kawit, Cavite",
+  },
+  {
+    id: 4,
+    category: "Religious Site",
+    title: "Immaculate Conception Cathedral",
+    description:
+      "A historic church built during the Spanish colonial era, showcasing baroque architecture.",
+    location: "Imus, Cavite",
+  },
+  {
+    id: 5,
+    category: "Nature & Scenery",
+    title: "Taal Vista & Lake",
+    description:
+      "Breathtaking views of the world's smallest active volcano within a lake.",
+    location: "Tagaytay City",
+  },
+  {
+    id: 6,
+    category: "Museum",
+    title: "Museo De La Salle",
+    description:
+      "Features artifacts and exhibits about Philippine history and natural science.",
+    location: "Dasmariñas, Cavite",
+  },
+]);
+
+// Story page functionality
+onMounted(async () => {
+  try {
+    const response = await RequestToGetStorypageContents();
+    storypageContents.value = response.data || [];
+
+    if (storypageContents.value.length > 0) {
+      storypageContents.value.sort(
+        (a, b) => (a.sectionOrder ?? 0) - (b.sectionOrder ?? 0)
+      );
+
+      // Initialize active section after DOM update
+      setTimeout(() => {
+        updateActiveSection();
+        setupIntersectionObserver();
+      }, 100);
+    }
+
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
+  } catch (error) {
+    console.error("Error fetching story page contents:", error);
+    storiesError.value = true;
+  }
+});
+
+onUnmounted(() => {
+  // Clean up event listeners
+  window.removeEventListener("scroll", handleScroll);
+
+  // Clean up intersection observer
+  if (observer) {
+    observer.disconnect();
+  }
+});
+
+// Handle scroll event to update UI based on scroll position
+const handleScroll = () => {
+  // Update sticky header state
+  isScrolled.value = window.scrollY > 100;
+
+  // Update active section based on scroll position
+  updateActiveSection();
+};
+
+// Track which section is currently in view using Intersection Observer
+let observer: IntersectionObserver | null = null;
+
+const setupIntersectionObserver = () => {
+  const options = {
+    root: null,
+    rootMargin: "-100px 0px -70% 0px",
+    threshold: 0,
+  };
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        activeSection.value = entry.target.id;
+      }
+    });
+  }, options);
+
+  // Observe all sections and subsections
+  Object.values(sectionRefs.value).forEach((el) => {
+    if (el) observer?.observe(el);
+  });
+};
+
+// Update active section based on scroll position as a fallback
+const updateActiveSection = () => {
+  if (Object.keys(sectionRefs.value).length === 0) return;
+
+  // Find the section closest to the top of the viewport
+  const scrollPosition = window.scrollY + 150; // Offset for header
+
+  let currentSection = "";
+  let minDistance = Infinity;
+
+  Object.entries(sectionRefs.value).forEach(([id, element]) => {
+    const distance = Math.abs(
+      element.getBoundingClientRect().top + window.scrollY - scrollPosition
+    );
+    if (distance < minDistance) {
+      minDistance = distance;
+      currentSection = id;
+    }
+  });
+
+  if (currentSection && currentSection !== activeSection.value) {
+    activeSection.value = currentSection;
+  }
+};
+
+// Improved scrolling function
+const scrollToElement = (elementId: string) => {
+  const element = document.getElementById(elementId);
+
+  if (element) {
+    // Close mobile nav if open
+    if (mobileNavOpen.value) {
+      mobileNavOpen.value = false;
+    }
+
+    const offset = 120;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.scrollY - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+
+    // Update active section
+    setTimeout(() => {
+      activeSection.value = elementId;
+    }, 100);
+  }
+};
+
+// Toggle mobile navigation
+const toggleMobileNav = () => {
+  mobileNavOpen.value = !mobileNavOpen.value;
+
+  // Add body class to prevent scrolling when nav is open
+  if (mobileNavOpen.value) {
+    document.body.classList.add("nav-open");
+  } else {
+    document.body.classList.remove("nav-open");
+  }
+};
 
 const filteredHistory = computed(() => {
   if (!searchQuery.value) {
@@ -2011,6 +2403,599 @@ const filteredHistory = computed(() => {
 
   .history-page__gallery-modal-image {
     max-height: 70vh;
+  }
+}
+
+/* ===== Story Section with Sidebar Navigation ===== */
+.history-page__stories-section {
+  background-color: var(--white-color);
+  padding: var(--spacing-3xl) 0;
+}
+
+.history-page__stories-container {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 2rem;
+  padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Sidebar Navigation */
+.history-page__sidebar {
+  width: 300px;
+  position: sticky;
+  top: 1.5rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  scrollbar-width: thin;
+  transition: all var(--transition-fast);
+}
+
+.history-page__sidebar--sticky {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-page__sidebar-content {
+  background-color: var(--accent-2-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--accent-3-color);
+}
+
+.history-page__sidebar-title {
+  font-size: var(--fs-heading-5);
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-weight: var(--fw-bold);
+  border-bottom: 1px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+.history-page__nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-page__nav-item {
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  transition: transform var(--transition-fast);
+}
+
+.history-page__nav-item--active {
+  transform: translateX(3px);
+}
+
+.history-page__nav-link {
+  color: var(--dark-color);
+  text-decoration: none;
+  font-weight: var(--fw-medium);
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
+  overflow: hidden;
+}
+
+.history-page__nav-link--active {
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+  background-color: rgba(13, 148, 136, 0.1);
+  font-weight: var(--fw-semibold);
+}
+
+.history-page__nav-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(13, 148, 136, 0.05);
+  transform: translateX(2px);
+}
+
+.history-page__nav-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--accent-3-color);
+  color: var(--white-color);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.history-page__nav-link--active .history-page__nav-number {
+  background-color: var(--primary-color);
+}
+
+.history-page__nav-text {
+  flex: 1;
+  font-size: 14px;
+}
+
+.history-page__subnav-list {
+  list-style: none;
+  margin: 0.5rem 0 0 2rem;
+  padding: 0;
+  border-left: 1px solid var(--accent-3-color);
+  position: relative;
+}
+
+.history-page__subnav-item {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.history-page__subnav-link {
+  color: var(--dark-color);
+  font-size: var(--fs-small-text);
+  text-decoration: none;
+  display: block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+  position: relative;
+  padding-left: 1rem;
+}
+
+.history-page__subnav-link::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  color: var(--accent-3-color);
+  opacity: 0.6;
+}
+
+.history-page__subnav-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(13, 148, 136, 0.05);
+}
+
+.history-page__subnav-link--active {
+  color: var(--primary-color);
+  font-weight: var(--fw-medium);
+}
+
+/* Main Story Content */
+.history-page__stories-main {
+  flex: 1;
+  max-width: 800px;
+}
+
+.history-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--accent-3-color);
+  height: 300px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(13, 148, 136, 0.3);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.history-page__story-content {
+  margin-bottom: 2rem;
+}
+
+.history-page__story-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--accent-2-color);
+  scroll-margin-top: 80px;
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.history-page__story-section:last-child {
+  border-bottom: none;
+}
+
+.history-page__story-section--highlight {
+  background-color: rgba(254, 243, 199, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.history-page__story-section-title {
+  font-size: var(--fs-heading-4);
+  color: var(--dark-color);
+  font-weight: var(--fw-bold);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.history-page__story-section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--primary-color);
+  transition: width var(--transition-normal);
+}
+
+.history-page__story-section:hover .history-page__story-section-title::after {
+  width: 80px;
+}
+
+.history-page__story-section-content {
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+}
+
+.history-page__story-subsections {
+  margin-top: 1.5rem;
+}
+
+.history-page__story-subsection {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--accent-2-color);
+  scroll-margin-top: 80px;
+}
+
+.history-page__story-subsection-title {
+  font-size: var(--fs-heading-6);
+  color: var(--dark-color);
+  font-weight: var(--fw-semibold);
+  margin-bottom: 0.5rem;
+}
+
+.history-page__story-subsection-content {
+  line-height: 1.6;
+  color: var(--dark-color);
+}
+
+/* Activities Section */
+.history-page__activities {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--accent-2-color);
+}
+
+.history-page__activities-description {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.history-page__activities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.history-page__activity-card {
+  background: var(--white-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--accent-2-color);
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.history-page__activity-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.history-page__activity-image {
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--accent-1-color) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0.9;
+}
+
+.history-page__activity-content {
+  padding: 1rem;
+}
+
+.history-page__activity-category {
+  display: inline-block;
+  background-color: var(--accent-2-color);
+  color: var(--primary-color);
+  font-size: 0.7rem;
+  font-weight: var(--fw-semibold);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.history-page__activity-title {
+  font-size: var(--fs-body-text);
+  font-weight: var(--fw-bold);
+  color: var(--dark-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.history-page__activity-description {
+  font-size: var(--fs-small-text);
+  color: var(--accent-3-color);
+  line-height: 1.5;
+  margin: 0 0 0.75rem 0;
+}
+
+.history-page__activity-location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  font-weight: var(--fw-medium);
+}
+
+/* Mobile Navigation Toggle */
+.history-page__mobile-nav-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 100;
+  transition: all var(--transition-fast);
+  opacity: 0;
+  transform: translateY(100px);
+  animation: slideUpFade 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.5s;
+  display: none;
+}
+
+.history-page__mobile-nav-toggle:hover {
+  background-color: var(--secondary-color);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.history-page__mobile-nav-toggle--active {
+  background-color: var(--dark-color);
+}
+
+.history-page__mobile-nav-icon {
+  width: 18px;
+  height: 2px;
+  background-color: currentColor;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.history-page__mobile-nav-icon::before,
+.history-page__mobile-nav-icon::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  left: 0;
+  transition: transform 0.3s ease;
+}
+
+.history-page__mobile-nav-icon::before {
+  top: -6px;
+}
+
+.history-page__mobile-nav-icon::after {
+  bottom: -6px;
+}
+
+.history-page__mobile-nav-toggle--active
+  .history-page__mobile-nav-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.history-page__mobile-nav-toggle--active .history-page__mobile-nav-icon::after {
+  bottom: 0;
+  transform: rotate(-45deg);
+}
+
+.history-page__mobile-nav-toggle--active .history-page__mobile-nav-icon {
+  background-color: transparent;
+}
+
+.history-page__mobile-nav-label {
+  font-size: var(--fs-small-text);
+  font-weight: var(--fw-medium);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Story Section Responsive Design */
+@media (max-width: 1024px) {
+  .history-page__stories-container {
+    gap: 1.5rem;
+  }
+
+  .history-page__sidebar {
+    width: 250px;
+  }
+}
+
+@media (max-width: 900px) {
+  .history-page__stories-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .history-page__sidebar {
+    width: 100%;
+    max-height: none;
+    position: relative;
+    top: 0;
+    order: 1;
+  }
+
+  .history-page__sidebar--sticky {
+    box-shadow: none;
+  }
+
+  .history-page__nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .history-page__nav-item {
+    margin-bottom: 0.5rem;
+    flex: 1 1 calc(50% - 0.5rem);
+  }
+
+  .history-page__stories-main {
+    order: 2;
+  }
+
+  .history-page__subnav-list {
+    display: none;
+  }
+
+  .history-page__nav-item--active .history-page__subnav-list {
+    display: block;
+  }
+
+  .history-page__activities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-page__activity-image {
+    height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .history-page__stories-section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .history-page__story-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .history-page__nav-item {
+    flex: 1 1 100%;
+  }
+
+  .history-page__sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.95);
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .history-page__sidebar-content {
+    max-height: 80vh;
+    overflow-y: auto;
+    margin-top: 15vh;
+    animation: slideUpFade 0.3s ease-out;
+  }
+
+  body.nav-open .history-page__sidebar {
+    display: block;
+  }
+
+  .history-page__mobile-nav-toggle {
+    display: flex;
+  }
+
+  .history-page__activity-card {
+    border-radius: 0.75rem;
+  }
+
+  .history-page__activity-content {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .history-page__stories-container {
+    padding: 0 0.5rem;
+  }
+
+  .history-page__story-section-title {
+    font-size: var(--fs-heading-5);
+  }
+
+  .history-page__story-subsection-title {
+    font-size: var(--fs-body-text);
+  }
+
+  .history-page__mobile-nav-toggle {
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .history-page__activities-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .history-page__activity-card {
+    border-radius: 0.75rem;
   }
 }
 </style>

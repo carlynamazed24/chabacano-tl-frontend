@@ -14,7 +14,7 @@
         <ul class="nav-lists">
           <li class="nav-item">
             <router-link
-              class="nav-link fs-body-text-semibold text-light"
+              class="nav-link fs-small-text text-light"
               :to="{ name: 'home' }"
             >
               Home
@@ -22,15 +22,15 @@
           </li>
           <li class="nav-item">
             <router-link
-              class="nav-link fs-body-text-semibold text-light"
-              :to="{ name: 'story' }"
+              class="nav-link fs-small-text text-light"
+              :to="{ name: 'history' }"
             >
-              Story
+              History
             </router-link>
           </li>
           <li class="nav-item">
             <router-link
-              class="nav-link fs-body-text-semibold text-light"
+              class="nav-link fs-small-text text-light"
               :to="{ name: 'dictionary' }"
             >
               Dictionary
@@ -39,7 +39,7 @@
 
           <li class="nav-item">
             <router-link
-              class="nav-link fs-body-text-semibold text-light"
+              class="nav-link fs-small-text text-light"
               :to="{ name: 'translator' }"
             >
               Translator
@@ -67,7 +67,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 3em 0;
+  padding: 1em 0;
   background-color: var(--primary-color);
 }
 
@@ -76,17 +76,17 @@
   justify-content: space-between;
   align-items: center;
   width: 80%;
-  margin-bottom: 2em;
+  margin-bottom: 0.75em;
   border-bottom: 1px solid var(--light-color);
 }
 
 .footer > .footer-nav > .footer-logo > a > img {
-  width: 80px;
+  width: 60px;
 }
 
 .footer > .footer-nav > .nav-container > .nav-lists {
   display: flex;
-  gap: 5em;
+  gap: 3em;
 }
 
 @media (max-width: 768px) {
