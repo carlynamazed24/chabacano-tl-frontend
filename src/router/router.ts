@@ -11,27 +11,27 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/Home.vue"),
     children: [
       {
-        path: "/",
+        path: "",
         name: "home",
         component: () => import("../views/partials/Index.vue"),
       },
       {
-        path: "/translator",
+        path: "translator",
         name: "translator",
         component: () => import("../views/Translator.vue"),
       },
       {
-        path: "/story",
+        path: "story",
         name: "story",
         component: () => import("../views/Story.vue"),
       },
       {
-        path: "/dictionary",
+        path: "dictionary",
         name: "dictionary",
         component: () => import("../views/Dictionary.vue"),
       },
       {
-        path: "/history",
+        path: "history",
         name: "history",
         component: () => import("../views/History.vue"),
       },

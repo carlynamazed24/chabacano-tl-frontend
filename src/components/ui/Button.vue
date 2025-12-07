@@ -39,7 +39,9 @@ watch(
 );
 
 const routeTo = (path: string | undefined) => {
-  router.push({ name: path });
+  if (path) {
+    router.push({ name: path });
+  }
 };
 </script>
 
