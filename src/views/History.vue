@@ -416,8 +416,6 @@ const closeModal = () => {
 const galleryImages = ref<string[]>([
   new URL("../assets/images/history_page/history_img_1.jpeg", import.meta.url)
     .href,
-  new URL("../assets/images/history_page/history_img_2.jpeg", import.meta.url)
-    .href,
   new URL("../assets/images/history_page/history_img_3.jpeg", import.meta.url)
     .href,
   new URL("../assets/images/history_page/history_img_4.jpeg", import.meta.url)
