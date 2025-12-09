@@ -170,53 +170,6 @@
               </div>
             </section>
           </div>
-
-          <!-- Activities in Cavite Section -->
-          <section class="history-page__activities" id="activities-section">
-            <h2 class="history-page__section-title">Things to Do in Cavite</h2>
-            <p class="history-page__activities-description fs-body-text">
-              Discover the best activities and attractions in Cavite, the
-              historic province where Chabacano culture thrives.
-            </p>
-            <div class="history-page__activities-grid">
-              <div
-                class="history-page__activity-card"
-                v-for="activity in caviteActivities"
-                :key="activity.id"
-              >
-                <div class="history-page__activity-content">
-                  <span class="history-page__activity-category">{{
-                    activity.category
-                  }}</span>
-                  <h3 class="history-page__activity-title">
-                    {{ activity.title }}
-                  </h3>
-                  <p class="history-page__activity-description">
-                    {{ activity.description }}
-                  </p>
-                  <span class="history-page__activity-location">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
-                      />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    {{ activity.location }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
         </main>
 
         <!-- Mobile Navigation Toggle -->
@@ -1173,58 +1126,6 @@ const references = ref([
       "News article about Cavite City's efforts to promote and preserve the Regada Festival as a major cultural tourism attraction.",
     source: "Manila Bulletin Tribune",
     url: "https://tribune.net.ph/2025/07/20/cavite-city-strives-to-make-a-splash",
-  },
-]);
-
-// Cavite Activities Data
-const caviteActivities = ref([
-  {
-    id: 1,
-    category: "Historical Site",
-    title: "Aguinaldo Shrine",
-    description:
-      "The historic residence of General Emilio Aguinaldo where Philippine independence was declared.",
-    location: "Kawit, Cavite",
-  },
-  {
-    id: 2,
-    category: "Nature & Adventure",
-    title: "People's Park in the Sky",
-    description:
-      "A mountaintop park offering panoramic views of Tagaytay and Taal Lake.",
-    location: "Tagaytay City",
-  },
-  {
-    id: 3,
-    category: "Cultural Heritage",
-    title: "Baldomero Aguinaldo Shrine",
-    description:
-      "Museum dedicated to the revolutionary leader and cousin of Gen. Emilio Aguinaldo.",
-    location: "Kawit, Cavite",
-  },
-  {
-    id: 4,
-    category: "Religious Site",
-    title: "Immaculate Conception Cathedral",
-    description:
-      "A historic church built during the Spanish colonial era, showcasing baroque architecture.",
-    location: "Imus, Cavite",
-  },
-  {
-    id: 5,
-    category: "Nature & Scenery",
-    title: "Taal Vista & Lake",
-    description:
-      "Breathtaking views of the world's smallest active volcano within a lake.",
-    location: "Tagaytay City",
-  },
-  {
-    id: 6,
-    category: "Museum",
-    title: "Museo De La Salle",
-    description:
-      "Features artifacts and exhibits about Philippine history and natural science.",
-    location: "Dasmariñas, Cavite",
   },
 ]);
 
@@ -2678,94 +2579,6 @@ const filteredHistory = computed(() => {
   color: var(--dark-color);
 }
 
-/* Activities Section */
-.history-page__activities {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--accent-2-color);
-}
-
-.history-page__activities-description {
-  color: var(--dark-color);
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.history-page__activities-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.history-page__activity-card {
-  background: var(--white-color);
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--accent-2-color);
-  transition: transform var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.history-page__activity-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-}
-
-.history-page__activity-image {
-  height: 120px;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--accent-1-color) 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  opacity: 0.9;
-}
-
-.history-page__activity-content {
-  padding: 1rem;
-}
-
-.history-page__activity-category {
-  display: inline-block;
-  background-color: var(--accent-2-color);
-  color: var(--primary-color);
-  font-size: 0.7rem;
-  font-weight: var(--fw-semibold);
-  padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-}
-
-.history-page__activity-title {
-  font-size: var(--fs-body-text);
-  font-weight: var(--fw-bold);
-  color: var(--dark-color);
-  margin: 0 0 0.5rem 0;
-}
-
-.history-page__activity-description {
-  font-size: var(--fs-small-text);
-  color: var(--accent-3-color);
-  line-height: 1.5;
-  margin: 0 0 0.75rem 0;
-}
-
-.history-page__activity-location {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  color: var(--secondary-color);
-  font-weight: var(--fw-medium);
-}
-
 /* Mobile Navigation Toggle */
 .history-page__mobile-nav-toggle {
   position: fixed;
@@ -2908,14 +2721,6 @@ const filteredHistory = computed(() => {
 
   .history-page__nav-item--active .history-page__subnav-list {
     display: block;
-  }
-
-  .history-page__activities-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .history-page__activity-image {
-    height: 100px;
   }
 }
 
