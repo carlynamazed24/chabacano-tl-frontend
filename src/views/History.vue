@@ -1605,7 +1605,7 @@ const filteredHistory = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 1000000;
   padding: var(--spacing-lg);
   animation: fadeIn var(--transition-fast);
   overflow-y: auto;
@@ -1619,6 +1619,7 @@ const filteredHistory = computed(() => {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  z-index: 1000001;
   animation: slideUpFade var(--transition-normal) var(--ease-out);
 }
 
@@ -2001,7 +2002,7 @@ const filteredHistory = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 1000002;
   padding: var(--spacing-xl);
 }
 
@@ -2023,7 +2024,7 @@ const filteredHistory = computed(() => {
     transform var(--transition-fast), box-shadow var(--transition-fast);
   font-size: 24px;
   font-weight: var(--fw-bold);
-  z-index: 100001;
+  z-index: 1000003;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
