@@ -658,6 +658,42 @@ const galleryImages = ref<string[]>([
     .href,
 ]);
 
+// Images to use for section content (contents_section folder)
+const contentsSectionImages = [
+  new URL(
+    "../assets/images/contents_section/contents_section_img_1.jpeg",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_2.jpeg",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_3.jpeg",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_4.JPG",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_5.JPG",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_6.JPG",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_7.JPG",
+    import.meta.url
+  ).href,
+  new URL(
+    "../assets/images/contents_section/contents_section_img_8.JPG",
+    import.meta.url
+  ).href,
+];
+
 const selectedGalleryIndex = ref<number | null>(null);
 
 const openGalleryModal = (index: number) => {
@@ -1169,6 +1205,23 @@ onMounted(async () => {
   try {
     const response = await RequestToGetStorypageContents();
     storypageContents.value = response.data || [];
+
+    // Attach sample images to sections that don't have an imageUrl
+    if (
+      storypageContents.value.length > 0 &&
+      contentsSectionImages.length > 0
+    ) {
+      storypageContents.value.forEach((sec, i) => {
+        if (!sec.imageUrl) {
+          // cycle through provided images
+          sec.imageUrl =
+            contentsSectionImages[i % contentsSectionImages.length];
+        }
+        if (!sec.imageAlt) {
+          sec.imageAlt = `${sec.headingTitle} image`;
+        }
+      });
+    }
 
     if (storypageContents.value.length > 0) {
       storypageContents.value.sort(
