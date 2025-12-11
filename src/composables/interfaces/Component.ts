@@ -11,6 +11,9 @@ interface StorypageContent {
   headingTitle: string;
   headingContent: string;
   subHeaders?: SubHeaders[];
+  // Optional media fields for UI — allow images per section
+  imageUrl?: string;
+  imageAlt?: string;
 }
 
 interface Dictionary {

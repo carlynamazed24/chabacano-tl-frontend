@@ -138,10 +138,38 @@
               <h2 class="history-page__story-section-title">
                 {{ content.headingTitle }}
               </h2>
-              <div
-                class="history-page__story-section-content"
-                v-html="content.headingContent"
-              ></div>
+
+              <!-- Optional Section Media (renders only when imageUrl present) -->
+              <div class="history-page__section-row">
+                <div
+                  v-if="content.imageUrl"
+                  class="history-page__section-media"
+                  aria-hidden="false"
+                >
+                  <img
+                    :src="content.imageUrl"
+                    :alt="content.imageAlt || content.headingTitle"
+                    class="history-page__section-img"
+                    loading="lazy"
+                    @load="onImageLoad(content.id)"
+                    :class="{
+                      'history-page__img--loaded': loadedImages[content.id],
+                    }"
+                  />
+                  <div
+                    v-if="!loadedImages[content.id]"
+                    class="history-page__media-placeholder"
+                    aria-hidden="true"
+                  ></div>
+                </div>
+
+                <div class="history-page__section-text">
+                  <div
+                    class="history-page__story-section-content"
+                    v-html="content.headingContent"
+                  ></div>
+                </div>
+              </div>
 
               <!-- Render sub-headers if they exist -->
               <div
@@ -529,7 +557,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { RequestToGetStorypageContents } from "../composables/API/Storypage";
 import { type StorypageContent } from "../composables/interfaces/Component";
 
@@ -559,6 +587,13 @@ const activeSection = ref("");
 const mobileNavOpen = ref(false);
 const sectionRefs = ref<Record<string, HTMLElement>>({});
 const storiesError = ref(false);
+
+// Track loaded state for section images so they are hidden until fully loaded
+const loadedImages = reactive<Record<number | string, boolean>>({});
+
+const onImageLoad = (id: number | string) => {
+  loadedImages[id] = true;
+};
 
 const searchQuery = ref<string>("");
 const selectedPost = ref<FeaturedPost | null>(null);
@@ -2556,6 +2591,52 @@ const filteredHistory = computed(() => {
   color: var(--dark-color);
 }
 
+/* Section media + text layout */
+.history-page__section-row {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.history-page__section-media {
+  flex: 0 0 38%;
+  max-width: 38%;
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--accent-2-color);
+  min-height: 140px;
+}
+
+.history-page__section-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 260ms ease-in-out, transform 260ms ease-in-out;
+  transform: scale(1.02);
+}
+
+.history-page__img--loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.history-page__media-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 148, 136, 0.12),
+    rgba(6, 182, 212, 0.06)
+  );
+}
+
+.history-page__section-text {
+  flex: 1 1 62%;
+}
+
 .history-page__story-subsections {
   margin-top: 1.5rem;
 }
@@ -2698,6 +2779,20 @@ const filteredHistory = computed(() => {
 
   .history-page__sidebar--sticky {
     box-shadow: none;
+  }
+
+  .history-page__section-row {
+    flex-direction: column;
+  }
+
+  .history-page__section-media {
+    width: 100%;
+    max-width: 100%;
+    min-height: 160px;
+  }
+
+  .history-page__section-text {
+    width: 100%;
   }
 
   .history-page__nav-list {
