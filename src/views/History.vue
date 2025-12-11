@@ -598,14 +598,44 @@ const onImageLoad = (id: number | string) => {
 const searchQuery = ref<string>("");
 const selectedPost = ref<FeaturedPost | null>(null);
 
+// Track if a modal is open so we can lower the global header z-index to avoid it overlapping
+let modalOpenCount = 0;
+let headerPrevZ: string | null = null;
+
+const lowerHeaderZ = () => {
+  const header = document.querySelector("header.header") as HTMLElement | null;
+  if (!header) return;
+  if (modalOpenCount === 0) {
+    headerPrevZ = header.style.zIndex || window.getComputedStyle(header).zIndex;
+    header.style.zIndex = "0";
+  }
+  modalOpenCount += 1;
+};
+
+const restoreHeaderZ = () => {
+  const header = document.querySelector("header.header") as HTMLElement | null;
+  if (!header) return;
+  modalOpenCount = Math.max(0, modalOpenCount - 1);
+  if (modalOpenCount === 0) {
+    if (headerPrevZ !== null && headerPrevZ !== "") {
+      header.style.zIndex = headerPrevZ;
+    } else {
+      header.style.zIndex = "";
+    }
+    headerPrevZ = null;
+  }
+};
+
 const openModal = (post: FeaturedPost) => {
   selectedPost.value = post;
   document.body.style.overflow = "hidden";
+  lowerHeaderZ();
 };
 
 const closeModal = () => {
   selectedPost.value = null;
   document.body.style.overflow = "";
+  restoreHeaderZ();
 };
 
 // Gallery Images from assets
@@ -699,11 +729,13 @@ const selectedGalleryIndex = ref<number | null>(null);
 const openGalleryModal = (index: number) => {
   selectedGalleryIndex.value = index;
   document.body.style.overflow = "hidden";
+  lowerHeaderZ();
 };
 
 const closeGalleryModal = () => {
   selectedGalleryIndex.value = null;
   document.body.style.overflow = "";
+  restoreHeaderZ();
 };
 
 const prevGalleryImage = () => {
