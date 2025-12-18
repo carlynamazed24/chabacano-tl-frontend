@@ -6,8 +6,8 @@
         <!-- Hero Image -->
         <div class="history-page__hero-image-container">
           <img
-            src="../assets/images/cavite_historical_site_bg.png"
-            alt="The Metropolitan Museum"
+            src="../assets/images/597691611_1399345558565002_1701115336400144880_n.jpg"
+            alt="History Cover Image"
             loading="lazy"
             class="history-page__hero-image"
           />
@@ -666,11 +666,7 @@ const galleryImages = ref<string[]>([
     .href,
   new URL("../assets/images/history_page/history_img_14.jpeg", import.meta.url)
     .href,
-  new URL("../assets/images/history_page/history_img_15.jpeg", import.meta.url)
-    .href,
-  new URL("../assets/images/history_page/history_img_16.png", import.meta.url)
-    .href,
-  new URL("../assets/images/history_page/history_img_17.png", import.meta.url)
+  new URL("../assets/images/history_page/history_img_15.jpg", import.meta.url)
     .href,
   new URL("../assets/images/history_page/history_img_18.png", import.meta.url)
     .href,
@@ -691,7 +687,7 @@ const galleryImages = ref<string[]>([
 // Images to use for section content (contents_section folder)
 const contentsSectionImages = [
   new URL(
-    "../assets/images/contents_section/contents_section_img_1.jpeg",
+    "../assets/images/contents_section/contents_section_img_1.jpg",
     import.meta.url
   ).href,
   new URL(
@@ -2251,21 +2247,33 @@ const filteredHistory = computed(() => {
 }
 
 @media (max-width: 768px) {
-  .history-page__hero-section {
-    padding: var(--spacing-2xl) var(--spacing-md);
-  }
-
   .history-page__hero-content {
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
+    padding: var(--spacing-lg) 0;
   }
 
   .history-page__hero-image-container {
-    height: 250px;
+    width: 100%;
+    aspect-ratio: 3/4;
+    height: auto;
+    min-height: 320px;
+    max-height: 80vw;
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   }
 
-  .history-page__hero-title {
-    font-size: var(--fs-heading-4);
+  .history-page__hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0;
   }
 
   .history-page__featured-section {
