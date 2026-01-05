@@ -668,10 +668,6 @@ const galleryImages = ref<string[]>([
     .href,
   new URL("../assets/images/history_page/history_img_15.jpg", import.meta.url)
     .href,
-  new URL("../assets/images/history_page/history_img_18.png", import.meta.url)
-    .href,
-  new URL("../assets/images/history_page/history_img_19.png", import.meta.url)
-    .href,
   new URL("../assets/images/history_page/history_img_20.png", import.meta.url)
     .href,
   new URL("../assets/images/history_page/history_img_21.png", import.meta.url)
@@ -703,7 +699,7 @@ const contentsSectionImages = [
     import.meta.url
   ).href,
   new URL(
-    "../assets/images/contents_section/contents_section_img_5.JPG",
+    "../assets/images/contents_section/contents_section_img_5.jpg",
     import.meta.url
   ).href,
   new URL(
@@ -1239,15 +1235,17 @@ onMounted(async () => {
       storypageContents.value.length > 0 &&
       contentsSectionImages.length > 0
     ) {
-      storypageContents.value.forEach((sec, i) => {
-        if (!sec.imageUrl) {
-          // cycle through provided images
-          sec.imageUrl =
-            contentsSectionImages[i % contentsSectionImages.length];
-        }
-        if (!sec.imageAlt) {
-          sec.imageAlt = `${sec.headingTitle} image`;
-        }
+      const fallbackQueue = [...contentsSectionImages];
+
+      storypageContents.value = storypageContents.value.map((sec) => {
+        const imageUrl = sec.imageUrl?.trim() || fallbackQueue.shift();
+        const imageAlt = sec.imageAlt?.trim() || `${sec.headingTitle} image`;
+
+        return {
+          ...sec,
+          imageUrl,
+          imageAlt,
+        };
       });
     }
 
