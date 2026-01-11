@@ -1,61 +1,99 @@
 <template>
-  <h2 class="fs-heading-6">
-    {{ route.params.id ? "Edit" : "Add New" }} Section
-  </h2>
-  <div class="container">
-    <div class="header-content content">
-      <div class="input-container">
-        <input
-          type="text"
-          placeholder="New Section Header"
-          v-model="sectionContent.headingTitle"
-        />
+  <div class="story-form">
+    <div class="form-header">
+      <h2 class="form-header__title fs-heading-5">
+        {{ route.params.id ? "Edit" : "Add New" }} Section
+      </h2>
+      <p class="form-header__subtitle fs-body-text">
+        {{
+          route.params.id
+            ? "Update the section details"
+            : "Create a new story section"
+        }}
+      </p>
+    </div>
+
+    <div class="form-body">
+      <!-- Main Section -->
+      <div class="form-section form-section--main">
+        <div class="form-section__header">
+          <span class="form-section__badge">Main Section</span>
+        </div>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Section Header</label>
+            <input
+              type="text"
+              class="form-field__input"
+              placeholder="Enter section header"
+              v-model="sectionContent.headingTitle"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text"
+              >Section Description</label
+            >
+            <textarea
+              class="form-field__textarea"
+              placeholder="Enter section description"
+              v-model="sectionContent.headingContent"
+            ></textarea>
+          </div>
+        </div>
       </div>
 
-      <div class="input-container">
-        <textarea
-          placeholder="New Section description"
-          v-model="sectionContent.headingContent"
-        ></textarea>
+      <!-- Sub Headers -->
+      <div
+        v-for="(subHeader, index) in sectionContent.subHeaders"
+        :key="index"
+        class="form-section form-section--sub"
+      >
+        <div class="form-section__header">
+          <span class="form-section__badge form-section__badge--secondary"
+            >Subheader {{ index + 1 }}</span
+          >
+        </div>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text"
+              >Subheader Title (Optional)</label
+            >
+            <input
+              type="text"
+              class="form-field__input"
+              placeholder="Enter subheader title"
+              v-model="subHeader.subHeadingTitle"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text"
+              >Subheader Content (Optional)</label
+            >
+            <textarea
+              class="form-field__textarea"
+              placeholder="Enter subheader content"
+              v-model="subHeader.subHeadingContent"
+            ></textarea>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div
-      v-for="subHeader in sectionContent.subHeaders"
-      :key="subHeader.subHeadingTitle"
-      class="subheader-content content"
-    >
-      <div class="input-container">
-        <input
-          type="text"
-          placeholder="New Section Subheader(Optional)"
-          v-model="subHeader.subHeadingTitle"
-        />
-      </div>
-
-      <div class="input-container">
-        <textarea
-          placeholder="New Section description (Optional) "
-          v-model="subHeader.subHeadingContent"
-        ></textarea>
-      </div>
+    <div class="form-actions">
+      <Button
+        btnType="btn-outline"
+        btnText="Add Subheader"
+        @click="addNewSubHeader"
+        size="md"
+      />
+      <Button
+        btnType="btn-secondary"
+        :btnText="route.params.id ? 'Update Section' : 'Create Section'"
+        @click="route.params.id ? updateStorySection() : addNewStorySection()"
+        :disabled="isHeaderEmpty"
+        size="md"
+      />
     </div>
-  </div>
-
-  <div class="btn">
-    <Button
-      btnType="btn-outline"
-      btnText="Add Subheader"
-      @click="addNewSubHeader"
-      size="md"
-    />
-    <Button
-      btnType="btn-secondary"
-      btnText="Submit"
-      @click="route.params.id ? updateStorySection() : addNewStorySection()"
-      :disabled="isHeaderEmpty"
-      size="md"
-    />
   </div>
 </template>
 

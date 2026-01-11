@@ -1,67 +1,113 @@
 <template>
-  <div class="home-page-editor">
-    <div class="section-content">
-      <h2 class="fs-heading-6">Edit Hero Content</h2>
-      <div class="input-container">
-        <input type="text" v-model="heroTitle" />
+  <div class="homepage-editor">
+    <div class="form-section">
+      <div class="form-section__header">
+        <h2 class="form-section__title fs-heading-6">Edit Hero Content</h2>
       </div>
-
-      <div class="input-container">
-        <textarea v-model="heroContent"></textarea>
-      </div>
-    </div>
-
-    <div class="section-content">
-      <h2 class="fs-heading-6">Edit About Us Content</h2>
-      <div class="input-container">
-        <input type="text" v-model="aboutUsTitle" />
-      </div>
-
-      <div class="input-container">
-        <textarea v-model="aboutUsContent"></textarea>
-      </div>
-    </div>
-
-    <div class="section-content">
-      <h2 class="fs-heading-6">Our Mission Content</h2>
-      <div class="input-container">
-        <input type="text" v-model="ourMissionTitle" />
-      </div>
-
-      <div class="input-container">
-        <textarea v-model="ourMissionContent"></textarea>
+      <div class="form-section__body">
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Title</label>
+          <input
+            type="text"
+            v-model="heroTitle"
+            class="form-field__input"
+            placeholder="Enter hero title"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Content</label>
+          <textarea
+            v-model="heroContent"
+            class="form-field__textarea"
+            placeholder="Enter hero content"
+          ></textarea>
+        </div>
       </div>
     </div>
 
-    <div class="section-content">
-      <h2 class="fs-heading-6">Our Vission Content</h2>
-      <div class="input-container">
-        <input type="text" v-model="ourVisionTitle" />
+    <div class="form-section">
+      <div class="form-section__header">
+        <h2 class="form-section__title fs-heading-6">Edit About Us Content</h2>
       </div>
-
-      <div class="input-container">
-        <textarea v-model="ourVisionContent"></textarea>
+      <div class="form-section__body">
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Title</label>
+          <input
+            type="text"
+            v-model="aboutUsTitle"
+            class="form-field__input"
+            placeholder="Enter about us title"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Content</label>
+          <textarea
+            v-model="aboutUsContent"
+            class="form-field__textarea"
+            placeholder="Enter about us content"
+          ></textarea>
+        </div>
       </div>
     </div>
 
-    <!--  <div class="section-content">
-      <h2 class="fs-heading-6">Why Chabacano Content</h2>
-      <div class="input-container">
-        <input type="text" v-model="whyChabacanoTitle" />
+    <div class="form-section">
+      <div class="form-section__header">
+        <h2 class="form-section__title fs-heading-6">Our Mission Content</h2>
       </div>
-
-      <div class="input-container">
-        <textarea v-model="whyChabacanoContent"></textarea>
+      <div class="form-section__body">
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Title</label>
+          <input
+            type="text"
+            v-model="ourMissionTitle"
+            class="form-field__input"
+            placeholder="Enter mission title"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Content</label>
+          <textarea
+            v-model="ourMissionContent"
+            class="form-field__textarea"
+            placeholder="Enter mission content"
+          ></textarea>
+        </div>
       </div>
-    </div> -->
+    </div>
 
-    <Button
-      style="width: 10%"
-      size="lg"
-      btnText="Save"
-      btnType="btn-secondary"
-      @click="updateHomepageContent"
-    />
+    <div class="form-section">
+      <div class="form-section__header">
+        <h2 class="form-section__title fs-heading-6">Our Vision Content</h2>
+      </div>
+      <div class="form-section__body">
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Title</label>
+          <input
+            type="text"
+            v-model="ourVisionTitle"
+            class="form-field__input"
+            placeholder="Enter vision title"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-field__label fs-body-text">Content</label>
+          <textarea
+            v-model="ourVisionContent"
+            class="form-field__textarea"
+            placeholder="Enter vision content"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <Button
+        size="lg"
+        btnText="Save Changes"
+        btnType="btn-secondary"
+        @click="updateHomepageContent"
+      />
+    </div>
   </div>
 </template>
 
@@ -170,37 +216,80 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import "../../../styles/variables.css";
+@import "../../../styles/tokens/colors.css";
+@import "../../../styles/tokens/typography.css";
+@import "../../../styles/tokens/spacing.css";
+@import "../../../styles/tokens/animations.css";
 
-.home-page-editor {
+.homepage-editor {
   display: flex;
   flex-direction: column;
-  gap: 3em;
-  padding: 2em;
-  background-color: white;
-  border-radius: 0.5em;
+  gap: var(--spacing-xl);
 }
 
-.home-page-editor > .section-content {
+.form-section {
+  background: var(--light-color);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(13, 148, 136, 0.1);
+}
+
+.form-section__header {
+  background: var(--gradient-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.form-section__title {
+  color: var(--light-color);
+  margin: 0;
+}
+
+.form-section__body {
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: var(--spacing-md);
 }
 
-.home-page-editor > .section-content > .input-container > input {
-  width: 100%;
-  padding: 1em;
-  outline: 0;
-  border: 1px solid var(--dark-color);
-  font-size: 1em;
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
-.home-page-editor > .section-content > .input-container > textarea {
-  resize: none;
+.form-field__label {
+  color: var(--dark-color);
+  font-weight: var(--fw-medium);
+}
+
+.form-field__input,
+.form-field__textarea {
   width: 100%;
-  height: 100px;
-  padding: 1em;
-  outline: 0;
-  font-size: 1.3em;
+  padding: var(--spacing-md);
+  border: 2px solid var(--light-color);
+  border-radius: var(--border-radius-md);
+  font-size: var(--fs-body-text);
+  font-family: var(--font-body);
+  background: var(--white-color);
+  transition: border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.form-field__input:focus,
+.form-field__textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.form-field__textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-md);
 }
 </style>

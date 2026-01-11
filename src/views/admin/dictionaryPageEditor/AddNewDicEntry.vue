@@ -1,52 +1,83 @@
 <template>
-  <div class="dictionary-editor">
-    <h2 class="fs-heading-6">Add New Entry</h2>
-    <div class="container">
-      <div class="input-container">
-        <label for="chabacano-input" class="fs-body-text">Chabacano</label>
-        <input
-          type="text"
-          id="chabacano-input"
-          placeholder="Word or Phrase in Chabacano"
-          v-model="chabacaLang"
-        />
+  <div class="dictionary-entry-form">
+    <div class="form-header">
+      <h2 class="form-header__title fs-heading-5">
+        {{ route.params.id ? "Edit Entry" : "Add New Entry" }}
+      </h2>
+      <p class="form-header__subtitle fs-body-text">
+        {{
+          route.params.id
+            ? "Update the dictionary entry details"
+            : "Fill in the translation details below"
+        }}
+      </p>
+    </div>
+
+    <div class="form-body">
+      <div class="form-row">
+        <div class="form-field">
+          <label for="chabacano-input" class="form-field__label fs-body-text"
+            >Chabacano</label
+          >
+          <input
+            type="text"
+            id="chabacano-input"
+            class="form-field__input"
+            placeholder="Word or Phrase in Chabacano"
+            v-model="chabacaLang"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="tagalog-input" class="form-field__label fs-body-text"
+            >Tagalog</label
+          >
+          <input
+            type="text"
+            id="tagalog-input"
+            class="form-field__input"
+            placeholder="Word or Phrase in Tagalog"
+            v-model="tagalogLang"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="english-input" class="form-field__label fs-body-text"
+            >English</label
+          >
+          <input
+            type="text"
+            id="english-input"
+            class="form-field__input"
+            placeholder="Word or Phrase in English"
+            v-model="englishLang"
+          />
+        </div>
       </div>
 
-      <div class="input-container">
-        <label for="tagalog-input" class="fs-body-text">Tagalog</label>
-        <input
-          type="text"
-          id="tagalog-input"
-          placeholder="Word or Phrase in Tagalog"
-          v-model="tagalogLang"
-        />
-      </div>
-
-      <div class="input-container">
-        <label for="english-input" class="fs-body-text">English</label>
-        <input
-          type="text"
-          id="english-input"
-          placeholder="Word or Phrase in English"
-          v-model="englishLang"
-        />
-      </div>
-
-      <div class="input-container">
-        <label for="english-definition" class="fs-body-text">Definition</label>
+      <div class="form-field">
+        <label for="english-definition" class="form-field__label fs-body-text"
+          >Definition</label
+        >
         <textarea
           id="english-definition"
+          class="form-field__textarea"
           placeholder="Definition of the word or phrase in English"
           v-model="definition"
-        >
-        </textarea>
+        ></textarea>
       </div>
     </div>
 
-    <div class="btn">
+    <div class="form-actions">
       <Button
         size="md"
-        btnText="Save Entry"
+        btnText="Cancel"
+        btnType="btn-outline"
+        @click="resetForm"
+      />
+      <Button
+        size="md"
+        :btnText="route.params.id ? 'Update Entry' : 'Save Entry'"
         btnType="btn-secondary"
         @click="route.params.id ? updateEntry() : addNewEntry()"
       />
@@ -152,43 +183,85 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import "../../../styles/variables.css";
+@import "../../../styles/tokens/colors.css";
+@import "../../../styles/tokens/typography.css";
+@import "../../../styles/tokens/spacing.css";
+@import "../../../styles/tokens/animations.css";
 
-.dictionary-editor {
+.dictionary-entry-form {
   display: flex;
   flex-direction: column;
-  gap: 3em;
-  padding: 2em;
-  background-color: white;
-  border-radius: 0.5em;
+  gap: var(--spacing-xl);
 }
 
-.dictionary-editor > .container {
+.form-header {
+  border-bottom: 1px solid var(--light-color);
+  padding-bottom: var(--spacing-lg);
+}
+
+.form-header__title {
+  color: var(--dark-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-header__subtitle {
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+.form-body {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: var(--spacing-lg);
 }
 
-.dictionary-editor > .container > .input-container {
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: var(--spacing-xs);
 }
 
-.dictionary-editor > .container > .input-container > label,
-.dictionary-editor > .container > .input-container > input,
-.dictionary-editor > .container > .input-container > textarea {
-  display: block;
+.form-field__label {
+  color: var(--dark-color);
+  font-weight: var(--fw-medium);
 }
 
-.dictionary-editor > .container > .input-container > input,
-.dictionary-editor > .container > .input-container > textarea {
-  padding: 1em;
-  outline: 0;
+.form-field__input,
+.form-field__textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--light-color);
+  border-radius: var(--border-radius-md);
+  font-size: var(--fs-body-text);
+  font-family: var(--font-body);
+  background: var(--white-color);
+  transition: border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
 }
 
-.dictionary-editor > .container > .input-container > textarea {
-  resize: none;
-  height: 120px;
+.form-field__input:focus,
+.form-field__textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.form-field__textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--light-color);
 }
 </style>

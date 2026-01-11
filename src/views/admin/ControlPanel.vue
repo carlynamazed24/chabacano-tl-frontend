@@ -1,9 +1,9 @@
 <template>
   <div class="panel">
     <Sidebar />
-    <div class="content">
+    <main class="panel__content">
       <RouterView />
-    </div>
+    </main>
   </div>
 </template>
 
@@ -12,11 +12,16 @@ import Sidebar from "../../components/ui/Sidebar.vue";
 </script>
 
 <style scoped>
+@import "../../styles/tokens/colors.css";
+
 .panel {
   display: flex;
+  min-height: 100vh;
+  background-color: var(--light-color);
 }
 
-.content {
+.panel__content {
   flex: 1;
+  overflow-y: auto;
 }
 </style>

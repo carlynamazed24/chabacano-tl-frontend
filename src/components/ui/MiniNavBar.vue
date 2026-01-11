@@ -1,11 +1,15 @@
 <template>
-  <nav class="nav">
-    <ul class="nav-lists">
-      <li v-for="navList in navLists" class="nav-item">
+  <nav class="mini-nav">
+    <ul class="mini-nav__list">
+      <li
+        v-for="navList in navLists"
+        :key="navList.path"
+        class="mini-nav__item"
+      >
         <router-link
           :to="{ name: navList.path }"
-          class="fs-body-text"
-          :class="{ active: $route.name === navList.path }"
+          class="mini-nav__link fs-body-text"
+          :class="{ 'mini-nav__link--active': $route.name === navList.path }"
         >
           {{ navList.name }}
         </router-link>
@@ -32,26 +36,71 @@ const navLists = ref(props.navLists);
 </script>
 
 <style scoped>
-@import "../../styles/variables.css";
+@import "../../styles/tokens/colors.css";
+@import "../../styles/tokens/typography.css";
+@import "../../styles/tokens/spacing.css";
+@import "../../styles/tokens/animations.css";
 
-.nav > .nav-lists {
+.mini-nav {
+  background: var(--white-color);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.mini-nav__list {
   display: flex;
-  gap: 2em;
+  gap: var(--spacing-xl);
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.nav > .nav-lists > .nav-item > a {
-  color: var(--accent-3-color);
-  border-bottom: 1px solid transparent;
-  transition: all 0.3s ease;
-  padding: 0.5em 0;
+.mini-nav__item {
+  position: relative;
 }
 
-.nav > .nav-lists > .nav-item > a:hover {
-  border-color: var(--primary-color);
+.mini-nav__link {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: var(--fw-medium);
+  border-radius: var(--border-radius-sm);
+  transition: color var(--transition-normal) var(--ease-out),
+    background-color var(--transition-normal) var(--ease-out);
 }
 
-.nav > .nav-lists > .nav-item > a.active {
-  color: black;
-  border-bottom: 1px solid var(--primary-color);
+.mini-nav__link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: width var(--transition-normal) var(--ease-out),
+    left var(--transition-normal) var(--ease-out);
+}
+
+.mini-nav__link:hover {
+  color: var(--dark-color);
+  background-color: var(--light-color);
+}
+
+.mini-nav__link:hover::after {
+  width: 80%;
+  left: 10%;
+}
+
+.mini-nav__link--active {
+  color: var(--dark-color);
+  background-color: var(--light-color);
+}
+
+.mini-nav__link--active::after {
+  width: 80%;
+  left: 10%;
+  background-color: var(--secondary-color);
 }
 </style>
