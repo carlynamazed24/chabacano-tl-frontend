@@ -24,9 +24,36 @@
           <textarea
             class="translator__textarea"
             v-model="textInput"
-            @input="translateText"
+            @input="handleTextInput"
+            :maxlength="maxCharacters"
             placeholder="Isulat mo..."
           ></textarea>
+
+          <!-- Source Audio Controls -->
+          <div
+            class="translator__audio-controls translator__audio-controls--source"
+          >
+            <button
+              class="translator__audio-btn"
+              :class="{ 'translator__audio-btn--recording': isRecording }"
+              @click="toggleRecording"
+              aria-label="Voice input"
+              :title="isRecording ? 'Stop recording' : 'Start voice input'"
+            >
+              <MicIcon
+                :size="20"
+                :color="isRecording ? '#ffffff' : '#1a1a1a'"
+              />
+            </button>
+          </div>
+
+          <!-- Character Counter -->
+          <div
+            class="translator__char-counter"
+            :class="{ 'translator__char-counter--limit': isAtLimit }"
+          >
+            {{ textInput.length }} / {{ maxCharacters.toLocaleString() }}
+          </div>
         </div>
       </div>
 
@@ -91,12 +118,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, onMounted } from "vue";
+import { ref, onBeforeUnmount, onMounted, computed } from "vue";
 import { RequestToTranslateText } from "../composables/API/Translation";
 import { displayErrorNotification } from "../composables/services/notifications";
 import SpeakerIcon from "../components/icons/SpeakerIcon.vue";
 import CopyIcon from "../components/icons/CopyIcon.vue";
 import SwitchIcon from "../components/icons/SwitchIcon.vue";
+import MicIcon from "../components/icons/MicIcon.vue";
 
 // Define ResponsiveVoice interface
 declare global {
@@ -147,6 +175,9 @@ interface SpeechRecognition extends EventTarget {
   stop(): void;
 }
 
+// Constants
+const maxCharacters = 3000;
+
 // Reactive references
 const selectedSrcLang = ref("Chabacano");
 const selectedTargetLang = ref("Tagalog");
@@ -155,6 +186,9 @@ const translatedText = ref("");
 const isRecording = ref(false);
 const debounceTimeout = ref<number | null>(null);
 const isSpeaking = ref(false);
+
+// Computed property for character limit check
+const isAtLimit = computed(() => textInput.value.length >= maxCharacters);
 
 // Map languages to ResponsiveVoice voices
 const getVoiceForLanguage = (lang: string) => {
@@ -188,7 +222,9 @@ try {
   // Handle speech recognition result
   recognition.onresult = (event: SpeechRecognitionEvent) => {
     const transcript = event.results[0][0].transcript;
-    textInput.value = transcript;
+    // Append transcript to existing text, respecting character limit
+    const newText = textInput.value + (textInput.value ? " " : "") + transcript;
+    textInput.value = newText.slice(0, maxCharacters);
     translateText();
   };
 
@@ -212,7 +248,7 @@ try {
     onend: null,
     start: () =>
       displayErrorNotification(
-        "Speech recognition not supported in this browser"
+        "Speech recognition not supported in this browser",
       ),
     stop: () => {},
     addEventListener: () => {},
@@ -227,7 +263,7 @@ const speakText = (text: string, lang: string) => {
 
   if (!window.responsiveVoice) {
     alert(
-      "ResponsiveVoice is not loaded. Please check your API key and connection."
+      "ResponsiveVoice is not loaded. Please check your API key and connection.",
     );
     // Fall back to native speech synthesis
     speakTextFallback(text, lang);
@@ -291,6 +327,47 @@ const speakTextFallback = (text: string, lang: string) => {
 
 const speakTranslatedText = () => {
   speakText(translatedText.value, selectedTargetLang.value);
+};
+
+// Get speech recognition language code
+const getSpeechRecognitionLang = (lang: string): string => {
+  switch (lang) {
+    case "Tagalog":
+      return "fil-PH";
+    case "English":
+      return "en-US";
+    case "Chabacano":
+      return "es-ES"; // Use Spanish as closest approximation
+    default:
+      return "en-US";
+  }
+};
+
+// Toggle voice recording
+const toggleRecording = () => {
+  if (isRecording.value) {
+    recognition.stop();
+    isRecording.value = false;
+  } else {
+    try {
+      // Set recognition language based on source language
+      recognition.lang = getSpeechRecognitionLang(selectedSrcLang.value);
+      recognition.start();
+      isRecording.value = true;
+    } catch (error) {
+      console.error("Failed to start speech recognition:", error);
+      displayErrorNotification("Failed to start voice input");
+    }
+  }
+};
+
+// Handle text input with character limit enforcement
+const handleTextInput = () => {
+  // Enforce character limit
+  if (textInput.value.length > maxCharacters) {
+    textInput.value = textInput.value.slice(0, maxCharacters);
+  }
+  translateText();
 };
 
 // Translation function
@@ -366,12 +443,12 @@ onMounted(() => {
   // Check if ResponsiveVoice is available
   if (!window.responsiveVoice) {
     console.warn(
-      "ResponsiveVoice is not available. Make sure to include the script in your HTML."
+      "ResponsiveVoice is not available. Make sure to include the script in your HTML.",
     );
   } else {
     console.log(
       "ResponsiveVoice available voices:",
-      window.responsiveVoice.getVoices()
+      window.responsiveVoice.getVoices(),
     );
   }
 });
@@ -564,6 +641,11 @@ onBeforeUnmount(() => {
   gap: 10px;
 }
 
+.translator__audio-controls--source {
+  left: 16px;
+  right: auto;
+}
+
 .translator__audio-btn {
   display: flex;
   align-items: center;
@@ -580,6 +662,43 @@ onBeforeUnmount(() => {
 .translator__audio-btn:hover {
   background: rgba(0, 0, 0, 0.1);
   transform: scale(1.1);
+}
+
+.translator__audio-btn--recording {
+  background: #ef4444;
+  animation: pulse-recording 1.5s ease-in-out infinite;
+}
+
+.translator__audio-btn--recording:hover {
+  background: #dc2626;
+}
+
+@keyframes pulse-recording {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Character Counter */
+.translator__char-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.translator__char-counter--limit {
+  color: #ef4444;
+  font-weight: 600;
 }
 
 /* Footer with Buttons */
@@ -685,9 +804,20 @@ onBeforeUnmount(() => {
     right: 14px;
   }
 
+  .translator__audio-controls--source {
+    left: 14px;
+    right: auto;
+  }
+
   .translator__audio-btn {
     width: 42px;
     height: 42px;
+  }
+
+  .translator__char-counter {
+    bottom: 14px;
+    right: 14px;
+    font-size: 0.8rem;
   }
 }
 
@@ -722,9 +852,20 @@ onBeforeUnmount(() => {
     right: 12px;
   }
 
+  .translator__audio-controls--source {
+    left: 12px;
+    right: auto;
+  }
+
   .translator__audio-btn {
     width: 40px;
     height: 40px;
+  }
+
+  .translator__char-counter {
+    bottom: 12px;
+    right: 12px;
+    font-size: 0.75rem;
   }
 
   .translator__btn {
