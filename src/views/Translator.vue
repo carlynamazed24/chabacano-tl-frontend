@@ -45,6 +45,13 @@
                 :color="isRecording ? '#ffffff' : '#1a1a1a'"
               />
             </button>
+            <button
+              class="translator__audio-btn"
+              @click="copySourceText"
+              aria-label="Copy source text"
+            >
+              <CopyIcon :size="20" :color="'#1a1a1a'" />
+            </button>
           </div>
 
           <!-- Character Counter -->
@@ -428,6 +435,10 @@ const switchLanguages = () => {
 
 const copyTargetText = async () => {
   await navigator.clipboard.writeText(translatedText.value);
+};
+
+const copySourceText = async () => {
+  await navigator.clipboard.writeText(textInput.value);
 };
 
 // Stop any ongoing speech when component is unmounted
