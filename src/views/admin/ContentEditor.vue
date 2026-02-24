@@ -25,7 +25,7 @@ const NavLists: NavListsProps[] = [
     path: "home-page-editor",
   },
   {
-    name: "Story Page",
+    name: "History Page",
     path: "story-page-editor",
   },
 ];
