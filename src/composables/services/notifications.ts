@@ -8,7 +8,6 @@ const notificationDefaultOptions: ToastOptions = {
   pauseOnHover: false,
   autoClose: 1000,
   hideProgressBar: true,
-  dangerouslyHTMLString: true,
 };
 
 const displaySuccessNotification = (message: string) => {

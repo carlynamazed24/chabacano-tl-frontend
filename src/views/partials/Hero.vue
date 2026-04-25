@@ -25,19 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, watch } from "vue";
 import Button from "../../components/ui/Button.vue";
 
-const props = defineProps({
+defineProps({
   title: String,
   tagline: String,
-});
-
-let { title, tagline } = toRefs(props);
-
-watch([title, tagline], ([newTitle, newTagline]) => {
-  title = newTitle;
-  tagline = newTagline;
 });
 </script>
 
@@ -57,6 +49,7 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   justify-content: center;
   overflow: hidden;
   color: var(--light-color);
+  isolation: isolate;
 }
 
 .hero__background {
@@ -67,7 +60,7 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   height: 100%;
   background: url("../../assets/images/chabacano_translator_hero_bg.png") center
     center/cover no-repeat;
-  z-index: -2;
+  z-index: 0;
 }
 
 .hero__overlay {
@@ -77,7 +70,7 @@ watch([title, tagline], ([newTitle, newTagline]) => {
   width: 100%;
   height: 100%;
   background: var(--gradient-hero);
-  z-index: -1;
+  z-index: 1;
 }
 
 .hero__content {

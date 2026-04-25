@@ -21,7 +21,7 @@ const heroContent = ref<string>("");
 onMounted(async () => {
   const response = await RequestToGetHomepageContent();
 
-  if (response.status === "failed") {
+  if (response.status !== "success" || !response.data) {
     console.log("Error fetching homepage content");
     return;
   }
