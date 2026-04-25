@@ -13,75 +13,83 @@
       </p>
     </div>
 
-    <div class="form-body">
-      <div class="form-row">
-        <div class="form-field">
-          <label for="chabacano-input" class="form-field__label fs-body-text"
-            >Chabacano</label
-          >
-          <input
-            type="text"
-            id="chabacano-input"
-            class="form-field__input"
-            placeholder="Word or Phrase in Chabacano"
-            v-model="chabacaLang"
-          />
+    <LoadingIndicator
+      v-if="isLoading"
+      label="Loading"
+      variant="panel"
+    />
+
+    <template v-else>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="chabacano-input" class="form-field__label fs-body-text"
+              >Chabacano</label
+            >
+            <input
+              type="text"
+              id="chabacano-input"
+              class="form-field__input"
+              placeholder="Word or Phrase in Chabacano"
+              v-model="chabacaLang"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="tagalog-input" class="form-field__label fs-body-text"
+              >Tagalog</label
+            >
+            <input
+              type="text"
+              id="tagalog-input"
+              class="form-field__input"
+              placeholder="Word or Phrase in Tagalog"
+              v-model="tagalogLang"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="english-input" class="form-field__label fs-body-text"
+              >English</label
+            >
+            <input
+              type="text"
+              id="english-input"
+              class="form-field__input"
+              placeholder="Word or Phrase in English"
+              v-model="englishLang"
+            />
+          </div>
         </div>
 
         <div class="form-field">
-          <label for="tagalog-input" class="form-field__label fs-body-text"
-            >Tagalog</label
+          <label for="english-definition" class="form-field__label fs-body-text"
+            >Definition</label
           >
-          <input
-            type="text"
-            id="tagalog-input"
-            class="form-field__input"
-            placeholder="Word or Phrase in Tagalog"
-            v-model="tagalogLang"
-          />
-        </div>
-
-        <div class="form-field">
-          <label for="english-input" class="form-field__label fs-body-text"
-            >English</label
-          >
-          <input
-            type="text"
-            id="english-input"
-            class="form-field__input"
-            placeholder="Word or Phrase in English"
-            v-model="englishLang"
-          />
+          <textarea
+            id="english-definition"
+            class="form-field__textarea"
+            placeholder="Definition of the word or phrase in English"
+            v-model="definition"
+          ></textarea>
         </div>
       </div>
 
-      <div class="form-field">
-        <label for="english-definition" class="form-field__label fs-body-text"
-          >Definition</label
-        >
-        <textarea
-          id="english-definition"
-          class="form-field__textarea"
-          placeholder="Definition of the word or phrase in English"
-          v-model="definition"
-        ></textarea>
+      <div class="form-actions">
+        <Button
+          size="md"
+          btnText="Cancel"
+          btnType="btn-outline"
+          @click="resetForm"
+        />
+        <Button
+          size="md"
+          :btnText="route.params.id ? 'Update Entry' : 'Save Entry'"
+          btnType="btn-secondary"
+          @click="route.params.id ? updateEntry() : addNewEntry()"
+        />
       </div>
-    </div>
-
-    <div class="form-actions">
-      <Button
-        size="md"
-        btnText="Cancel"
-        btnType="btn-outline"
-        @click="resetForm"
-      />
-      <Button
-        size="md"
-        :btnText="route.params.id ? 'Update Entry' : 'Save Entry'"
-        btnType="btn-secondary"
-        @click="route.params.id ? updateEntry() : addNewEntry()"
-      />
-    </div>
+    </template>
   </div>
 </template>
 
@@ -94,6 +102,7 @@ import {
   RequestToUpdateDictionaryEntry,
 } from "../../../composables/API/Dictionary";
 import Button from "../../../components/ui/Button.vue";
+import LoadingIndicator from "../../../components/ui/LoadingIndicator.vue";
 import {
   displayErrorNotification,
   displaySuccessNotification,
@@ -101,6 +110,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
+const isLoading = ref(Boolean(route.params.id));
 
 const chabacaLang = ref<string>("");
 const tagalogLang = ref<string>("");
@@ -171,12 +181,19 @@ const resetForm = () => {
 
 onMounted(async () => {
   if (route.params.id) {
-    const response = await RequestToGetDictionaryEntry(route.params.id);
-    if (response.status === "success") {
-      chabacaLang.value = response.data.chabacanoLang;
-      tagalogLang.value = response.data.tagalogLang;
-      englishLang.value = response.data.englishLang;
-      definition.value = response.data.definition;
+    try {
+      const response = await RequestToGetDictionaryEntry(route.params.id);
+      if (response.status === "success") {
+        chabacaLang.value = response.data.chabacanoLang;
+        tagalogLang.value = response.data.tagalogLang;
+        englishLang.value = response.data.englishLang;
+        definition.value = response.data.definition;
+      }
+    } catch (error) {
+      displayErrorNotification("Something went wrong");
+      console.error(error);
+    } finally {
+      isLoading.value = false;
     }
   }
 });

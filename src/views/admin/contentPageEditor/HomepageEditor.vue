@@ -1,113 +1,123 @@
 <template>
   <div class="homepage-editor">
-    <div class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title fs-heading-6">Edit Hero Content</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Title</label>
-          <input
-            type="text"
-            v-model="heroTitle"
-            class="form-field__input"
-            placeholder="Enter hero title"
-          />
-        </div>
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Content</label>
-          <textarea
-            v-model="heroContent"
-            class="form-field__textarea"
-            placeholder="Enter hero content"
-          ></textarea>
-        </div>
-      </div>
-    </div>
+    <LoadingIndicator
+      v-if="isLoading"
+      label="Loading"
+      variant="panel"
+    />
 
-    <div class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title fs-heading-6">Edit About Us Content</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Title</label>
-          <input
-            type="text"
-            v-model="aboutUsTitle"
-            class="form-field__input"
-            placeholder="Enter about us title"
-          />
+    <template v-else>
+      <div class="form-section">
+        <div class="form-section__header">
+          <h2 class="form-section__title fs-heading-6">Edit Hero Content</h2>
         </div>
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Content</label>
-          <textarea
-            v-model="aboutUsContent"
-            class="form-field__textarea"
-            placeholder="Enter about us content"
-          ></textarea>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Title</label>
+            <input
+              type="text"
+              v-model="heroTitle"
+              class="form-field__input"
+              placeholder="Enter hero title"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Content</label>
+            <textarea
+              v-model="heroContent"
+              class="form-field__textarea"
+              placeholder="Enter hero content"
+            ></textarea>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title fs-heading-6">Our Mission Content</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Title</label>
-          <input
-            type="text"
-            v-model="ourMissionTitle"
-            class="form-field__input"
-            placeholder="Enter mission title"
-          />
+      <div class="form-section">
+        <div class="form-section__header">
+          <h2 class="form-section__title fs-heading-6">
+            Edit About Us Content
+          </h2>
         </div>
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Content</label>
-          <textarea
-            v-model="ourMissionContent"
-            class="form-field__textarea"
-            placeholder="Enter mission content"
-          ></textarea>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Title</label>
+            <input
+              type="text"
+              v-model="aboutUsTitle"
+              class="form-field__input"
+              placeholder="Enter about us title"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Content</label>
+            <textarea
+              v-model="aboutUsContent"
+              class="form-field__textarea"
+              placeholder="Enter about us content"
+            ></textarea>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title fs-heading-6">Our Vision Content</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Title</label>
-          <input
-            type="text"
-            v-model="ourVisionTitle"
-            class="form-field__input"
-            placeholder="Enter vision title"
-          />
+      <div class="form-section">
+        <div class="form-section__header">
+          <h2 class="form-section__title fs-heading-6">Our Mission Content</h2>
         </div>
-        <div class="form-field">
-          <label class="form-field__label fs-body-text">Content</label>
-          <textarea
-            v-model="ourVisionContent"
-            class="form-field__textarea"
-            placeholder="Enter vision content"
-          ></textarea>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Title</label>
+            <input
+              type="text"
+              v-model="ourMissionTitle"
+              class="form-field__input"
+              placeholder="Enter mission title"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Content</label>
+            <textarea
+              v-model="ourMissionContent"
+              class="form-field__textarea"
+              placeholder="Enter mission content"
+            ></textarea>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-actions">
-      <Button
-        size="lg"
-        btnText="Save Changes"
-        btnType="btn-secondary"
-        @click="updateHomepageContent"
-      />
-    </div>
+      <div class="form-section">
+        <div class="form-section__header">
+          <h2 class="form-section__title fs-heading-6">Our Vision Content</h2>
+        </div>
+        <div class="form-section__body">
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Title</label>
+            <input
+              type="text"
+              v-model="ourVisionTitle"
+              class="form-field__input"
+              placeholder="Enter vision title"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-field__label fs-body-text">Content</label>
+            <textarea
+              v-model="ourVisionContent"
+              class="form-field__textarea"
+              placeholder="Enter vision content"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <Button
+          size="lg"
+          btnText="Save Changes"
+          btnType="btn-secondary"
+          @click="updateHomepageContent"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -123,6 +133,7 @@ import {
   displayErrorNotification,
   displaySuccessNotification,
 } from "../../../composables/services/notifications";
+import LoadingIndicator from "../../../components/ui/LoadingIndicator.vue";
 
 const heroTitle = ref<string>("");
 const heroContent = ref<string>("");
@@ -134,13 +145,21 @@ const ourVisionTitle = ref<string>("");
 const ourVisionContent = ref<string>("");
 const whyChabacanoTitle = ref<string>("This has been removed from the UI");
 const whyChabacanoContent = ref<string>("This has been removed from the UI");
+const isLoading = ref(true);
 
 // Store initial data to compare changes
 const initialData = ref<Record<string, string>>({});
 
 const getHomepageContent = async () => {
+  isLoading.value = true;
   try {
     const response = await RequestToGetHomepageContent();
+
+    if (response.status !== "success" || !response.data) {
+      return displayErrorNotification(
+        response.message || "Something went wrong"
+      );
+    }
 
     heroTitle.value = response.data.heroTitle;
     heroContent.value = response.data.heroContent;
@@ -158,6 +177,8 @@ const getHomepageContent = async () => {
   } catch (error) {
     displayErrorNotification("Something went wrong");
     console.log(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

@@ -13,87 +13,97 @@
       </p>
     </div>
 
-    <div class="form-body">
-      <!-- Main Section -->
-      <div class="form-section form-section--main">
-        <div class="form-section__header">
-          <span class="form-section__badge">Main Section</span>
-        </div>
-        <div class="form-section__body">
-          <div class="form-field">
-            <label class="form-field__label fs-body-text">Section Header</label>
-            <input
-              type="text"
-              class="form-field__input"
-              placeholder="Enter section header"
-              v-model="sectionContent.headingTitle"
-            />
+    <LoadingIndicator
+      v-if="isLoading"
+      label="Loading"
+      variant="panel"
+    />
+
+    <template v-else>
+      <div class="form-body">
+        <!-- Main Section -->
+        <div class="form-section form-section--main">
+          <div class="form-section__header">
+            <span class="form-section__badge">Main Section</span>
           </div>
-          <div class="form-field">
-            <label class="form-field__label fs-body-text"
-              >Section Description</label
+          <div class="form-section__body">
+            <div class="form-field">
+              <label class="form-field__label fs-body-text"
+                >Section Header</label
+              >
+              <input
+                type="text"
+                class="form-field__input"
+                placeholder="Enter section header"
+                v-model="sectionContent.headingTitle"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label fs-body-text"
+                >Section Description</label
+              >
+              <textarea
+                class="form-field__textarea"
+                placeholder="Enter section description"
+                v-model="sectionContent.headingContent"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Headers -->
+        <div
+          v-for="(subHeader, index) in sectionContent.subHeaders"
+          :key="index"
+          class="form-section form-section--sub"
+        >
+          <div class="form-section__header">
+            <span class="form-section__badge form-section__badge--secondary"
+              >Subheader {{ index + 1 }}</span
             >
-            <textarea
-              class="form-field__textarea"
-              placeholder="Enter section description"
-              v-model="sectionContent.headingContent"
-            ></textarea>
+          </div>
+          <div class="form-section__body">
+            <div class="form-field">
+              <label class="form-field__label fs-body-text"
+                >Subheader Title (Optional)</label
+              >
+              <input
+                type="text"
+                class="form-field__input"
+                placeholder="Enter subheader title"
+                v-model="subHeader.subHeadingTitle"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label fs-body-text"
+                >Subheader Content (Optional)</label
+              >
+              <textarea
+                class="form-field__textarea"
+                placeholder="Enter subheader content"
+                v-model="subHeader.subHeadingContent"
+              ></textarea>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Sub Headers -->
-      <div
-        v-for="(subHeader, index) in sectionContent.subHeaders"
-        :key="index"
-        class="form-section form-section--sub"
-      >
-        <div class="form-section__header">
-          <span class="form-section__badge form-section__badge--secondary"
-            >Subheader {{ index + 1 }}</span
-          >
-        </div>
-        <div class="form-section__body">
-          <div class="form-field">
-            <label class="form-field__label fs-body-text"
-              >Subheader Title (Optional)</label
-            >
-            <input
-              type="text"
-              class="form-field__input"
-              placeholder="Enter subheader title"
-              v-model="subHeader.subHeadingTitle"
-            />
-          </div>
-          <div class="form-field">
-            <label class="form-field__label fs-body-text"
-              >Subheader Content (Optional)</label
-            >
-            <textarea
-              class="form-field__textarea"
-              placeholder="Enter subheader content"
-              v-model="subHeader.subHeadingContent"
-            ></textarea>
-          </div>
-        </div>
+      <div class="form-actions">
+        <Button
+          btnType="btn-outline"
+          btnText="Add Subheader"
+          @click="addNewSubHeader"
+          size="md"
+        />
+        <Button
+          btnType="btn-secondary"
+          :btnText="route.params.id ? 'Update Section' : 'Create Section'"
+          @click="route.params.id ? updateStorySection() : addNewStorySection()"
+          :disabled="isHeaderEmpty"
+          size="md"
+        />
       </div>
-    </div>
-
-    <div class="form-actions">
-      <Button
-        btnType="btn-outline"
-        btnText="Add Subheader"
-        @click="addNewSubHeader"
-        size="md"
-      />
-      <Button
-        btnType="btn-secondary"
-        :btnText="route.params.id ? 'Update Section' : 'Create Section'"
-        @click="route.params.id ? updateStorySection() : addNewStorySection()"
-        :disabled="isHeaderEmpty"
-        size="md"
-      />
-    </div>
+    </template>
   </div>
 </template>
 
@@ -107,6 +117,7 @@ import {
 } from "../../../composables/API/Storypage";
 import { type StorypageContent } from "../../../composables/interfaces/Component";
 import Button from "../../../components/ui/Button.vue";
+import LoadingIndicator from "../../../components/ui/LoadingIndicator.vue";
 import {
   displayErrorNotification,
   displaySuccessNotification,
@@ -114,6 +125,7 @@ import {
 
 const router = useRouter();
 const route = useRoute();
+const isLoading = ref(Boolean(route.params.id));
 
 const sectionContent = ref<StorypageContent>({
   id: 0,
@@ -206,14 +218,21 @@ const resetForm = () => {
 
 onMounted(async () => {
   if (route.params.id) {
-    const response = await RequestToGetStorySectionContent(route.params.id);
+    try {
+      const response = await RequestToGetStorySectionContent(route.params.id);
 
-    if (response.status === "failed") {
-      resetForm();
-      return displayErrorNotification(response.message);
+      if (response.status === "failed") {
+        resetForm();
+        return displayErrorNotification(response.message);
+      }
+
+      sectionContent.value = response.data;
+    } catch (error) {
+      displayErrorNotification("Something went wrong");
+      console.error(error);
+    } finally {
+      isLoading.value = false;
     }
-
-    sectionContent.value = response.data;
   }
 });
 </script>

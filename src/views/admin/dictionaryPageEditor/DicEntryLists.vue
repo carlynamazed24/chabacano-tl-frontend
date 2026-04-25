@@ -1,7 +1,12 @@
 <template>
   <div class="dictionary-editor">
     <h2 class="fs-heading-6">Dictionary Entries</h2>
-    <div class="container">
+    <LoadingIndicator
+      v-if="isLoading"
+      label="Loading"
+      variant="panel"
+    />
+    <div v-else class="container">
       <table class="dictionary-table">
         <thead>
           <tr>
@@ -60,12 +65,15 @@ import { displayConfirmDialog } from "../../../composables/services/notification
 import Button from "../../../components/ui/Button.vue";
 import EditIcon from "../../../components/icons/EditIcon.vue";
 import DeleteIcon from "../../../components/icons/DeleteIcon.vue";
+import LoadingIndicator from "../../../components/ui/LoadingIndicator.vue";
 
 const router = useRouter();
 
 const dictionaryEntries = ref<Dictionary[]>([]);
+const isLoading = ref(true);
 
 const getDictionaryEntries = async () => {
+  isLoading.value = true;
   try {
     const response = await RequestToGetDictionaryEntries();
 
@@ -77,6 +85,8 @@ const getDictionaryEntries = async () => {
   } catch (error) {
     displayErrorNotification("Something went wrong");
     console.error(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

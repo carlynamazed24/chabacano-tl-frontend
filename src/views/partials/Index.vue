@@ -1,5 +1,5 @@
 <template>
-  <Hero :title="heroTitle" :tagline="heroContent" />
+  <Hero :title="heroTitle" :tagline="heroContent" :loading="isLoading" />
   <FeaturesSection />
   <HowItWorks />
   <FAQSection />
@@ -17,16 +17,21 @@ import CTA from "./CTA.vue";
 
 const heroTitle = ref<string>("");
 const heroContent = ref<string>("");
+const isLoading = ref(true);
 
 onMounted(async () => {
-  const response = await RequestToGetHomepageContent();
+  try {
+    const response = await RequestToGetHomepageContent();
 
-  if (response.status !== "success" || !response.data) {
-    console.log("Error fetching homepage content");
-    return;
+    if (response.status !== "success" || !response.data) {
+      console.log("Error fetching homepage content");
+      return;
+    }
+
+    heroTitle.value = response.data.heroTitle;
+    heroContent.value = response.data.heroContent;
+  } finally {
+    isLoading.value = false;
   }
-
-  heroTitle.value = response.data.heroTitle;
-  heroContent.value = response.data.heroContent;
 });
 </script>

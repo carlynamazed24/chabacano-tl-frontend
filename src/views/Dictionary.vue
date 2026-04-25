@@ -41,21 +41,22 @@
 
     <!-- Dictionary Results -->
     <div
-      v-if="searchQuery"
+      v-if="loading || searchQuery"
       class="dictionary__contents slide-up"
       style="animation-delay: 0.4s"
     >
-      <h2 class="dictionary__results-heading fs-heading-6">
+      <h2 v-if="searchQuery" class="dictionary__results-heading fs-heading-6">
         Results:
         <span class="dictionary__results-count">{{
           filteredEntries.length
         }}</span>
       </h2>
 
-      <div v-if="loading" class="dictionary__loading">
-        <div class="loading-spinner"></div>
-        <span>Loading dictionary entries...</span>
-      </div>
+      <LoadingIndicator
+        v-if="loading"
+        label="Loading"
+        variant="panel"
+      />
 
       <div v-else class="dictionary__results">
         <div v-if="filteredEntries.length" class="dictionary__entries">
@@ -97,6 +98,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { RequestToGetDictionaryEntries } from "../composables/API/Dictionary";
+import LoadingIndicator from "../components/ui/LoadingIndicator.vue";
 
 interface DictionaryEntry {
   id: number;
@@ -292,26 +294,6 @@ onMounted(fetchDictionary);
 .dictionary__entry-definition {
   color: var(--dark-color);
   line-height: var(--line-height-normal);
-}
-
-/* Loading State */
-.dictionary__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xl);
-  color: var(--accent-3-color);
-  gap: var(--spacing-md);
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--accent-2-color);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
 /* No Results */

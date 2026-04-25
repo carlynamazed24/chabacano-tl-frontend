@@ -1,6 +1,11 @@
 <template>
   <h2 class="fs-heading-6">Section Lists</h2>
-  <div class="container">
+  <LoadingIndicator
+    v-if="isLoading"
+    label="Loading"
+    variant="panel"
+  />
+  <div v-else class="container">
     <div v-for="section in sectionLists" :key="section.id" class="section">
       <div class="header">
         <div class="heading">
@@ -77,12 +82,15 @@ import Button from "../../../components/ui/Button.vue";
 import ArrowIcon from "../../../components/icons/ArrowIcon.vue";
 import DeleteIcon from "../../../components/icons/DeleteIcon.vue";
 import EditIcon from "../../../components/icons/EditIcon.vue";
+import LoadingIndicator from "../../../components/ui/LoadingIndicator.vue";
 
 const router = useRouter();
 
 const sectionLists = ref<StorypageContent[]>([]);
+const isLoading = ref(true);
 
 const getStoryContents = async () => {
+  isLoading.value = true;
   try {
     const response = await RequestToGetStorypageContents();
 
@@ -99,6 +107,8 @@ const getStoryContents = async () => {
   } catch (error) {
     displayErrorNotification("Something went wrong");
     console.log(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

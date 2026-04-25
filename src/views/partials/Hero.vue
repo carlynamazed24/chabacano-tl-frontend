@@ -5,32 +5,50 @@
     </div>
 
     <div class="hero__content">
-      <div class="hero__title fade-in">
-        <h1 class="fs-heading-1 text-light">{{ title }}</h1>
-      </div>
-      <div class="hero__tagline slide-up">
-        <p class="fs-body-text text-light">{{ tagline }}</p>
-      </div>
+      <LoadingIndicator
+        v-if="loading"
+        label="Loading"
+        variant="panel"
+        tone="light"
+      />
 
-      <div class="hero__action scale-in">
-        <Button
-          class="btn-primary hero__button"
-          :btnText="'Translate Now'"
-          :path="'translator'"
-          size="lg"
-        />
-      </div>
+      <template v-else>
+        <div class="hero__title fade-in">
+          <h1 class="fs-heading-1 text-light">{{ title }}</h1>
+        </div>
+        <div class="hero__tagline slide-up">
+          <p class="fs-body-text text-light">{{ tagline }}</p>
+        </div>
+
+        <div class="hero__action scale-in">
+          <Button
+            class="btn-primary hero__button"
+            :btnText="'Translate Now'"
+            :path="'translator'"
+            size="lg"
+          />
+        </div>
+      </template>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import Button from "../../components/ui/Button.vue";
+import LoadingIndicator from "../../components/ui/LoadingIndicator.vue";
 
-defineProps({
-  title: String,
-  tagline: String,
-});
+withDefaults(
+  defineProps<{
+    title?: string;
+    tagline?: string;
+    loading?: boolean;
+  }>(),
+  {
+    title: "",
+    tagline: "",
+    loading: false,
+  }
+);
 </script>
 
 <style scoped>

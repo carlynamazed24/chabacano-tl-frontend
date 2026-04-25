@@ -110,13 +110,11 @@
 
         <main class="history-page__stories-main">
           <!-- Loading State -->
-          <div
-            v-if="storypageContents.length === 0 && !storiesError"
-            class="history-page__loading"
-          >
-            <div class="loading-spinner"></div>
-            <p>Loading content...</p>
-          </div>
+          <LoadingIndicator
+            v-if="storyLoading"
+            label="Loading"
+            variant="section"
+          />
 
           <!-- Dynamic Content Sections from Story Page -->
           <div
@@ -560,6 +558,7 @@
 import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
 import { RequestToGetStorypageContents } from "../composables/API/Storypage";
 import { type StorypageContent } from "../composables/interfaces/Component";
+import LoadingIndicator from "../components/ui/LoadingIndicator.vue";
 
 interface HistoryItem {
   id: number;
@@ -587,6 +586,7 @@ const activeSection = ref("");
 const mobileNavOpen = ref(false);
 const sectionRefs = ref<Record<string, HTMLElement>>({});
 const storiesError = ref(false);
+const storyLoading = ref(true);
 
 // Track loaded state for section images so they are hidden until fully loaded
 const loadedImages = reactive<Record<number | string, boolean>>({});
@@ -1266,6 +1266,8 @@ onMounted(async () => {
   } catch (error) {
     console.error("Error fetching story page contents:", error);
     storiesError.value = true;
+  } finally {
+    storyLoading.value = false;
   }
 });
 
@@ -2596,36 +2598,6 @@ const filteredHistory = computed(() => {
 .history-page__stories-main {
   flex: 1;
   max-width: 800px;
-}
-
-.history-page__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  color: var(--accent-3-color);
-  height: 300px;
-  text-align: center;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(13, 148, 136, 0.3);
-  border-top: 3px solid var(--primary-color);
-  border-radius: 50%;
-  margin-bottom: 1rem;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .history-page__story-content {
