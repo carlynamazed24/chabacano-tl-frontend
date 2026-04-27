@@ -395,11 +395,11 @@ const translateText = async () => {
         `${selectedSrcLang.value}-to-${selectedTargetLang.value}`.toLowerCase(),
     };
     const response = await RequestToTranslateText(payload);
-    if (response.err !== null) {
+    if (!response || response.err) {
       translatedText.value = "Error translating text";
       return;
     }
-    translatedText.value = response?.translation ?? response.result;
+    translatedText.value = response.translation ?? response.result ?? "";
   }, 1000);
 };
 
