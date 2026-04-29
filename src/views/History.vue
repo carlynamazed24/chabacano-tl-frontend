@@ -1515,6 +1515,19 @@ const filteredHistory = computed(() => {
   margin-bottom: var(--spacing-2xl);
 }
 
+.history-page__hero-description,
+.history-page__featured-excerpt,
+.history-page__modal-description,
+.history-page__card-description,
+.history-page__gallery-description,
+.history-page__references-intro,
+.history-page__reference-description,
+.history-page__story-section-content,
+.history-page__story-subsection-content {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 /* ===== Featured Grid ===== */
 .history-page__featured-grid {
   display: grid;
