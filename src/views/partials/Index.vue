@@ -2,7 +2,6 @@
   <Hero :title="heroTitle" :tagline="heroContent" :loading="isLoading" />
   <FeaturesSection />
   <HowItWorks />
-  <FAQSection />
   <CTA />
 </template>
 
@@ -12,7 +11,6 @@ import { RequestToGetHomepageContent } from "../../composables/API/Homepage";
 import Hero from "./Hero.vue";
 import FeaturesSection from "../../components/ui/FeaturesSection.vue";
 import HowItWorks from "../../components/ui/HowItWorks.vue";
-import FAQSection from "../../components/ui/FAQSection.vue";
 import CTA from "./CTA.vue";
 
 const heroTitle = ref<string>("");
