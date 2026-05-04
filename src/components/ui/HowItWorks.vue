@@ -32,15 +32,6 @@
             on the site.
           </p>
         </li>
-
-        <li class="process-step">
-          <h3 class="step-title">Admin Review & Publish</h3>
-          <p class="step-body">
-            Authenticated admins use the control panel to review, edit, and
-            publish dictionary entries and page content. This ensures editorial
-            oversight and prevents unauthorized edits.
-          </p>
-        </li>
       </ol>
     </div>
   </section>

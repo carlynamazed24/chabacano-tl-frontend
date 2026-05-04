@@ -8,18 +8,30 @@ const RequestToTranslateText = async (payload: TranslationPayload) => {
     const response = await API.post("/translation", payload);
     return response.data;
   } catch (error) {
-    const axiosError = error as AxiosError<{ err?: string; message?: string }>;
+    const axiosError = error as AxiosError<{
+      err?: string;
+      message?: string;
+      result?: string;
+      translation?: string;
+    }>;
     const message =
       axiosError.response?.data?.err ??
       axiosError.response?.data?.message ??
       "Something went wrong";
+    const translation =
+      axiosError.response?.data?.translation ??
+      axiosError.response?.data?.result ??
+      "";
 
-    displayErrorNotification("Something went wrong");
+    if (!translation) {
+      displayErrorNotification("Something went wrong");
+    }
+
     console.error(error);
     return {
       err: message,
-      translation: "",
-      result: "",
+      translation,
+      result: translation,
     };
   }
 };

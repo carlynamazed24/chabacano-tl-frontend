@@ -30,16 +30,6 @@
             definitions to help verification and learning.
           </p>
         </article>
-
-        <article class="feature-item">
-          <h3 class="feature-title">Admin-Controlled Content</h3>
-          <p class="feature-body">
-            Site content (dictionary entries and page content) is managed
-            through an admin control panel. Only authenticated admins can edit
-            or publish entries; users can send suggestions via the site's
-            contact tools.
-          </p>
-        </article>
       </div>
     </div>
   </section>
