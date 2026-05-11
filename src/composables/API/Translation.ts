@@ -3,6 +3,8 @@ import { API } from "../../config/axios";
 import { type TranslationPayload } from "../interfaces/Payload";
 import { displayErrorNotification } from "../services/notifications";
 
+const TRANSLATION_ERROR_MESSAGE = "Error translating text";
+
 const RequestToTranslateText = async (payload: TranslationPayload) => {
   try {
     const response = await API.post("/translation", payload);
@@ -14,22 +16,21 @@ const RequestToTranslateText = async (payload: TranslationPayload) => {
       result?: string;
       translation?: string;
     }>;
-    const message =
-      axiosError.response?.data?.err ??
-      axiosError.response?.data?.message ??
-      "Something went wrong";
     const translation =
       axiosError.response?.data?.translation ??
       axiosError.response?.data?.result ??
       "";
 
     if (!translation) {
-      displayErrorNotification("Something went wrong");
+      displayErrorNotification(TRANSLATION_ERROR_MESSAGE);
     }
 
-    console.error(error);
+    console.error("Translation request failed", {
+      status: axiosError.response?.status,
+    });
+
     return {
-      err: message,
+      err: TRANSLATION_ERROR_MESSAGE,
       translation,
       result: translation,
     };
