@@ -1,15 +1,33 @@
-import { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { API } from "../../config/axios";
 import { type TranslationPayload } from "../interfaces/Payload";
 import { displayErrorNotification } from "../services/notifications";
 
 const TRANSLATION_ERROR_MESSAGE = "Error translating text";
 
-const RequestToTranslateText = async (payload: TranslationPayload) => {
+interface TranslationRequestOptions {
+  signal?: AbortSignal;
+}
+
+const RequestToTranslateText = async (
+  payload: TranslationPayload,
+  options: TranslationRequestOptions = {},
+) => {
   try {
-    const response = await API.post("/translation", payload);
+    const response = await API.post("/translation", payload, {
+      signal: options.signal,
+    });
     return response.data;
   } catch (error) {
+    if (axios.isCancel(error) || (error as AxiosError).code === "ERR_CANCELED") {
+      return {
+        err: "Translation request canceled",
+        translation: "",
+        result: "",
+        canceled: true,
+      };
+    }
+
     const axiosError = error as AxiosError<{
       err?: string;
       message?: string;

@@ -78,7 +78,10 @@
       </div>
 
       <!-- Target Panel -->
-      <div class="translator__panel translator__panel--target">
+      <div
+        class="translator__panel translator__panel--target"
+        :aria-busy="isTranslating"
+      >
         <!-- Language Dropdown -->
         <div class="translator__header">
           <select
@@ -184,6 +187,13 @@ interface SpeechRecognition extends EventTarget {
 
 // Constants
 const maxCharacters = 3000;
+const translationDebounceMs = 600;
+const translatingMessage = "Translating text...";
+const translationErrorMessage = "Error translating text";
+const translationStatusMessages = new Set([
+  translatingMessage,
+  translationErrorMessage,
+]);
 
 // Reactive references
 const selectedSrcLang = ref("Chabacano");
@@ -193,6 +203,13 @@ const translatedText = ref("");
 const isRecording = ref(false);
 const debounceTimeout = ref<number | null>(null);
 const isSpeaking = ref(false);
+const isTranslating = ref(false);
+const queuedTranslationKey = ref("");
+const activeTranslationKey = ref("");
+
+let latestTranslationRequestId = 0;
+let activeTranslationController: AbortController | null = null;
+const translationCache = new Map<string, string>();
 
 // Computed property for character limit check
 const isAtLimit = computed(() => textInput.value.length >= maxCharacters);
@@ -232,7 +249,7 @@ try {
     // Append transcript to existing text, respecting character limit
     const newText = textInput.value + (textInput.value ? " " : "") + transcript;
     textInput.value = newText.slice(0, maxCharacters);
-    translateText();
+    translateText({ immediate: true });
   };
 
   recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
@@ -368,6 +385,83 @@ const toggleRecording = () => {
   }
 };
 
+interface TranslateOptions {
+  immediate?: boolean;
+}
+
+interface TranslationRequestContext {
+  requestId: number;
+  text: string;
+  model: string;
+  cacheKey: string;
+}
+
+interface CachedTranslation {
+  text: string;
+  model: string;
+  translation: string;
+}
+
+const getCurrentTranslationModel = () =>
+  `${selectedSrcLang.value}-to-${selectedTargetLang.value}`.toLowerCase();
+
+const getTranslationCacheKey = (text: string, model: string) =>
+  `${model}\n${text.trim()}`;
+
+const isTranslationStatusText = (text: string) =>
+  translationStatusMessages.has(text.trim());
+
+const getReusableTranslatedText = () => {
+  const value = translatedText.value;
+
+  return value.trim() && !isTranslationStatusText(value) ? value : "";
+};
+
+const rememberTranslation = ({ text, model, translation }: CachedTranslation) => {
+  if (
+    !text.trim() ||
+    !translation.trim() ||
+    isTranslationStatusText(translation)
+  ) {
+    return;
+  }
+
+  translationCache.set(getTranslationCacheKey(text, model), translation);
+
+  if (translationCache.size > 60) {
+    const oldestKey = translationCache.keys().next().value;
+
+    if (typeof oldestKey === "string") {
+      translationCache.delete(oldestKey);
+    }
+  }
+};
+
+const cancelQueuedTranslation = () => {
+  if (debounceTimeout.value !== null) {
+    clearTimeout(debounceTimeout.value);
+    debounceTimeout.value = null;
+  }
+
+  queuedTranslationKey.value = "";
+};
+
+const abortActiveTranslation = () => {
+  if (activeTranslationController) {
+    activeTranslationController.abort();
+    activeTranslationController = null;
+  }
+
+  activeTranslationKey.value = "";
+  isTranslating.value = false;
+};
+
+const invalidateTranslationWork = () => {
+  latestTranslationRequestId += 1;
+  cancelQueuedTranslation();
+  abortActiveTranslation();
+};
+
 // Handle text input with character limit enforcement
 const handleTextInput = () => {
   // Enforce character limit
@@ -377,32 +471,131 @@ const handleTextInput = () => {
   translateText();
 };
 
-// Translation function
-const translateText = async () => {
-  if (debounceTimeout.value !== null) {
-    clearTimeout(debounceTimeout.value);
+const runTranslationRequest = async ({
+  requestId,
+  text,
+  model,
+  cacheKey,
+}: TranslationRequestContext) => {
+  if (!text.trim()) {
+    if (requestId === latestTranslationRequestId) {
+      translatedText.value = "";
+    }
+
+    return;
   }
 
-  debounceTimeout.value = window.setTimeout(async () => {
-    if (!textInput.value.trim()) {
-      translatedText.value = "";
-      return;
+  const cachedTranslation = translationCache.get(cacheKey);
+
+  if (cachedTranslation) {
+    if (requestId === latestTranslationRequestId) {
+      translatedText.value = cachedTranslation;
     }
-    translatedText.value = "Translating text...";
-    const payload = {
-      text: textInput.value,
-      model:
-        `${selectedSrcLang.value}-to-${selectedTargetLang.value}`.toLowerCase(),
-    };
-    const response = await RequestToTranslateText(payload);
-    const fallbackTranslation = response?.translation ?? response?.result ?? "";
-    if (fallbackTranslation) {
-      translatedText.value = fallbackTranslation;
+
+    return;
+  }
+
+  const controller = new AbortController();
+  activeTranslationController = controller;
+  activeTranslationKey.value = cacheKey;
+  isTranslating.value = true;
+  translatedText.value = translatingMessage;
+
+  try {
+    const response = await RequestToTranslateText(
+      {
+        text,
+        model,
+      },
+      {
+        signal: controller.signal,
+      },
+    );
+
+    if (
+      requestId !== latestTranslationRequestId ||
+      controller.signal.aborted ||
+      response?.canceled
+    ) {
       return;
     }
 
-    translatedText.value = "Error translating text";
-  }, 1000);
+    const fallbackTranslation = response?.translation ?? response?.result ?? "";
+
+    if (fallbackTranslation) {
+      translatedText.value = fallbackTranslation;
+      rememberTranslation({
+        text,
+        model,
+        translation: fallbackTranslation,
+      });
+      return;
+    }
+
+    translatedText.value = translationErrorMessage;
+  } finally {
+    if (
+      requestId === latestTranslationRequestId &&
+      activeTranslationController === controller
+    ) {
+      activeTranslationController = null;
+      activeTranslationKey.value = "";
+      isTranslating.value = false;
+    }
+  }
+};
+
+// Translation function
+const translateText = ({ immediate = false }: TranslateOptions = {}) => {
+  const text = textInput.value;
+  const model = getCurrentTranslationModel();
+  const cacheKey = getTranslationCacheKey(text, model);
+
+  if (!text.trim()) {
+    invalidateTranslationWork();
+    translatedText.value = "";
+    return;
+  }
+
+  const cachedTranslation = translationCache.get(cacheKey);
+
+  if (cachedTranslation) {
+    invalidateTranslationWork();
+    translatedText.value = cachedTranslation;
+    return;
+  }
+
+  if (activeTranslationKey.value === cacheKey) {
+    return;
+  }
+
+  if (queuedTranslationKey.value === cacheKey) {
+    return;
+  }
+
+  invalidateTranslationWork();
+
+  const requestId = latestTranslationRequestId;
+  const runRequest = () => {
+    void runTranslationRequest({
+      requestId,
+      text,
+      model,
+      cacheKey,
+    });
+  };
+
+  if (immediate) {
+    runRequest();
+    return;
+  }
+
+  queuedTranslationKey.value = cacheKey;
+  debounceTimeout.value = window.setTimeout(() => {
+    debounceTimeout.value = null;
+    queuedTranslationKey.value = "";
+    runRequest();
+  }, translationDebounceMs);
 };
 
 const handleSrcLanguageChange = () => {
@@ -411,7 +604,7 @@ const handleSrcLanguageChange = () => {
     selectedTargetLang.value =
       selectedSrcLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
   }
-  translateText();
+  translateText({ immediate: true });
 };
 
 const handleTargetLanguageChange = () => {
@@ -420,19 +613,29 @@ const handleTargetLanguageChange = () => {
     selectedSrcLang.value =
       selectedTargetLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
   }
-  translateText();
+  translateText({ immediate: true });
 };
 
 const switchLanguages = () => {
-  const textInputTemp = textInput.value;
-  textInput.value = translatedText.value;
-  translatedText.value = textInputTemp;
+  const previousSourceLang = selectedSrcLang.value;
+  const previousTargetLang = selectedTargetLang.value;
+  const previousSourceText = textInput.value;
+  const previousTranslatedText = getReusableTranslatedText();
 
-  const temp = selectedSrcLang.value;
-  selectedSrcLang.value = selectedTargetLang.value;
-  selectedTargetLang.value = temp;
+  invalidateTranslationWork();
 
-  translateText();
+  textInput.value = previousTranslatedText;
+  translatedText.value = previousSourceText;
+  selectedSrcLang.value = previousTargetLang;
+  selectedTargetLang.value = previousSourceLang;
+
+  if (previousTranslatedText.trim() && previousSourceText.trim()) {
+    rememberTranslation({
+      text: previousTranslatedText,
+      model: getCurrentTranslationModel(),
+      translation: previousSourceText,
+    });
+  }
 };
 
 const copyTargetText = async () => {
@@ -474,6 +677,7 @@ onBeforeUnmount(() => {
     // Ignore errors when stopping
   }
   isRecording.value = false;
+  invalidateTranslationWork();
   stopSpeech();
 });
 </script>
