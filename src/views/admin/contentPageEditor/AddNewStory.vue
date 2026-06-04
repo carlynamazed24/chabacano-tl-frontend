@@ -28,10 +28,13 @@
           </div>
           <div class="form-section__body">
             <div class="form-field">
-              <label class="form-field__label fs-body-text"
+              <label
+                for="section-header"
+                class="form-field__label fs-body-text"
                 >Section Header</label
               >
               <input
+                id="section-header"
                 type="text"
                 class="form-field__input"
                 placeholder="Enter section header"
@@ -39,10 +42,13 @@
               />
             </div>
             <div class="form-field">
-              <label class="form-field__label fs-body-text"
+              <label
+                for="section-description"
+                class="form-field__label fs-body-text"
                 >Section Description</label
               >
               <textarea
+                id="section-description"
                 class="form-field__textarea"
                 placeholder="Enter section description"
                 v-model="sectionContent.headingContent"
@@ -64,10 +70,13 @@
           </div>
           <div class="form-section__body">
             <div class="form-field">
-              <label class="form-field__label fs-body-text"
+              <label
+                :for="`subheader-title-${index}`"
+                class="form-field__label fs-body-text"
                 >Subheader Title (Optional)</label
               >
               <input
+                :id="`subheader-title-${index}`"
                 type="text"
                 class="form-field__input"
                 placeholder="Enter subheader title"
@@ -75,10 +84,13 @@
               />
             </div>
             <div class="form-field">
-              <label class="form-field__label fs-body-text"
+              <label
+                :for="`subheader-content-${index}`"
+                class="form-field__label fs-body-text"
                 >Subheader Content (Optional)</label
               >
               <textarea
+                :id="`subheader-content-${index}`"
                 class="form-field__textarea"
                 placeholder="Enter subheader content"
                 v-model="subHeader.subHeadingContent"
@@ -238,39 +250,136 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import "../../../styles/variables.css";
+@import "../../../styles/tokens/colors.css";
+@import "../../../styles/tokens/typography.css";
+@import "../../../styles/tokens/spacing.css";
+@import "../../../styles/tokens/animations.css";
 
-.container {
+.story-form {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: var(--spacing-xl);
 }
 
-.container > .content {
+.form-header {
+  border-bottom: 1px solid var(--light-color);
+  padding-bottom: var(--spacing-lg);
+}
+
+.form-header__title {
+  color: var(--dark-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-header__subtitle {
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+.form-body {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: var(--spacing-lg);
 }
 
-.container > .content > .input-container > input {
-  width: 100%;
-  padding: 1em;
-  outline: 0;
-  border: 1px solid var(--dark-color);
-  font-size: 1em;
+.form-section {
+  background: var(--light-color);
+  border: 1px solid rgba(13, 148, 136, 0.1);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
 }
 
-.container > .content > .input-container > textarea {
-  resize: none;
-  width: 100%;
-  height: 100px;
-  padding: 1em;
-  outline: 0;
-  font-size: 1.3em;
+.form-section__header {
+  background: var(--gradient-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
 }
 
-.btn {
+.form-section--sub .form-section__header {
+  background: var(--white-color);
+  border-bottom: 1px solid rgba(13, 148, 136, 0.12);
+}
+
+.form-section__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  color: var(--light-color);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-text);
+  font-weight: var(--fw-semibold);
+}
+
+.form-section__badge--secondary {
+  color: var(--primary-color);
+}
+
+.form-section__body {
   display: flex;
-  gap: 1em;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-field__label {
+  color: var(--dark-color);
+  font-weight: var(--fw-medium);
+}
+
+.form-field__input,
+.form-field__textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--light-color);
+  border-radius: var(--border-radius-md);
+  background: var(--white-color);
+  color: var(--dark-color);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-text);
+  line-height: var(--line-height-normal);
+  transition: border-color var(--transition-normal) var(--ease-out),
+    box-shadow var(--transition-normal) var(--ease-out);
+}
+
+.form-field__input:focus,
+.form-field__textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.form-field__input::placeholder,
+.form-field__textarea::placeholder {
+  color: var(--accent-3-color);
+  opacity: 0.75;
+}
+
+.form-field__textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--light-color);
+}
+
+@media (max-width: 640px) {
+  .form-section__body {
+    padding: var(--spacing-md);
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 </style>
