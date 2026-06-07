@@ -224,6 +224,44 @@ function handleScroll() {
   }
 }
 
+@media (min-width: 1600px) {
+  .header {
+    padding-left: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-wide-max-width)) / 2)
+    );
+    padding-right: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-wide-max-width)) / 2)
+    );
+  }
+
+  .header--scrolled {
+    padding-left: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-wide-max-width)) / 2)
+    );
+    padding-right: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-wide-max-width)) / 2)
+    );
+  }
+}
+
+@media (min-width: 2560px) {
+  .header,
+  .header--scrolled {
+    padding-left: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-tv-max-width)) / 2)
+    );
+    padding-right: max(
+      var(--spacing-2xl),
+      calc((100vw - var(--content-tv-max-width)) / 2)
+    );
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     padding: var(--spacing-md) var(--spacing-md);

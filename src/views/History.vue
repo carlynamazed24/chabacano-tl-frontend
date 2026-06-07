@@ -36,10 +36,14 @@
     </section>
 
     <!-- Chabacano Stories Section with Sidebar Navigation -->
-    <section class="history-page__stories-section">
+    <section
+      v-if="storyLoading || storypageContents.length > 0"
+      class="history-page__stories-section"
+    >
       <div class="history-page__stories-container">
         <!-- Navigation Sidebar -->
         <aside
+          v-if="storypageContents.length > 0"
           class="history-page__sidebar slide-in-left"
           :class="{ 'history-page__sidebar--sticky': isScrolled }"
         >
@@ -164,8 +168,32 @@
                 <div class="history-page__section-text">
                   <div
                     class="history-page__story-section-content"
+                    :id="`story-content-${content.id}`"
+                    :class="{
+                      'history-page__history-preview--collapsed':
+                        shouldCollapseHistoryContent(
+                          getStoryContentKey(content.id),
+                          content.headingContent
+                        ),
+                    }"
                     v-html="content.headingContent"
                   ></div>
+                  <button
+                    v-if="isLongHistoryContent(content.headingContent)"
+                    type="button"
+                    class="history-page__read-more-btn"
+                    :aria-expanded="
+                      isHistoryContentExpanded(getStoryContentKey(content.id))
+                    "
+                    :aria-controls="`story-content-${content.id}`"
+                    @click="toggleHistoryContent(getStoryContentKey(content.id))"
+                  >
+                    {{
+                      isHistoryContentExpanded(getStoryContentKey(content.id))
+                        ? "Show Less"
+                        : "Read More"
+                    }}
+                  </button>
                 </div>
               </div>
 
@@ -175,8 +203,8 @@
                 class="history-page__story-subsections"
               >
                 <div
-                  v-for="subHeader in content.subHeaders"
-                  :key="subHeader.id"
+                  v-for="(subHeader, subIndex) in content.subHeaders"
+                  :key="getSubHeaderKey(content.id, subHeader.id, subIndex)"
                   class="history-page__story-subsection"
                   :class="{
                     'history-page__story-subsection--active':
@@ -190,8 +218,40 @@
                   </h3>
                   <div
                     class="history-page__story-subsection-content"
+                    :id="`substory-content-${getSubHeaderKey(content.id, subHeader.id, subIndex)}`"
+                    :class="{
+                      'history-page__history-preview--collapsed':
+                        shouldCollapseHistoryContent(
+                          getSubHeaderKey(content.id, subHeader.id, subIndex),
+                          subHeader.subHeadingContent
+                        ),
+                    }"
                     v-html="subHeader.subHeadingContent"
                   ></div>
+                  <button
+                    v-if="isLongHistoryContent(subHeader.subHeadingContent)"
+                    type="button"
+                    class="history-page__read-more-btn"
+                    :aria-expanded="
+                      isHistoryContentExpanded(
+                        getSubHeaderKey(content.id, subHeader.id, subIndex)
+                      )
+                    "
+                    :aria-controls="`substory-content-${getSubHeaderKey(content.id, subHeader.id, subIndex)}`"
+                    @click="
+                      toggleHistoryContent(
+                        getSubHeaderKey(content.id, subHeader.id, subIndex)
+                      )
+                    "
+                  >
+                    {{
+                      isHistoryContentExpanded(
+                        getSubHeaderKey(content.id, subHeader.id, subIndex)
+                      )
+                        ? "Show Less"
+                        : "Read More"
+                    }}
+                  </button>
                 </div>
               </div>
             </section>
@@ -223,7 +283,7 @@
             <input
               type="text"
               v-model="searchQuery"
-              placeholder="Search historical events, people, or places..."
+              :placeholder="historySearchPlaceholder"
               class="history-page__search-input fs-body-text"
               aria-label="Search history"
             />
@@ -301,8 +361,23 @@
               {{ item.title }}
             </h3>
             <p class="history-page__card-description fs-body-text">
-              {{ item.description }}
+              {{ getHistoryItemDescription(item) }}
             </p>
+            <button
+              v-if="isLongPlainHistoryContent(item.description)"
+              type="button"
+              class="history-page__read-more-btn history-page__read-more-btn--compact"
+              :aria-expanded="
+                isHistoryContentExpanded(getHistoryItemKey(item.id))
+              "
+              @click="toggleHistoryContent(getHistoryItemKey(item.id))"
+            >
+              {{
+                isHistoryContentExpanded(getHistoryItemKey(item.id))
+                  ? "Show Less"
+                  : "Read More"
+              }}
+            </button>
             <div v-if="item.tags" class="history-page__card-tags">
               <span
                 v-for="tag in item.tags"
@@ -362,9 +437,30 @@
               <h2 class="history-page__modal-title fs-heading-4">
                 {{ selectedPost.title }}
               </h2>
-              <p class="history-page__modal-description fs-body-text">
-                {{ selectedPost.fullDescription }}
+              <p
+                id="featured-post-description"
+                class="history-page__modal-description fs-body-text"
+                :class="{
+                  'history-page__modal-description--collapsed':
+                    shouldCollapseFeaturedPost(selectedPost),
+                }"
+              >
+                {{ getFeaturedPostDescription(selectedPost) }}
               </p>
+              <button
+                v-if="isLongFeaturedPost(selectedPost)"
+                type="button"
+                class="history-page__read-more-btn"
+                :aria-expanded="isFeaturedPostExpanded(selectedPost.id)"
+                aria-controls="featured-post-description"
+                @click="toggleFeaturedPostDescription(selectedPost.id)"
+              >
+                {{
+                  isFeaturedPostExpanded(selectedPost.id)
+                    ? "Show Less"
+                    : "Read More"
+                }}
+              </button>
               <div
                 v-if="selectedPost.details"
                 class="history-page__modal-details"
@@ -597,6 +693,110 @@ const onImageLoad = (id: number | string) => {
 
 const searchQuery = ref<string>("");
 const selectedPost = ref<FeaturedPost | null>(null);
+const expandedHistoryContent = ref<Record<string, boolean>>({});
+const expandedFeaturedPosts = ref<Record<number, boolean>>({});
+const historySearchPlaceholder =
+  "Search historical events, people, or places...";
+const storyPreviewCharacterLimit = 700;
+const historyItemPreviewCharacterLimit = 220;
+const featuredPostPreviewCharacterLimit = 650;
+
+const normalizePlainText = (value: string) =>
+  value.replace(/\s+/g, " ").trim();
+
+const stripHtmlContent = (value = "") =>
+  normalizePlainText(value.replace(/<[^>]*>/g, " "));
+
+const getPlainTextPreview = (value: string, limit: number) => {
+  const normalizedValue = normalizePlainText(value);
+
+  if (normalizedValue.length <= limit) {
+    return normalizedValue;
+  }
+
+  const preview = normalizedValue.slice(0, limit).trimEnd();
+  const lastSpaceIndex = preview.lastIndexOf(" ");
+  const safePreview =
+    lastSpaceIndex > Math.floor(limit * 0.65)
+      ? preview.slice(0, lastSpaceIndex)
+      : preview;
+
+  return `${safePreview}...`;
+};
+
+const getStoryContentKey = (id: number) => `section-${id}`;
+
+const getSubHeaderKey = (
+  sectionId: number,
+  subHeaderId: number | undefined,
+  index: number
+) => `subsection-${sectionId}-${subHeaderId ?? index}`;
+
+const getHistoryItemKey = (id: number) => `history-item-${id}`;
+
+const isHistoryContentExpanded = (key: string) =>
+  Boolean(expandedHistoryContent.value[key]);
+
+const toggleHistoryContent = (key: string) => {
+  expandedHistoryContent.value[key] = !expandedHistoryContent.value[key];
+};
+
+const isLongHistoryContent = (content = "") =>
+  stripHtmlContent(content).length > storyPreviewCharacterLimit;
+
+const shouldCollapseHistoryContent = (key: string, content = "") =>
+  isLongHistoryContent(content) && !isHistoryContentExpanded(key);
+
+const isLongPlainHistoryContent = (content: string) =>
+  normalizePlainText(content).length > historyItemPreviewCharacterLimit;
+
+const getHistoryItemDescription = (item: HistoryItem) => {
+  const key = getHistoryItemKey(item.id);
+
+  if (
+    !isLongPlainHistoryContent(item.description) ||
+    isHistoryContentExpanded(key)
+  ) {
+    return item.description;
+  }
+
+  return getPlainTextPreview(
+    item.description,
+    historyItemPreviewCharacterLimit
+  );
+};
+
+const isFeaturedPostExpanded = (id: number) =>
+  Boolean(expandedFeaturedPosts.value[id]);
+
+const toggleFeaturedPostDescription = (id: number) => {
+  expandedFeaturedPosts.value[id] = !expandedFeaturedPosts.value[id];
+};
+
+const isLongFeaturedPost = (post: FeaturedPost | null) =>
+  Boolean(
+    post &&
+      normalizePlainText(post.fullDescription).length >
+        featuredPostPreviewCharacterLimit
+  );
+
+const shouldCollapseFeaturedPost = (post: FeaturedPost | null) =>
+  Boolean(post && isLongFeaturedPost(post) && !isFeaturedPostExpanded(post.id));
+
+const getFeaturedPostDescription = (post: FeaturedPost | null) => {
+  if (!post) {
+    return "";
+  }
+
+  if (!isLongFeaturedPost(post) || isFeaturedPostExpanded(post.id)) {
+    return post.fullDescription;
+  }
+
+  return getPlainTextPreview(
+    post.fullDescription,
+    featuredPostPreviewCharacterLimit
+  );
+};
 
 // Track if a modal is open so we can lower the global header z-index to avoid it overlapping
 let modalOpenCount = 0;
@@ -628,6 +828,7 @@ const restoreHeaderZ = () => {
 
 const openModal = (post: FeaturedPost) => {
   selectedPost.value = post;
+  expandedFeaturedPosts.value[post.id] = false;
   document.body.style.overflow = "hidden";
   lowerHeaderZ();
 };
@@ -1718,6 +1919,10 @@ const filteredHistory = computed(() => {
   margin-bottom: var(--spacing-xl);
 }
 
+.history-page__modal-description--collapsed {
+  margin-bottom: var(--spacing-md);
+}
+
 .history-page__modal-details {
   background-color: var(--background-color);
   padding: var(--spacing-lg);
@@ -1786,7 +1991,7 @@ const filteredHistory = computed(() => {
 
 .history-page__search-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+  box-shadow: 0 0 0 4px var(--focus-ring-color);
 }
 
 .history-page__search-icon {
@@ -1959,6 +2164,44 @@ const filteredHistory = computed(() => {
   color: var(--text-color);
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
+}
+
+.history-page__read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin: 0 0 var(--spacing-lg);
+  padding: 0.55rem 1rem;
+  color: var(--primary-color);
+  background-color: rgba(13, 148, 136, 0.08);
+  border: 1px solid rgba(13, 148, 136, 0.24);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-small-text);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    border-color var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.history-page__read-more-btn:hover {
+  color: var(--light-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.history-page__read-more-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.history-page__read-more-btn--compact {
+  margin-top: calc(var(--spacing-sm) * -1);
+  margin-bottom: var(--spacing-md);
+  padding: 0.45rem 0.8rem;
 }
 
 .history-page__card-tags {
@@ -2668,6 +2911,34 @@ const filteredHistory = computed(() => {
   color: var(--dark-color);
 }
 
+.history-page__history-preview--collapsed {
+  position: relative;
+  max-height: 15rem;
+  overflow: hidden;
+}
+
+.history-page__history-preview--collapsed::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4rem;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0),
+    var(--white-color) 80%
+  );
+  pointer-events: none;
+}
+
+.history-page__story-section--highlight
+  .history-page__history-preview--collapsed::after {
+  background: linear-gradient(
+    rgba(254, 243, 199, 0),
+    rgba(254, 243, 199, 0.96) 80%
+  );
+}
+
 /* Section media + text layout */
 .history-page__section-row {
   display: flex;
@@ -2973,6 +3244,79 @@ const filteredHistory = computed(() => {
 
   .history-page__activity-card {
     border-radius: 0.75rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .history-page__hero-content,
+  .history-page__container {
+    max-width: var(--content-wide-max-width);
+  }
+
+  .history-page__hero-image-container {
+    height: 440px;
+  }
+
+  .history-page__stories-container {
+    max-width: var(--content-wide-max-width);
+    gap: 2.5rem;
+  }
+
+  .history-page__stories-main {
+    max-width: 900px;
+  }
+
+  .history-page__sidebar {
+    width: 320px;
+  }
+
+  .history-page__featured-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .history-page__gallery-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .history-page__modal-content {
+    max-width: 980px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .history-page__hero-content,
+  .history-page__container {
+    max-width: var(--content-tv-max-width);
+  }
+
+  .history-page__hero-image-container {
+    height: 480px;
+  }
+
+  .history-page__stories-container {
+    max-width: 1600px;
+    gap: 3rem;
+  }
+
+  .history-page__stories-main {
+    max-width: 980px;
+  }
+
+  .history-page__sidebar {
+    width: 340px;
+  }
+
+  .history-page__featured-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--spacing-xl);
+  }
+
+  .history-page__gallery-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .history-page__modal-content {
+    max-width: 1080px;
   }
 }
 </style>

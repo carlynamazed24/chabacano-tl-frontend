@@ -14,6 +14,7 @@ interface ButtonProps {
   path?: string;
   withIcon?: boolean;
   loadingState?: boolean;
+  nativeType?: "button" | "submit" | "reset";
   size: "sm" | "md" | "lg";
 }
 

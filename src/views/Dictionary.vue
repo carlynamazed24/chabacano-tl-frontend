@@ -15,7 +15,7 @@
         <input
           type="text"
           v-model="searchQuery"
-          placeholder="Search in Chabacano, Tagalog, or English..."
+          :placeholder="dictionarySearchPlaceholder"
           class="search-input"
           @input="filterEntries"
           aria-label="Search dictionary"
@@ -114,6 +114,8 @@ const dictionaryEntries = ref<DictionaryEntry[]>([]);
 const filteredEntries = ref<DictionaryEntry[]>([]);
 const searchQuery = ref("");
 const loading = ref(false);
+const dictionarySearchPlaceholder =
+  "Search in Chabacano, Tagalog, or English...";
 
 // Fetch dictionary data
 const fetchDictionary = async () => {
@@ -337,6 +339,28 @@ onMounted(fetchDictionary);
 
   .dictionary__entry {
     padding: var(--spacing-sm);
+  }
+}
+
+@media (min-width: 1600px) {
+  .dictionary {
+    max-width: 1200px;
+  }
+
+  .dictionary__search {
+    max-width: 720px;
+  }
+
+  .dictionary__entries {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+}
+
+@media (min-width: 2560px) {
+  .dictionary {
+    max-width: 1400px;
+    margin-top: var(--spacing-3xl);
+    margin-bottom: var(--spacing-3xl);
   }
 }
 </style>

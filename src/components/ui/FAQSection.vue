@@ -75,6 +75,7 @@
 .faq-list {
   display: grid;
   gap: var(--spacing-md);
+  max-width: 980px;
 }
 
 .faq-item {
@@ -101,5 +102,11 @@
   font-size: var(--fs-body-text);
   line-height: var(--line-height-normal);
   color: var(--text-primary);
+}
+
+@media (min-width: 1600px) {
+  .faq-list {
+    max-width: 1100px;
+  }
 }
 </style>

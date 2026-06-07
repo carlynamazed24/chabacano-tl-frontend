@@ -16,6 +16,9 @@
   --container-padding: clamp(1rem, 5vw, 3rem);
   --section-spacing: clamp(2rem, 8vw, 6rem);
   --grid-gap: var(--spacing-md);
+  --content-max-width: 1200px;
+  --content-wide-max-width: 1440px;
+  --content-tv-max-width: 1760px;
   
   /* Component spacing */
   --component-padding: var(--spacing-md);

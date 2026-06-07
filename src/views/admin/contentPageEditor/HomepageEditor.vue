@@ -18,7 +18,7 @@
               type="text"
               v-model="heroTitle"
               class="form-field__input"
-              placeholder="Enter hero title"
+              :placeholder="homepagePlaceholders.heroTitle"
             />
           </div>
           <div class="form-field">
@@ -26,7 +26,7 @@
             <textarea
               v-model="heroContent"
               class="form-field__textarea"
-              placeholder="Enter hero content"
+              :placeholder="homepagePlaceholders.heroContent"
             ></textarea>
           </div>
         </div>
@@ -45,7 +45,7 @@
               type="text"
               v-model="aboutUsTitle"
               class="form-field__input"
-              placeholder="Enter about us title"
+              :placeholder="homepagePlaceholders.aboutUsTitle"
             />
           </div>
           <div class="form-field">
@@ -53,7 +53,7 @@
             <textarea
               v-model="aboutUsContent"
               class="form-field__textarea"
-              placeholder="Enter about us content"
+              :placeholder="homepagePlaceholders.aboutUsContent"
             ></textarea>
           </div>
         </div>
@@ -70,7 +70,7 @@
               type="text"
               v-model="ourMissionTitle"
               class="form-field__input"
-              placeholder="Enter mission title"
+              :placeholder="homepagePlaceholders.ourMissionTitle"
             />
           </div>
           <div class="form-field">
@@ -78,7 +78,7 @@
             <textarea
               v-model="ourMissionContent"
               class="form-field__textarea"
-              placeholder="Enter mission content"
+              :placeholder="homepagePlaceholders.ourMissionContent"
             ></textarea>
           </div>
         </div>
@@ -95,7 +95,7 @@
               type="text"
               v-model="ourVisionTitle"
               class="form-field__input"
-              placeholder="Enter vision title"
+              :placeholder="homepagePlaceholders.ourVisionTitle"
             />
           </div>
           <div class="form-field">
@@ -103,7 +103,7 @@
             <textarea
               v-model="ourVisionContent"
               class="form-field__textarea"
-              placeholder="Enter vision content"
+              :placeholder="homepagePlaceholders.ourVisionContent"
             ></textarea>
           </div>
         </div>
@@ -146,6 +146,16 @@ const ourVisionContent = ref<string>("");
 const whyChabacanoTitle = ref<string>("This has been removed from the UI");
 const whyChabacanoContent = ref<string>("This has been removed from the UI");
 const isLoading = ref(true);
+const homepagePlaceholders = {
+  heroTitle: "Enter hero title",
+  heroContent: "Enter hero content",
+  aboutUsTitle: "Enter about us title",
+  aboutUsContent: "Enter about us content",
+  ourMissionTitle: "Enter mission title",
+  ourMissionContent: "Enter mission content",
+  ourVisionTitle: "Enter vision title",
+  ourVisionContent: "Enter vision content",
+};
 
 // Store initial data to compare changes
 const initialData = ref<Record<string, string>>({});

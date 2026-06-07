@@ -3,7 +3,7 @@
 /* Container */
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--content-wide-max-width);
   margin: 0 auto;
   padding-left: var(--container-padding);
   padding-right: var(--container-padding);

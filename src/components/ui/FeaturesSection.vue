@@ -104,4 +104,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (min-width: 1100px) {
+  .features-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .feature-item {
+    padding: var(--spacing-lg);
+  }
+}
 </style>

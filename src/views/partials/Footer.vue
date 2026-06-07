@@ -76,6 +76,7 @@
   justify-content: space-between;
   align-items: center;
   width: 80%;
+  max-width: var(--content-wide-max-width);
   margin-bottom: 0.75em;
   border-bottom: 1px solid var(--light-color);
 }
@@ -107,6 +108,12 @@
   .footer > .footer-nav > .nav-container > .nav-lists {
     flex-direction: column;
     gap: 1em;
+  }
+}
+
+@media (min-width: 2560px) {
+  .footer > .footer-nav {
+    max-width: var(--content-tv-max-width);
   }
 }
 

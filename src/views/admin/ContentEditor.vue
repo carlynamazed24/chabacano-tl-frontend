@@ -38,8 +38,11 @@ const NavLists: NavListsProps[] = [
 @import "../../styles/tokens/animations.css";
 
 .content-editor {
+  width: 100%;
+  max-width: var(--content-wide-max-width);
   min-height: 100vh;
   padding: var(--spacing-xl);
+  margin: 0 auto;
   background-color: var(--light-color);
 }
 
@@ -71,5 +74,12 @@ const NavLists: NavListsProps[] = [
   padding: var(--spacing-xl);
   min-height: 500px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 2560px) {
+  .content-editor {
+    max-width: var(--content-tv-max-width);
+    padding: var(--spacing-2xl);
+  }
 }
 </style>

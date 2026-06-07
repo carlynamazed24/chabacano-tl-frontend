@@ -26,7 +26,7 @@
             v-model="textInput"
             @input="handleTextInput"
             :maxlength="maxCharacters"
-            placeholder="Isulat mo..."
+            :placeholder="sourcePlaceholder"
           ></textarea>
 
           <!-- Source Audio Controls -->
@@ -101,7 +101,7 @@
             class="translator__textarea"
             disabled
             v-model="translatedText"
-            placeholder="Translation will appear here..."
+            :placeholder="targetPlaceholder"
           ></textarea>
 
           <!-- Audio Icons -->
@@ -185,6 +185,8 @@ interface SpeechRecognition extends EventTarget {
   stop(): void;
 }
 
+type Language = "Chabacano" | "Tagalog" | "English";
+
 // Constants
 const maxCharacters = 3000;
 const translationDebounceMs = 600;
@@ -194,10 +196,25 @@ const translationStatusMessages = new Set([
   translatingMessage,
   translationErrorMessage,
 ]);
+const languagePlaceholders: Record<
+  "source" | "target",
+  Record<Language, string>
+> = {
+  source: {
+    Chabacano: "Escribi aqui...",
+    Tagalog: "Isulat dito...",
+    English: "Type here...",
+  },
+  target: {
+    Chabacano: "Aqui aparece el traduccion...",
+    Tagalog: "Dito lalabas ang salin...",
+    English: "Translation will appear here...",
+  },
+};
 
 // Reactive references
-const selectedSrcLang = ref("Chabacano");
-const selectedTargetLang = ref("Tagalog");
+const selectedSrcLang = ref<Language>("Chabacano");
+const selectedTargetLang = ref<Language>("Tagalog");
 const textInput = ref("");
 const translatedText = ref("");
 const isRecording = ref(false);
@@ -213,9 +230,15 @@ const translationCache = new Map<string, string>();
 
 // Computed property for character limit check
 const isAtLimit = computed(() => textInput.value.length >= maxCharacters);
+const sourcePlaceholder = computed(
+  () => languagePlaceholders.source[selectedSrcLang.value]
+);
+const targetPlaceholder = computed(
+  () => languagePlaceholders.target[selectedTargetLang.value]
+);
 
 // Map languages to ResponsiveVoice voices
-const getVoiceForLanguage = (lang: string) => {
+const getVoiceForLanguage = (lang: Language) => {
   switch (lang) {
     case "Chabacano":
       return "Spanish Latin American Female";
@@ -282,7 +305,7 @@ try {
 }
 
 // Speak text using ResponsiveVoice
-const speakText = (text: string, lang: string) => {
+const speakText = (text: string, lang: Language) => {
   if (!text) return;
 
   if (!window.responsiveVoice) {
@@ -325,7 +348,7 @@ const speakText = (text: string, lang: string) => {
 };
 
 // Fallback to native SpeechSynthesis if ResponsiveVoice fails
-const speakTextFallback = (text: string, lang: string) => {
+const speakTextFallback = (text: string, lang: Language) => {
   if (!window.speechSynthesis) {
     alert("Text-to-speech is not supported in this browser.");
     return;
@@ -354,7 +377,7 @@ const speakTranslatedText = () => {
 };
 
 // Get speech recognition language code
-const getSpeechRecognitionLang = (lang: string): string => {
+const getSpeechRecognitionLang = (lang: Language): string => {
   switch (lang) {
     case "Tagalog":
       return "fil-PH";
@@ -1088,6 +1111,39 @@ onBeforeUnmount(() => {
   .translator__btn {
     padding: 12px 32px;
     font-size: 1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .section-bg {
+    padding: 120px var(--container-padding);
+  }
+
+  .translator {
+    max-width: 1600px;
+    gap: 32px;
+  }
+
+  .translator__panel {
+    min-height: 560px;
+  }
+
+  .translator__textarea {
+    font-size: 1.35rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .translator {
+    max-width: 1760px;
+  }
+
+  .translator__panel {
+    min-height: 640px;
+  }
+
+  .translator__select {
+    padding: 22px 28px;
   }
 }
 </style>

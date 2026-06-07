@@ -112,7 +112,7 @@ withDefaults(
   font-weight: var(--fw-bold);
   line-height: var(--line-height-tight);
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .hero__tagline {
@@ -169,6 +169,26 @@ withDefaults(
 
   .hero__tagline {
     width: 100%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .hero__content {
+    max-width: 1320px;
+  }
+
+  .hero__tagline {
+    max-width: 900px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .hero {
+    min-height: 820px;
+  }
+
+  .hero__content {
+    max-width: 1440px;
   }
 }
 </style>

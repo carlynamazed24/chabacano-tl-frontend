@@ -37,7 +37,7 @@
                 id="section-header"
                 type="text"
                 class="form-field__input"
-                placeholder="Enter section header"
+                :placeholder="storyPlaceholders.sectionHeader"
                 v-model="sectionContent.headingTitle"
               />
             </div>
@@ -50,7 +50,7 @@
               <textarea
                 id="section-description"
                 class="form-field__textarea"
-                placeholder="Enter section description"
+                :placeholder="storyPlaceholders.sectionDescription"
                 v-model="sectionContent.headingContent"
               ></textarea>
             </div>
@@ -79,7 +79,7 @@
                 :id="`subheader-title-${index}`"
                 type="text"
                 class="form-field__input"
-                placeholder="Enter subheader title"
+                :placeholder="storyPlaceholders.subheaderTitle"
                 v-model="subHeader.subHeadingTitle"
               />
             </div>
@@ -92,7 +92,7 @@
               <textarea
                 :id="`subheader-content-${index}`"
                 class="form-field__textarea"
-                placeholder="Enter subheader content"
+                :placeholder="storyPlaceholders.subheaderContent"
                 v-model="subHeader.subHeadingContent"
               ></textarea>
             </div>
@@ -138,6 +138,12 @@ import {
 const router = useRouter();
 const route = useRoute();
 const isLoading = ref(Boolean(route.params.id));
+const storyPlaceholders = {
+  sectionHeader: "Enter section header",
+  sectionDescription: "Enter section description",
+  subheaderTitle: "Enter subheader title",
+  subheaderContent: "Enter subheader content",
+};
 
 const sectionContent = ref<StorypageContent>({
   id: 0,

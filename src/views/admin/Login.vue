@@ -33,7 +33,7 @@
                 id="username"
                 v-model="username"
                 class="login__input"
-                placeholder="Enter your username"
+                :placeholder="authPlaceholders.username"
                 autocomplete="username"
               />
             </div>
@@ -42,14 +42,33 @@
               <label for="password" class="login__label fs-body-text"
                 >Password</label
               >
-              <input
-                type="password"
-                id="password"
-                v-model="password"
-                class="login__input"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-              />
+              <div class="login__password-control">
+                <input
+                  :type="passwordInputType"
+                  id="password"
+                  v-model="password"
+                  class="login__input login__input--password"
+                  :placeholder="authPlaceholders.password"
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="login__password-toggle"
+                  :aria-label="
+                    showPassword ? 'Hide password' : 'Show password'
+                  "
+                  :aria-pressed="showPassword"
+                  :title="showPassword ? 'Hide password' : 'Show password'"
+                  @click="togglePasswordVisibility"
+                >
+                  <EyeOffIcon
+                    v-if="showPassword"
+                    :size="20"
+                    color="currentColor"
+                  />
+                  <EyeIcon v-else :size="20" color="currentColor" />
+                </button>
+              </div>
             </div>
 
             <div class="login__actions">
@@ -58,7 +77,7 @@
                 btnType="btn-secondary"
                 btnText="Sign In"
                 size="lg"
-                @click="login"
+                nativeType="submit"
               />
             </div>
           </form>
@@ -68,7 +87,7 @@
               :to="{ name: 'home' }"
               class="login__back-link fs-small-text"
             >
-              ← Back to Home
+              &larr; Back to Home
             </router-link>
           </div>
         </div>
@@ -78,17 +97,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { RequestToLogin } from "../../composables/API/Auth";
 import Button from "../../components/ui/Button.vue";
 import { displayErrorNotification } from "../../composables/services/notifications";
+import EyeIcon from "../../components/icons/EyeIcon.vue";
+import EyeOffIcon from "../../components/icons/EyeOffIcon.vue";
 
 const router = useRouter();
+const authPlaceholders = {
+  username: "Enter your username",
+  password: "Enter your password",
+};
 
 const username = ref<string>("");
 const password = ref<string>("");
 const btnLoadingState = ref<boolean>(false);
+const showPassword = ref(false);
+const passwordInputType = computed(() =>
+  showPassword.value ? "text" : "password"
+);
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const login = async () => {
   // Validate inputs
@@ -231,6 +264,7 @@ const login = async () => {
 }
 
 .login__input {
+  width: 100%;
   padding: var(--spacing-md) var(--spacing-lg);
   border: 2px solid var(--light-color);
   border-radius: var(--border-radius-md);
@@ -241,6 +275,47 @@ const login = async () => {
     box-shadow var(--transition-normal) var(--ease-out);
 }
 
+.login__password-control {
+  position: relative;
+}
+
+.login__input--password {
+  padding-right: calc(var(--spacing-lg) * 2.75);
+}
+
+.login__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--primary-color);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color var(--transition-normal) var(--ease-out),
+    background-color var(--transition-normal) var(--ease-out),
+    border-color var(--transition-normal) var(--ease-out);
+}
+
+.login__password-toggle:hover {
+  color: var(--dark-color);
+  background-color: rgba(13, 148, 136, 0.08);
+  border-color: rgba(13, 148, 136, 0.2);
+}
+
+.login__password-toggle:focus-visible {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
 .login__input:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -248,8 +323,8 @@ const login = async () => {
 }
 
 .login__input::placeholder {
-  color: var(--accent-3-color);
-  opacity: 0.5;
+  color: var(--primary-color);
+  opacity: 0.55;
 }
 
 .login__actions {
@@ -258,6 +333,11 @@ const login = async () => {
 
 .login__actions :deep(.btn) {
   width: 100%;
+}
+
+.login__actions :deep(.btn:disabled) {
+  background-color: var(--primary-color) !important;
+  border-color: transparent !important;
 }
 
 .login__footer {
@@ -272,7 +352,13 @@ const login = async () => {
 }
 
 .login__back-link:hover {
-  color: var(--accent-1-color);
+  color: var(--dark-color);
+}
+
+.login__back-link:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 /* Responsive Design */
@@ -292,6 +378,24 @@ const login = async () => {
 
   .login__panel--form {
     padding: var(--spacing-xl);
+  }
+}
+
+@media (min-width: 1600px) {
+  .login__container {
+    max-width: 980px;
+    min-height: 540px;
+  }
+
+  .login__form {
+    max-width: 360px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .login__container {
+    max-width: 1040px;
+    min-height: 580px;
   }
 }
 </style>

@@ -23,5 +23,6 @@ import Sidebar from "../../components/ui/Sidebar.vue";
 .panel__content {
   flex: 1;
   overflow-y: auto;
+  min-width: 0;
 }
 </style>

@@ -30,7 +30,7 @@
               type="text"
               id="chabacano-input"
               class="form-field__input"
-              placeholder="Word or Phrase in Chabacano"
+              :placeholder="dictionaryEntryPlaceholders.chabacano"
               v-model="chabacaLang"
             />
           </div>
@@ -43,7 +43,7 @@
               type="text"
               id="tagalog-input"
               class="form-field__input"
-              placeholder="Word or Phrase in Tagalog"
+              :placeholder="dictionaryEntryPlaceholders.tagalog"
               v-model="tagalogLang"
             />
           </div>
@@ -56,7 +56,7 @@
               type="text"
               id="english-input"
               class="form-field__input"
-              placeholder="Word or Phrase in English"
+              :placeholder="dictionaryEntryPlaceholders.english"
               v-model="englishLang"
             />
           </div>
@@ -69,7 +69,7 @@
           <textarea
             id="english-definition"
             class="form-field__textarea"
-            placeholder="Definition of the word or phrase in English"
+            :placeholder="dictionaryEntryPlaceholders.definition"
             v-model="definition"
           ></textarea>
         </div>
@@ -116,6 +116,12 @@ const chabacaLang = ref<string>("");
 const tagalogLang = ref<string>("");
 const englishLang = ref<string>("");
 const definition = ref<string>("");
+const dictionaryEntryPlaceholders = {
+  chabacano: "Word or Phrase in Chabacano",
+  tagalog: "Word or Phrase in Tagalog",
+  english: "Word or Phrase in English",
+  definition: "Definition of the word or phrase in English",
+};
 
 const updateEntry = async () => {
   try {

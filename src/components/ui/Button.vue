@@ -1,6 +1,7 @@
 <template>
   <button
     class="btn"
+    :type="nativeType"
     :class="[buttonType, buttonSize, { 'btn--loading': loadingState }]"
     @click="routeTo(path)"
     :disabled="loadingState"
@@ -30,6 +31,7 @@ const buttonText = ref(props.btnText);
 const buttonSize = ref(props.size);
 const loadingState = ref(props.loadingState);
 const path = ref(props.path);
+const nativeType = ref(props.nativeType || "button");
 
 watch(
   () => props.loadingState,
@@ -125,7 +127,7 @@ const routeTo = (path: string | undefined) => {
 .btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;
-  background-color: var(--accent-3-color) !important;
+  background-color: var(--primary-color) !important;
   border-color: transparent !important;
 }
 

@@ -101,4 +101,10 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+@media (min-width: 1600px) {
+  .process-step {
+    padding: var(--spacing-lg);
+  }
+}
 </style>
