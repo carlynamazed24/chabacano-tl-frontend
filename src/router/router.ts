@@ -45,6 +45,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/admin/Login.vue"),
       },
       {
+        path: "/cb-admin/forgot-password",
+        name: "forgot-password",
+        component: () => import("../views/admin/ForgotPassword.vue"),
+      },
+      {
+        path: "/cb-admin/reset-password",
+        name: "reset-password",
+        component: () => import("../views/admin/ResetPassword.vue"),
+      },
+      {
         path: "/cb-admin/cpanel",
         name: "cpanel",
         redirect: { name: "content-editor" },

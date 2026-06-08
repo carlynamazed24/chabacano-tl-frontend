@@ -69,6 +69,12 @@
                   <EyeIcon v-else :size="20" color="currentColor" />
                 </button>
               </div>
+              <router-link
+                :to="{ name: 'forgot-password' }"
+                class="login__forgot-link fs-small-text"
+              >
+                Forgot password?
+              </router-link>
             </div>
 
             <div class="login__actions">
@@ -314,6 +320,23 @@ const login = async () => {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.login__forgot-link {
+  align-self: flex-end;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-normal) var(--ease-out);
+}
+
+.login__forgot-link:hover {
+  color: var(--dark-color);
+}
+
+.login__forgot-link:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .login__input:focus {

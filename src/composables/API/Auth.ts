@@ -6,6 +6,15 @@ interface LoginPayload {
   password: string;
 }
 
+interface ForgotPasswordPayload {
+  identifier: string;
+}
+
+interface ResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
 const RequestToLogin = async (payload: LoginPayload) => {
   try {
     const response = await API.post("/auth/login", payload, {
@@ -64,4 +73,46 @@ const RequestToLogout = async () => {
   }
 };
 
-export { RequestToLogin, RequestToCheckAuth, RequestToLogout };
+const RequestToForgotPassword = async (payload: ForgotPasswordPayload) => {
+  try {
+    const response = await API.post("/auth/forgot-password", payload);
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+
+    if (axiosError.response) {
+      return axiosError.response.data;
+    }
+
+    return {
+      status: "failed",
+      message: "Something went wrong",
+    };
+  }
+};
+
+const RequestToResetPassword = async (payload: ResetPasswordPayload) => {
+  try {
+    const response = await API.post("/auth/reset-password", payload);
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+
+    if (axiosError.response) {
+      return axiosError.response.data;
+    }
+
+    return {
+      status: "failed",
+      message: "Something went wrong",
+    };
+  }
+};
+
+export {
+  RequestToLogin,
+  RequestToCheckAuth,
+  RequestToLogout,
+  RequestToForgotPassword,
+  RequestToResetPassword,
+};
