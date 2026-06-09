@@ -647,18 +647,26 @@ const switchLanguages = () => {
 
   invalidateTranslationWork();
 
-  textInput.value = previousTranslatedText;
-  translatedText.value = previousSourceText;
   selectedSrcLang.value = previousTargetLang;
   selectedTargetLang.value = previousSourceLang;
 
-  if (previousTranslatedText.trim() && previousSourceText.trim()) {
+  if (previousTranslatedText.trim()) {
+    textInput.value = previousTranslatedText;
+    translatedText.value = previousSourceText;
+
     rememberTranslation({
       text: previousTranslatedText,
       model: getCurrentTranslationModel(),
       translation: previousSourceText,
     });
+
+    translateText({ immediate: true });
+    return;
   }
+
+  textInput.value = previousSourceText;
+  translatedText.value = "";
+  translateText({ immediate: true });
 };
 
 const copyTargetText = async () => {
