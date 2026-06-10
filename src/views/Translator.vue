@@ -64,8 +64,8 @@
         </div>
       </div>
 
-      <!-- Switch Button -->
-      <div class="translator__switch-col">
+      <!-- Switch Button (hidden) -->
+      <div class="translator__switch-col translator__switch-col--hidden">
         <button
           class="translator__switch-btn"
           @click="switchLanguages"
@@ -82,17 +82,9 @@
         class="translator__panel translator__panel--target"
         :aria-busy="isTranslating"
       >
-        <!-- Language Dropdown -->
+        <!-- Target Language Label -->
         <div class="translator__header">
-          <select
-            v-model="selectedTargetLang"
-            @change="handleTargetLanguageChange"
-            class="translator__select"
-          >
-            <option value="Chabacano">Chabacano</option>
-            <option value="Tagalog">Tagalog</option>
-            <option value="English">English</option>
-          </select>
+          <div class="translator__lang-label">Chabacano</div>
         </div>
 
         <!-- Text Area -->
@@ -214,7 +206,7 @@ const languagePlaceholders: Record<
 
 // Reactive references
 const selectedSrcLang = ref<Language>("Chabacano");
-const selectedTargetLang = ref<Language>("Tagalog");
+const selectedTargetLang = ref<Language>("Chabacano");
 const textInput = ref("");
 const translatedText = ref("");
 const isRecording = ref(false);
@@ -623,18 +615,8 @@ const translateText = ({ immediate = false }: TranslateOptions = {}) => {
 
 const handleSrcLanguageChange = () => {
   if (selectedSrcLang.value === selectedTargetLang.value) {
-    // Swap to prevent same language on both sides
-    selectedTargetLang.value =
-      selectedSrcLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
-  }
-  translateText({ immediate: true });
-};
-
-const handleTargetLanguageChange = () => {
-  if (selectedTargetLang.value === selectedSrcLang.value) {
-    // Swap to prevent same language on both sides
     selectedSrcLang.value =
-      selectedTargetLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
+      selectedSrcLang.value === "Chabacano" ? "Tagalog" : "Chabacano";
   }
   translateText({ immediate: true });
 };
@@ -754,6 +736,10 @@ onBeforeUnmount(() => {
   z-index: 10;
 }
 
+.translator__switch-col--hidden {
+  display: none;
+}
+
 .translator__switch-btn {
   display: flex;
   align-items: center;
@@ -843,6 +829,19 @@ onBeforeUnmount(() => {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+}
+
+.translator__lang-label {
+  width: 100%;
+  padding: 20px 24px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Body - Textarea Container */
@@ -1031,7 +1030,8 @@ onBeforeUnmount(() => {
     min-height: 200px;
   }
 
-  .translator__select {
+  .translator__select,
+  .translator__lang-label {
     padding: 18px 20px;
     font-size: 1.15rem;
   }
@@ -1090,7 +1090,8 @@ onBeforeUnmount(() => {
     min-height: 140px;
   }
 
-  .translator__select {
+  .translator__select,
+  .translator__lang-label {
     padding: 16px 18px;
     font-size: 1.1rem;
   }
@@ -1150,7 +1151,8 @@ onBeforeUnmount(() => {
     min-height: 640px;
   }
 
-  .translator__select {
+  .translator__select,
+  .translator__lang-label {
     padding: 22px 28px;
   }
 }
